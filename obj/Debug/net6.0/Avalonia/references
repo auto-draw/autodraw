@@ -1,36 +1,36 @@
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Animation.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Base.dll
-C:\Users\catsi\.nuget\packages\avalonia.controls.datagrid\0.10.21\lib\netstandard2.0\Avalonia.Controls.DataGrid.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Controls.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.DesignerSupport.dll
-C:\Users\catsi\.nuget\packages\avalonia.desktop\0.10.21\lib\netstandard2.0\Avalonia.Desktop.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.DesktopRuntime.dll
-C:\Users\catsi\.nuget\packages\avalonia.diagnostics\0.10.21\lib\netstandard2.0\Avalonia.Diagnostics.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Dialogs.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.dll
-C:\Users\catsi\.nuget\packages\avalonia.freedesktop\0.10.21\lib\netstandard2.0\Avalonia.FreeDesktop.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Input.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Interactivity.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Layout.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Markup.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Markup.Xaml.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.MicroCom.dll
-C:\Users\catsi\.nuget\packages\avalonia.native\0.10.21\lib\netstandard2.0\Avalonia.Native.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.OpenGL.dll
-C:\Users\catsi\.nuget\packages\avalonia.remote.protocol\0.10.21\lib\netstandard2.0\Avalonia.Remote.Protocol.dll
-C:\Users\catsi\.nuget\packages\avalonia.skia\0.10.21\lib\netstandard2.0\Avalonia.Skia.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Styling.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Themes.Default.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Themes.Fluent.dll
-C:\Users\catsi\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Visuals.dll
-C:\Users\catsi\.nuget\packages\avalonia.win32\0.10.21\lib\netstandard2.0\Avalonia.Win32.dll
-C:\Users\catsi\.nuget\packages\avalonia.x11\0.10.21\lib\netstandard2.0\Avalonia.X11.dll
-C:\Users\catsi\.nuget\packages\harfbuzzsharp\2.8.2.1-preview.108\lib\net6.0\HarfBuzzSharp.dll
-C:\Users\catsi\.nuget\packages\jetbrains.annotations\10.3.0\lib\netstandard1.0\JetBrains.Annotations.dll
-C:\Users\catsi\.nuget\packages\microsoft.codeanalysis.csharp\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\catsi\.nuget\packages\microsoft.codeanalysis.csharp.scripting\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-C:\Users\catsi\.nuget\packages\microsoft.codeanalysis.common\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll
-C:\Users\catsi\.nuget\packages\microsoft.codeanalysis.scripting.common\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Animation.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Base.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.controls.datagrid\0.10.21\lib\netstandard2.0\Avalonia.Controls.DataGrid.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Controls.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.DesignerSupport.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.desktop\0.10.21\lib\netstandard2.0\Avalonia.Desktop.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.DesktopRuntime.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.diagnostics\0.10.21\lib\netstandard2.0\Avalonia.Diagnostics.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Dialogs.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.freedesktop\0.10.21\lib\netstandard2.0\Avalonia.FreeDesktop.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Input.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Interactivity.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Layout.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Markup.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Markup.Xaml.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.MicroCom.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.native\0.10.21\lib\netstandard2.0\Avalonia.Native.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.OpenGL.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.remote.protocol\0.10.21\lib\netstandard2.0\Avalonia.Remote.Protocol.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.skia\0.10.21\lib\netstandard2.0\Avalonia.Skia.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Styling.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Themes.Default.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Themes.Fluent.dll
+C:\Users\alexdalas\.nuget\packages\avalonia\0.10.21\lib\netcoreapp2.0\Avalonia.Visuals.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.win32\0.10.21\lib\netstandard2.0\Avalonia.Win32.dll
+C:\Users\alexdalas\.nuget\packages\avalonia.x11\0.10.21\lib\netstandard2.0\Avalonia.X11.dll
+C:\Users\alexdalas\.nuget\packages\harfbuzzsharp\2.8.2.1-preview.108\lib\net6.0\HarfBuzzSharp.dll
+C:\Users\alexdalas\.nuget\packages\jetbrains.annotations\10.3.0\lib\netstandard1.0\JetBrains.Annotations.dll
+C:\Users\alexdalas\.nuget\packages\microsoft.codeanalysis.csharp\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\alexdalas\.nuget\packages\microsoft.codeanalysis.csharp.scripting\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+C:\Users\alexdalas\.nuget\packages\microsoft.codeanalysis.common\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll
+C:\Users\alexdalas\.nuget\packages\microsoft.codeanalysis.scripting.common\3.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\Microsoft.CSharp.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\Microsoft.VisualBasic.Core.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\Microsoft.VisualBasic.dll
@@ -38,7 +38,8 @@ C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\Micros
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\Microsoft.Win32.Registry.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\mscorlib.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\netstandard.dll
-C:\Users\catsi\.nuget\packages\skiasharp\2.88.1-preview.108\lib\net6.0\SkiaSharp.dll
+C:\Users\alexdalas\.nuget\packages\newtonsoft.json\13.0.3\lib\net6.0\Newtonsoft.Json.dll
+C:\Users\alexdalas\.nuget\packages\skiasharp\2.88.1-preview.108\lib\net6.0\SkiaSharp.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.AppContext.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Buffers.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Collections.Concurrent.dll
@@ -69,7 +70,7 @@ C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Diagnostics.TraceSource.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Diagnostics.Tracing.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.dll
-C:\Users\catsi\.nuget\packages\system.drawing.common\4.5.0\ref\netstandard2.0\System.Drawing.Common.dll
+C:\Users\alexdalas\.nuget\packages\system.drawing.common\4.5.0\ref\netstandard2.0\System.Drawing.Common.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Drawing.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Drawing.Primitives.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Dynamic.Runtime.dll
@@ -118,7 +119,7 @@ C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Numerics.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Numerics.Vectors.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.ObjectModel.dll
-C:\Users\catsi\.nuget\packages\system.reactive\5.0.0\lib\net5.0\System.Reactive.dll
+C:\Users\alexdalas\.nuget\packages\system.reactive\5.0.0\lib\net5.0\System.Reactive.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Reflection.DispatchProxy.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Reflection.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Reflection.Emit.dll
@@ -192,5 +193,5 @@ C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Xml.XmlSerializer.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Xml.XPath.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\System.Xml.XPath.XDocument.dll
-C:\Users\catsi\.nuget\packages\tmds.dbus\0.9.0\lib\netstandard2.0\Tmds.DBus.dll
+C:\Users\alexdalas\.nuget\packages\tmds.dbus\0.9.0\lib\netstandard2.0\Tmds.DBus.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\6.0.18\ref\net6.0\WindowsBase.dll

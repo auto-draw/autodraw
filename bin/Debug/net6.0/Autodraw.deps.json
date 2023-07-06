@@ -11,6 +11,7 @@
           "Avalonia": "0.10.21",
           "Avalonia.Desktop": "0.10.21",
           "Avalonia.Diagnostics": "0.10.21",
+          "Newtonsoft.Json": "13.0.3",
           "XamlNameReferenceGenerator": "1.6.1"
         },
         "runtime": {
@@ -586,6 +587,14 @@
           }
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.3.27908"
+          }
+        }
+      },
       "SkiaSharp/2.88.1-preview.108": {
         "dependencies": {
           "SkiaSharp.NativeAssets.Win32": "2.88.1-preview.108",
@@ -1104,6 +1113,13 @@
       "sha512": "sha512-LuI1oG+24TUj1ZRQQjM5Ew73BKnZE5NZ/7eAdh1o8ST5dPhUnJvIkiIn2re3MwnkRy6ELRnvEbBxHP8uALKhJw==",
       "path": "microsoft.win32.systemevents/4.5.0",
       "hashPath": "microsoft.win32.systemevents.4.5.0.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
     },
     "SkiaSharp/2.88.1-preview.108": {
       "type": "package",
