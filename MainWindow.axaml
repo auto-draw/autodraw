@@ -47,13 +47,13 @@
 		
 		<!--Body Stuff-->
 
-		<StackPanel Orientation="Horizontal" Name="Body">
+		<StackPanel Orientation="Horizontal" Name="Body" VerticalAlignment="Bottom">
 			<StackPanel>
 				<Canvas Classes="ImagePreview" Width="320" Height="320" Margin="5 5" HorizontalAlignment="Left">
 					<Border Classes="ImagePreview" Width="320" Height="320"></Border>
 					<Image Source="avares://Autodraw/Assets/test-pattern.jpg" Width="312" Margin="4" Height="312"></Image>
 				</Canvas>
-				<Grid Margin="5 0 5 -5">
+				<Grid Margin="5 0 5 5">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*"/>
 						<ColumnDefinition Width="4"/>
@@ -70,7 +70,7 @@
 					<TextBox Grid.Column="4" Name="HeightInput" Text="100" Watermark="Height"></TextBox>
 
 				</Grid>
-				<Slider Name="Slider" Minimum="1" Maximum="200" Value="100" Padding="8 0 8 0"></Slider>
+				<Slider VerticalAlignment="Center" Name="Slider" Minimum="1" Maximum="200" Value="100" Padding="8 0 8 0"></Slider>
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>
