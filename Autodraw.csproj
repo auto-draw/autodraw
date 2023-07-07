@@ -43,6 +43,7 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\clear.png" />
+	  <None Remove="Assets\open.png" />
 	  <None Remove="Assets\test-pattern.jpg" />
 	  <None Remove="Styles\light.xaml" />
 	</ItemGroup>

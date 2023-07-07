@@ -25,7 +25,7 @@
 	<Window.Styles>
 		<StyleInclude Source="avares://Autodraw/Styles/dark.xaml"/>
 	</Window.Styles>
-
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="20"></RowDefinition>
@@ -57,10 +57,10 @@
 					<ColumnDefinition Width="20"/>
 					<ColumnDefinition Width="20"/>
 				</Grid.ColumnDefinitions>
-				<Button Click="quitApp" Classes="MinimizeApp" Name="MinimizeAppButton" Grid.Column="2" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+				<Button Classes="MinimizeApp" Name="MinimizeAppButton" Grid.Column="2" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
 					-
 				</Button>
-				<Button Click="quitApp" Classes="CloseApp" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+				<Button Classes="CloseApp" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
 					🞩
 				</Button>
 			</Grid>
@@ -83,7 +83,7 @@
 				</Grid.RowDefinitions>
 				<Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
 					<Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Border>
-					<Image Source="avares://Autodraw/Assets/test-pattern.jpg" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Image>
+					<Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Image>
 				</Canvas>
 				<Grid Grid.Row="2">
 					<Grid.ColumnDefinitions>
@@ -106,26 +106,39 @@
 					<RowDefinition Height="4"/>
 					<RowDefinition Height="36"/>
 				</Grid.RowDefinitions>
-				<Grid>
+				<Grid >
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="4"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="3*"/>
+						<RowDefinition Height="2*"/>
 						<RowDefinition Height="4"/>
 						<RowDefinition Height="2*"/>
 					</Grid.RowDefinitions>
+					<Grid>
+						<TextBox>heyfucker</TextBox>
+					</Grid>
 				</Grid>
 				<Grid Grid.Row="2">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="36"/>
+						<ColumnDefinition Width="36"/>
 						<ColumnDefinition Width="1*"/>
 						<ColumnDefinition Width="1*"/>
 					</Grid.ColumnDefinitions>
-					<Button VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
+					<Button Name="ClearButton" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
 						<Image Source="avares://Autodraw/Assets/clear.png"></Image>
+					</Button>
+					<Button Name="OpenButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
+						<Image Source="avares://Autodraw/Assets/open.png"></Image>
+					</Button>
+					<Button Name="ProcessButton" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
+						Process Image
+					</Button>
+					<Button Name="RunButton" Grid.Column="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
+						Start Drawing
 					</Button>
 				</Grid>
 			</Grid>
