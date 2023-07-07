@@ -18,8 +18,8 @@ namespace Autodraw
         {
             if (File.Exists(ConfigPath)) return true;
             Directory.CreateDirectory(FolderPath);
-            JObject jsonFile = new JObject();
-            File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(jsonFile));
+            string emptyJObject = JsonConvert.SerializeObject(new JObject());
+            File.WriteAllText(ConfigPath, emptyJObject);
             return true;
         }
 
@@ -27,7 +27,8 @@ namespace Autodraw
         {
             if (!File.Exists(ConfigPath)) return "";
             string json = File.ReadAllText(ConfigPath);
-            return (string)JObject.Parse(json)[entry];
+            JObject parse = JObject.Parse(json);
+            return (string)parse[entry];
         }
 
         public static bool setEntry(string entry, string data)
