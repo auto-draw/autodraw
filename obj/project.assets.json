@@ -4444,23 +4444,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alexdalas\\.nuget\\packages\\": {},
+    "C:\\Users\\catsi\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alexdalas\\Documents\\GitHub\\autodraw\\Autodraw.csproj",
+      "projectUniqueName": "C:\\Users\\catsi\\Desktop\\Avalonia\\Autodraw\\Autodraw.csproj",
       "projectName": "Autodraw",
-      "projectPath": "C:\\Users\\alexdalas\\Documents\\GitHub\\autodraw\\Autodraw.csproj",
-      "packagesPath": "C:\\Users\\alexdalas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alexdalas\\Documents\\GitHub\\autodraw\\obj\\",
+      "projectPath": "C:\\Users\\catsi\\Desktop\\Avalonia\\Autodraw\\Autodraw.csproj",
+      "packagesPath": "C:\\Users\\catsi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\catsi\\Desktop\\Avalonia\\Autodraw\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\alexdalas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\catsi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -261,3 +261,4 @@ C:\Users\alexdalas\Documents\GitHub\autodraw\obj\Debug\net6.0\Autodraw.dll
 C:\Users\alexdalas\Documents\GitHub\autodraw\obj\Debug\net6.0\Autodraw.pdb
 C:\Users\alexdalas\Documents\GitHub\autodraw\obj\Debug\net6.0\Autodraw.genruntimeconfig.cache
 C:\Users\alexdalas\Documents\GitHub\autodraw\obj\Debug\net6.0\ref\Autodraw.dll
+C:\Users\catsi\Desktop\Avalonia\Autodraw\bin\Debug\net6.0\Newtonsoft.Json.dll

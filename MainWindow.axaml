@@ -1,8 +1,9 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window x:Class="Autodraw.MainWindow"
+		xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="{Binding $self.Width}" d:DesignHeight="{Binding $self.Height}"
+        mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
 		
 		Name="AutoDraw"
 		
@@ -12,24 +13,28 @@
 		
 		MinWidth="720"
 		MinHeight="420"
-		WindowStartupLocation="CenterScreen"
-        x:Class="Autodraw.MainWindow"
+		
 		
         Title="AutoDraw"
 		
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaTitleBarHeightHint="20"
 		>
 
 	<Window.Styles>
 		<StyleInclude Source="avares://Autodraw/Styles/dark.xaml"/>
 	</Window.Styles>
-	
-	<StackPanel>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"></RowDefinition>
+			<RowDefinition Height="1*"></RowDefinition>
+		</Grid.RowDefinitions>
 		<!--Toolbar-->
-		<Canvas Width="{Binding $parent[Window].Width}" Height="20">
+		<Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
 			<!--Background-->
-			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Width}" Height="20"></Canvas>
+			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
 
 			<!--Decorations-->
 			<StackPanel Classes="Toolbar" Orientation="Horizontal">
@@ -39,39 +44,48 @@
 				<Button Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
 					v2
 				</Button>
-				<Button Margin="2 0 0 0" Click="openSettings" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center">
+				<Button Click="openSettings" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center">
 					<Image Source="avares://Autodraw/Assets/gear.png"></Image>
 				</Button>
 			</StackPanel>
 		</Canvas>
-		
-		<!--Body Stuff-->
 
-		<StackPanel Orientation="Horizontal" Name="Body" VerticalAlignment="Bottom">
-			<StackPanel>
-				<Canvas Classes="ImagePreview" Width="320" Height="320" Margin="5 5" HorizontalAlignment="Left">
-					<Border Classes="ImagePreview" Width="320" Height="320"></Border>
-					<Image Source="avares://Autodraw/Assets/test-pattern.jpg" Width="312" Margin="4" Height="312"></Image>
+		<!--Body Stuff-->
+		<Grid Grid.Row="1" Name="Body" Margin="4">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.8*"/>
+				<ColumnDefinition Width="1*"/>
+				<ColumnDefinition Width="0"/>
+				<ColumnDefinition Width="0"/>
+				<ColumnDefinition Width="0"/>
+			</Grid.ColumnDefinitions>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1*"></RowDefinition>
+					<RowDefinition Height="4"></RowDefinition>
+					<RowDefinition Height="24"></RowDefinition>
+					<RowDefinition Height="4"></RowDefinition>
+					<RowDefinition Height="54"></RowDefinition>
+				</Grid.RowDefinitions>
+				<Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
+					<Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Border>
+					<Image Source="avares://Autodraw/Assets/test-pattern.jpg" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Image>
 				</Canvas>
-				<Grid Margin="5 0 5 5">
+				<Grid Grid.Row="2">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*"/>
 						<ColumnDefinition Width="4"/>
-						<ColumnDefinition Width="0*"/>
+						<ColumnDefinition Width="48"/>
 						<ColumnDefinition Width="4"/>
 						<ColumnDefinition Width="2*"/>
 					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="24"></RowDefinition>
-					</Grid.RowDefinitions>
-						
+
 					<TextBox Grid.Column="0" Name="WidthInput" Text="100" Watermark="Width" HorizontalContentAlignment="Right"></TextBox>
 					<TextBox Grid.Column="2" Name="PercentageNumber" Text="100%" Watermark="Width" HorizontalContentAlignment="Center"></TextBox>
 					<TextBox Grid.Column="4" Name="HeightInput" Text="100" Watermark="Height"></TextBox>
-
 				</Grid>
-				<Slider VerticalAlignment="Center" Name="Slider" Minimum="1" Maximum="200" Value="100" Padding="8 0 8 0"></Slider>
-			</StackPanel>
-		</StackPanel>
-	</StackPanel>
+				<Slider Grid.Row="4" VerticalAlignment="Center" Name="Slider" Minimum="1" Maximum="200" Value="100" Padding="8 0 8 0"></Slider>
+			</Grid>
+		</Grid>
+	</Grid>
 </Window>
