@@ -11,6 +11,7 @@ namespace Autodraw;
 
 public partial class MainWindow : Window
 {
+    private Settings? _settings = null;
 
     public MainWindow()
     {
@@ -18,9 +19,23 @@ public partial class MainWindow : Window
         Config.init();
     }
 
-    public static void openSettings(object sender, RoutedEventArgs e)
+    public void fullClose()
     {
-        new Settings().Show();
+        // Other Cleanup
+        if(_settings != null) { _settings.Close(); }
+
+        // Main Cleanup
+        Close();
     }
 
+    private void openSettings(object sender, RoutedEventArgs e)
+    {
+        if (_settings == null) { _settings = new Settings(); }
+        _settings.Show();
+    }
+
+    private void quitApp(object sender, RoutedEventArgs e)
+    {
+        fullClose();
+    }
 }

@@ -1,9 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui" 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<Style Selector="CaptionButtons">
-		<Setter Property="IsVisible" Value="False"/>
-	</Style>
-	
     <Style Selector="Window">
         <Setter Property="Background" Value="#9555"/>
         <Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>
@@ -11,6 +7,8 @@
 
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#fff"></Setter>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
 	</Style>
     <Style Selector="Label">
         <Setter Property="Foreground" Value="#fff"></Setter>
