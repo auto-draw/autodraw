@@ -4,7 +4,6 @@ using SkiaSharp;
 using System;
 using System.IO;
 using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Avalonia.Interactivity;
 
 namespace Autodraw;
