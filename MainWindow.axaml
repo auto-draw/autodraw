@@ -20,6 +20,7 @@
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaTitleBarHeightHint="20"
+	
 		>
 
 	<Window.Styles>
@@ -43,7 +44,7 @@
 				<Label Classes="Title ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
 					AutoDrawer
 				</Label>
-				<Button Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
+				<Button Classes="Title" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
 					v2
 				</Button>
 				<Button Name="SettingsButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center">
@@ -69,7 +70,7 @@
 		</Canvas>
 
 		<!--Body Stuff-->
-		<Image Classes="Body" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<Image Classes="Body" Grid.Row="1"/>
 		
 		<Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
 			<Grid.ColumnDefinitions>
@@ -210,7 +211,7 @@
 							</Grid>
 							<TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
 							<Grid Grid.Row="5">
-								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" VirtualizationMode="None" CornerRadius="4">
+								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
 									<ListBoxItem Padding="8 2">
 										<CheckBox>Edges</CheckBox>
 									</ListBoxItem>

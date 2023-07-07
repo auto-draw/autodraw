@@ -8,7 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia;
 using System.Drawing;
-using Avalonia.Shared.PlatformSupport;
 using System.ComponentModel;
 
 namespace Autodraw;
@@ -34,7 +33,7 @@ public partial class MainWindow : Window
 
     private void openSettings(object? sender, RoutedEventArgs e)
     {
-        if (_settings == null) { _settings = new Settings(); }
+        if (_settings == null) _settings = new Settings();
         _settings.Show();
         _settings.Closed += closedSettings;
     }

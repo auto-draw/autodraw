@@ -9,11 +9,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
+using System.Runtime.Versioning;
 
 namespace Autodraw
 {
     public static class ImageExtensions
     {
+        [SupportedOSPlatform("windows")] // God those errors from intellisense are annoying
         public static Bitmap ConvertToAvaloniaBitmap(this Image bitmap)
         {
             if (bitmap == null)

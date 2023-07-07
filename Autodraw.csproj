@@ -25,12 +25,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.21" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.21" />
+    <PackageReference Include="Avalonia" Version="11.0.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.21" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -42,13 +43,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Assets\anime.png" />
 	  <None Remove="Assets\clear.png" />
 	  <None Remove="Assets\open.png" />
 	  <None Remove="Assets\test-pattern.jpg" />
+	  <None Remove="Styles\anime.xaml" />
+	  <None Remove="Styles\blue.xaml" />
 	  <None Remove="Styles\light.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Update="Styles\anime.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </AvaloniaResource>
+	  <AvaloniaResource Update="Styles\blue.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </AvaloniaResource>
 	  <AvaloniaResource Update="Styles\light.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>

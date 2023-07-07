@@ -47,23 +47,27 @@
           "dependencies": {
             "Avalonia": {
               "target": "Package",
-              "version": "[0.10.21, )"
+              "version": "[11.0.0, )"
             },
             "Avalonia.Desktop": {
               "target": "Package",
-              "version": "[0.10.21, )"
+              "version": "[11.0.0, )"
             },
             "Avalonia.Diagnostics": {
               "target": "Package",
-              "version": "[0.10.21, )"
+              "version": "[11.0.0, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.0.0, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
-            },
-            "XamlNameReferenceGenerator": {
-              "target": "Package",
-              "version": "[1.6.1, )"
             }
           },
           "imports": [
