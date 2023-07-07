@@ -16,10 +16,7 @@ namespace Autodraw
 
         public static bool init()
         {
-            if (File.Exists(ConfigPath))
-            {
-                return true;
-            }
+            if (File.Exists(ConfigPath)) return true;
             Directory.CreateDirectory(FolderPath);
             JObject jsonFile = new JObject();
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(jsonFile));
@@ -28,20 +25,14 @@ namespace Autodraw
 
         public static string getEntry(string entry)
         {
-            if (!File.Exists(ConfigPath))
-            {
-                return "";
-            }
+            if (!File.Exists(ConfigPath)) return "";
             string json = File.ReadAllText(ConfigPath);
             return (string)JObject.Parse(json)[entry];
         }
 
         public static bool setEntry(string entry, string data)
         {
-            if (!File.Exists(ConfigPath))
-            {
-                return false;
-            }
+            if (!File.Exists(ConfigPath)) return false;
             string json = File.ReadAllText(ConfigPath);
             JObject jsonFile = JObject.Parse(json);
             jsonFile[entry] = data;
@@ -57,11 +48,9 @@ namespace Autodraw
         public static void Log(string text)
         {
             Console.WriteLine(text);
-            if (Config.getEntry("logsEnabled") == "true")
-            {
-                Directory.CreateDirectory(LogsPath);
-                File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now.ToString("dd.MM.yyyy")}.txt"), $"{text}\r\n");
-            }
+            if (Config.getEntry("logsEnabled") != "true") return;
+            Directory.CreateDirectory(LogsPath);
+            File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now.ToString("dd.MM.yyyy")}.txt"), $"{text}\r\n");
         }
     }
 }
