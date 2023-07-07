@@ -12,13 +12,13 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Autodraw
-build_property.ProjectDir = C:\Users\catsi\Desktop\Avalonia\Autodraw\
+build_property.ProjectDir = C:\Users\alexdalas\Documents\GitHub\autodraw\
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/App.axaml]
+[C:/Users/alexdalas/Documents/GitHub/autodraw/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/MainWindow.axaml]
+[C:/Users/alexdalas/Documents/GitHub/autodraw/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/Settings.axaml]
+[C:/Users/alexdalas/Documents/GitHub/autodraw/Settings.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

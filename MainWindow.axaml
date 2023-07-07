@@ -13,7 +13,7 @@
 		
 		MinWidth="720"
 		MinHeight="420"
-		
+		WindowStartupLocation="CenterScreen"
 		
         Title="AutoDraw"
 		
