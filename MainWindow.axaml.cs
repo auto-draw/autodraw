@@ -9,13 +9,17 @@ using Avalonia.Media;
 using Avalonia;
 using System.Drawing;
 using Avalonia.Shared.PlatformSupport;
+using System.ComponentModel;
 
 namespace Autodraw;
 
 public partial class MainWindow : Window
 {
     private Settings? _settings = null;
+
     public Bitmap loadedBitmap = new Bitmap(1,1);
+
+
 
     public MainWindow()
     {
@@ -23,20 +27,21 @@ public partial class MainWindow : Window
         Config.init();
         CloseAppButton.Click += quitApp;
         MinimizeAppButton.Click += minimizeApp;
+        SettingsButton.Click += openSettings;
     }
 
-    // Window Opening Handles
+    // External Window Opening/Closing Handles
 
-    private void openSettings(object sender, RoutedEventArgs e)
+    private void openSettings(object? sender, RoutedEventArgs e)
     {
-        if (_settings == null) { _settings = new Settings(); } else
-        {
-            if (!_settings.IsActive)
-            {
-                Close();
-            }
-        }
+        if (_settings == null) { _settings = new Settings(); }
         _settings.Show();
+        _settings.Closed += closedSettings;
+    }
+
+    private void closedSettings(object? sender, EventArgs e)
+    {
+        _settings = null;
     }
 
     // Toolbar Handles

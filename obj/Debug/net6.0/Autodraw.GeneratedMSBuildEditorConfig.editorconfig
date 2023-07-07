@@ -20,5 +20,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [C:/Users/catsi/Desktop/Avalonia/Autodraw/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[C:/Users/catsi/Desktop/Avalonia/Autodraw/PopupWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [C:/Users/catsi/Desktop/Avalonia/Autodraw/Settings.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

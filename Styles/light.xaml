@@ -5,9 +5,35 @@
         <Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>
     </Style>
 
+	<Style Selector="TextBox">
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
+		<Setter Property="MinHeight" Value="24"/>
+		<Setter Property="MinWidth" Value="24"/>
+		<Setter Property="FontSize" Value="12"/>
+	</Style>
+
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#000"></Setter>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
 	</Style>
+	
+	<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="#ccc" />
+		<Setter Property="TextBlock.Foreground" Value="#000" />
+	</Style>
+	<Style Selector="Button.ToolbarButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="#8000" />
+	</Style>
+	
+
+	<Style Selector="Border.GridBorder">
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="#3000"/>
+		<Setter Property="CornerRadius" Value="2"/>
+	</Style>
+	
     <Style Selector="Label">
 		<Setter Property="Foreground" Value="#000"></Setter>
         <Setter Property="FontSize" Value="12"/>

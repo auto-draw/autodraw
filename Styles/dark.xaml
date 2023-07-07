@@ -5,11 +5,20 @@
         <Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>
     </Style>
 
+	<Style Selector="TextBox">
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
+		<Setter Property="MinHeight" Value="24"/>
+		<Setter Property="MinWidth" Value="24"/>
+		<Setter Property="FontSize" Value="12"/>
+	</Style>
+
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#fff"></Setter>
 		<Setter Property="CornerRadius" Value="0"/>
 		<Setter Property="Padding" Value="4"/>
 	</Style>
+	
     <Style Selector="Label">
         <Setter Property="Foreground" Value="#fff"></Setter>
         <Setter Property="FontSize" Value="12"/>
@@ -17,16 +26,22 @@
     <Style Selector="Label.Title">
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
+	
+	<Style Selector="Border.GridBorder">
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="#3000"/>
+		<Setter Property="CornerRadius" Value="2"/>
+	</Style>
 
     <Style Selector="Canvas.Toolbar">
         <Setter Property="Background" Value="#222"/>
     </Style>
+	<Style Selector="Canvas.ImagePreview">
+		<Setter Property="Background" Value="#8000"/>
+	</Style>
 
 	<Style Selector="Border.ImagePreview">
 		<Setter Property="BoxShadow" Value="0 0 8 -1 #000"/>
-	</Style>
-	<Style Selector="Canvas.ImagePreview">
-		<Setter Property="Background" Value="#8000"/>
 	</Style>
 
 	<!--Click Thru's, very important, don't touch.-->
@@ -35,13 +50,5 @@
 	</Style>
 	<Style Selector="Label.ClickThru">
 		<Setter Property="IsHitTestVisible" Value="False"/>
-	</Style>
-
-	<Style Selector="TextBox">
-		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Padding" Value="4"/>
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="MinWidth" Value="24"/>
-		<Setter Property="FontSize" Value="12"/>
 	</Style>
 </Styles>
