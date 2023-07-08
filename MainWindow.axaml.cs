@@ -7,23 +7,24 @@ using Newtonsoft.Json;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia;
-using System.Drawing;
 using System.ComponentModel;
+using Avalonia.Media.Imaging;
+using System.Drawing;
 
 namespace Autodraw;
 
 public partial class MainWindow : Window
 {
     private Settings? _settings = null;
-
-    public Bitmap loadedBitmap = new Bitmap(1,1);
-
-
+    private SKBitmap _bitmap = new SKBitmap(315,315,true);
 
     public MainWindow()
     {
         InitializeComponent();
         Config.init();
+        
+        ImagePreview.Source = ImageExtensions.ConvertToAvaloniaBitmap(_bitmap);
+
         CloseAppButton.Click += quitApp;
         MinimizeAppButton.Click += minimizeApp;
         SettingsButton.Click += openSettings;

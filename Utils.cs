@@ -10,26 +10,26 @@ using Newtonsoft.Json.Linq;
 using System.Drawing;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
 using System.Runtime.Versioning;
+using SkiaSharp;
+using Avalonia.Media.Imaging;
 
 namespace Autodraw
 {
     public static class ImageExtensions
     {
-        [SupportedOSPlatform("windows")] // God those errors from intellisense are annoying
-        public static Bitmap ConvertToAvaloniaBitmap(this Image bitmap)
+        public static Bitmap ConvertToAvaloniaBitmap(SKBitmap bitmap)
         {
             if (bitmap == null)
                 return null;
-            System.Drawing.Bitmap bitmapTmp = new System.Drawing.Bitmap(bitmap);
-            var bitmapdata = bitmapTmp.LockBits(new Rectangle(0, 0, bitmapTmp.Width, bitmapTmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            Bitmap bitmap1 = new Bitmap(Avalonia.Platform.PixelFormat.Bgra8888, Avalonia.Platform.AlphaFormat.Premul,
-                bitmapdata.Scan0,
-                new Avalonia.PixelSize(bitmapdata.Width, bitmapdata.Height),
-                new Avalonia.Vector(96, 96),
-                bitmapdata.Stride);
-            bitmapTmp.UnlockBits(bitmapdata);
-            bitmapTmp.Dispose();
-            return bitmap1;
+            using (MemoryStream memory = new MemoryStream())
+            {
+                memory.Seek(0, SeekOrigin.Begin);
+                bitmap.Encode(memory,SKEncodedImageFormat.Png,1);
+                memory.Position = 0;
+
+                Bitmap AvIrBitmap = new Bitmap(memory);
+                return AvIrBitmap;
+            }
         }
     }
 
