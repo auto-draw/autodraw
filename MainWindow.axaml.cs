@@ -29,6 +29,10 @@ public partial class MainWindow : Window
         ProcessButton.Click += ProcessButton_Click;
         OpenConfigElement.Click += LoadConfigViaDialog;
         SelectFolderElement.Click += SetFolderViaDialog;
+        RefreshConfigsButton.Click += RefreshConfigList;
+        SaveConfigButton.Click += SaveConfigViaDialog;
+        LoadSelectButton.Click += LoadSelectedConfig;
+        RefreshConfigList(this, null);
     }
 
     // External Window Opening/Closing Handles
@@ -81,10 +85,24 @@ public partial class MainWindow : Window
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) { return; }
         string[] lines = File.ReadAllLines(path);
+        SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
         DrawIntervalElement.Text = lines[0];
         ClickDelayElement.Text = lines[1];
         BlackThresholdElement.Text = lines[2];
         AlphaThresholdElement.Text = lines[3];
+    }
+
+    public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog();
+        dialog.Filters.Add(new FileDialogFilter() { Name = "Draw Configuration Files", Extensions = { "drawcfg" } });
+        var result = await dialog.ShowAsync(this);
+        if (result == null || result.Length == 0) return;
+        string[] values = { DrawIntervalElement.Text, 
+                            ClickDelayElement.Text, 
+                            BlackThresholdElement.Text, 
+                            AlphaThresholdElement.Text };
+        File.WriteAllLines(result, Array.ConvertAll(values, x => x.ToString()));
     }
 
     public async void LoadConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -96,9 +114,15 @@ public partial class MainWindow : Window
         if (result != null && result.Length != 0) LoadConfig(result[0]);
     }
 
-    public void RefreshConfigList()
+    public void RefreshConfigList(object? sender, RoutedEventArgs? e)
     {
-
+        string ConfigFolder = Config.getEntry("ConfigFolder");
+        if (ConfigFolder == null) return;
+        string[] files = Directory.GetFiles(ConfigFolder, "*.drawcfg");
+        string[] fileNames = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
+        ConfigsListBox.ClearValue(ItemsControl.ItemsSourceProperty);
+        ConfigsListBox.Items.Clear();
+        ConfigsListBox.ItemsSource = fileNames;
     }
 
     public async void SetFolderViaDialog(object? sender, RoutedEventArgs e)
@@ -107,6 +131,13 @@ public partial class MainWindow : Window
         var result = await dialog.ShowAsync(this);
         if (result == null || result.Length == 0) return;
         Config.setEntry("ConfigFolder", result);
-        RefreshConfigList();
+        RefreshConfigList(sender, e);
+    }
+
+    public async void LoadSelectedConfig(object? sender, RoutedEventArgs e)
+    {
+        string SelectedItem = ConfigsListBox.SelectedItem.ToString();
+        if (SelectedItem == null) return;
+        LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");
     }
 }
