@@ -16,6 +16,9 @@
 	<Style Selector="CheckBox">
 		<Setter Property="FontFamily" Value="Arial"/>
 	</Style>
+	<Style Selector="ListBoxItem">
+		<Setter Property="FontFamily" Value="Arial"/>
+	</Style>
 
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#fff"></Setter>

@@ -16,6 +16,13 @@
 	<Style Selector="CheckBox">
 		<Setter Property="FontFamily" Value="Arial"/>
 	</Style>
+	<Style Selector="ListBoxItem">
+		<Setter Property="FontFamily" Value="Arial"/>
+		<Setter Property="Background" Value="#ee22324d"/>
+	</Style>
+	<Style Selector="ListBox">
+		<Setter Property="Background" Value="#ee22324d"/>
+	</Style>
 
 	<Style Selector="Image.Body">
 		<Setter Property="Source" Value="/Assets/anime.png"/>
@@ -35,10 +42,6 @@
 	</Style>
 	<Style Selector="Label.Title">
 		<Setter Property="FontWeight" Value="Bold"/>
-	</Style>
-
-	<Style Selector="ListBoxItem">
-		<Setter Property="Background" Value="#ee22324d"/>
 	</Style>
 
 	<Style Selector="Border.GridBorder">

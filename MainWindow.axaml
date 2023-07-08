@@ -126,7 +126,54 @@
 					<Grid Grid.Row="0" Grid.Column="0">
 					</Grid>
 					<Border Grid.Row="0" Grid.Column="2" Classes="GridBorder"/>
-					<Grid Grid.Row="0" Grid.Column="2">
+					<Grid Grid.Row="0" Grid.Column="2" Margin="4">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="24"/>
+							<RowDefinition Height="4"/>
+							<RowDefinition Height="32"/>
+							<RowDefinition Height="4"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+
+						<Label Name="SelectedConfigLabel" VerticalAlignment="Center">Selected Config: Default.json</Label>
+						
+						<Grid Grid.Row="2" Margin="1 0 0 0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="32"/>
+								<ColumnDefinition Width="4"/>
+								<ColumnDefinition Width="32"/>
+								<ColumnDefinition Width="4"/>
+								<ColumnDefinition Width="32"/>
+								<ColumnDefinition Width="4"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Button Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Source="avares://Autodraw/Assets/reload.png"></Image>
+							</Button>
+							<Button Grid.Column="2" ToolTip.Tip="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Source="avares://Autodraw/Assets/open-folder.png"></Image>
+							</Button>
+							<Button Grid.Column="4" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Source="avares://Autodraw/Assets/open-doc.png"></Image>
+							</Button>
+							<Button Grid.Column="6" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+								Load
+							</Button>
+						</Grid>
+						<ListBox Name="ConfigsListBox" Classes="Configs" Grid.Row="4" Margin="1 0 0 0" FontFamily="Calibri" Padding="0" CornerRadius="4" SelectionMode="Single">
+							<ListBoxItem Padding="8 4">
+								Default.json
+							</ListBoxItem>
+							<ListBoxItem Padding="8 4">
+								Free Draw 2.json
+							</ListBoxItem>
+							<ListBoxItem Padding="8 4">
+								Speed Draw FAST.json
+							</ListBoxItem>
+							<ListBoxItem Padding="8 4">
+								Speed Draw Detailed.json
+							</ListBoxItem>
+						</ListBox>
 					</Grid>
 					<Border Grid.Row="2" Grid.Column="0" Classes="GridBorder"/>
 					<Grid Grid.Row="2" Grid.Column="0" Margin="4">
@@ -252,10 +299,10 @@
 						<ColumnDefinition Width="1*"/>
 					</Grid.ColumnDefinitions>
 					<Button Name="ClearButton" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
-						<Image Source="avares://Autodraw/Assets/clear.png"></Image>
+						<Image Source="avares://Autodraw/Assets/remove.png"></Image>
 					</Button>
 					<Button Name="OpenButton" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
-						<Image Source="avares://Autodraw/Assets/open.png"></Image>
+						<Image Source="avares://Autodraw/Assets/add-image.png"></Image>
 					</Button>
 					<Button Name="ProcessButton" Grid.Column="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
 						Process Image

@@ -43,9 +43,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Assets\add-image.png" />
 	  <None Remove="Assets\anime.png" />
-	  <None Remove="Assets\clear.png" />
-	  <None Remove="Assets\open.png" />
+	  <None Remove="Assets\erase.png" />
+	  <None Remove="Assets\open-doc.png" />
+	  <None Remove="Assets\open-folder.png" />
+	  <None Remove="Assets\reload.png" />
+	  <None Remove="Assets\remove.png" />
 	  <None Remove="Assets\test-pattern.jpg" />
 	  <None Remove="Styles\anime.xaml" />
 	  <None Remove="Styles\blue.xaml" />
