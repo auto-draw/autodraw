@@ -45,6 +45,7 @@ public partial class MainWindow : Window
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
     {
+        
         Bitmap _tmp = ImageExtensions.ConvertToAvaloniaBitmap(_bitmap);
         ImagePreview.Source = _tmp;
     }

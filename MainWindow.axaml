@@ -145,18 +145,23 @@
 								<ColumnDefinition Width="4"/>
 								<ColumnDefinition Width="32"/>
 								<ColumnDefinition Width="4"/>
+								<ColumnDefinition Width="32"/>
+								<ColumnDefinition Width="4"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
-							<Button Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<Button Name="RefreshConfigs_Button" Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 								<Image Source="avares://Autodraw/Assets/reload.png"></Image>
 							</Button>
-							<Button Grid.Column="2" ToolTip.Tip="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<Button Name="OpenConfigFolder_Button" Grid.Column="2" ToolTip.Tip="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 								<Image Source="avares://Autodraw/Assets/open-folder.png"></Image>
 							</Button>
-							<Button Grid.Column="4" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Source="avares://Autodraw/Assets/open-doc.png"></Image>
+							<Button Name="SaveConfig_Button" Grid.Column="4" ToolTip.Tip="Save Config to File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Source="avares://Autodraw/Assets/save.png"></Image>
 							</Button>
-							<Button Grid.Column="6" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+							<Button Grid.Column="6" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Name="OpenConfig_Button" Source="avares://Autodraw/Assets/open-doc.png"></Image>
+							</Button>
+							<Button Name="LoadSelect_Button" Grid.Column="8" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 								Load
 							</Button>
 						</Grid>
