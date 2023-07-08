@@ -190,7 +190,7 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Interval:</TextBlock>
-							<TextBox id="DrawIntervalElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+							<TextBox name="DrawIntervalElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 								10000
 							</TextBox>
 						</Grid>
@@ -200,7 +200,7 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
-							<TextBox id="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+							<TextBox name="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 								1000
 							</TextBox>
 						</Grid>
@@ -242,7 +242,7 @@
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Black:</TextBlock>
-								<TextBox id="BlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+								<TextBox name="BlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 									127
 								</TextBox>
 							</Grid>
@@ -252,7 +252,7 @@
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Alpha:</TextBlock>
-								<TextBox id="AlphaThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+								<TextBox name="AlphaThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 									200
 								</TextBox>
 							</Grid>
