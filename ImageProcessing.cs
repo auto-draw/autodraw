@@ -16,9 +16,11 @@ namespace Autodraw
             public bool Invert = true;
         }
 
-        public static SKBitmap ApplyFilter(Filters reqFilters)
+        public static SKBitmap ApplyFilter(SKBitmap Image, Filters reqFilters)
         {
-            reqFilters.Threshold = true
+            reqFilters.Threshold = true;
+            
+            return Image;
         }
     }
 }
