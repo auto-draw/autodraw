@@ -46,7 +46,7 @@ namespace Autodraw
             // Migrates old directory list path (from autodrawer v1) to the new config file
             if (File.Exists(Path.Combine(FolderPath, "dir.txt")))
             {
-                obj.Add("configPath", File.ReadAllText(Path.Combine(FolderPath, "dir.txt")));
+                obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(FolderPath, "dir.txt")));
             }
             string emptyJObject = JsonConvert.SerializeObject(obj);
             

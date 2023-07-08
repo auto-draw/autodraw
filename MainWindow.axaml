@@ -150,10 +150,10 @@
 							<Button Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 								<Image Source="avares://Autodraw/Assets/reload.png"></Image>
 							</Button>
-							<Button Grid.Column="2" ToolTip.Tip="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<Button Name="SelectFolderElement" Grid.Column="2" ToolTip.Tip="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 								<Image Source="avares://Autodraw/Assets/open-folder.png"></Image>
 							</Button>
-							<Button Grid.Column="4" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<Button Name="OpenConfigElement" Grid.Column="4" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 								<Image Source="avares://Autodraw/Assets/open-doc.png"></Image>
 							</Button>
 							<Button Grid.Column="6" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
