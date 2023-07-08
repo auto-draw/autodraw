@@ -9,51 +9,55 @@ using Avalonia.Media;
 using Avalonia;
 using System.ComponentModel;
 using Avalonia.Media.Imaging;
-using System.Drawing;
 using System.Linq;
 
 namespace Autodraw;
 
 public partial class MainWindow : Window
 {
-    private Settings? _settings = null;
-    private SKBitmap _bitmap = new SKBitmap(315,315,true);
+    private Settings? _settings;
+    private SKBitmap _bitmap = new SKBitmap(318,318,true);
 
     public MainWindow()
     {
         InitializeComponent();
         Config.init();
-        
-        ImagePreview.Source = ImageExtensions.ConvertToAvaloniaBitmap(_bitmap);
 
-        CloseAppButton.Click += quitApp;
-        MinimizeAppButton.Click += minimizeApp;
-        SettingsButton.Click += openSettings;
-        OpenConfigElement.Click += loadConfigViaDialog;
-        SelectFolderElement.Click += setFolderViaDialog;
+        CloseAppButton.Click += QuitApp;
+        MinimizeAppButton.Click += MinimizeApp;
+        SettingsButton.Click += OpenSettings;
+        ProcessButton.Click += ProcessButton_Click;
+        OpenConfigElement.Click += LoadConfigViaDialog;
+        SelectFolderElement.Click += SetFolderViaDialog;
     }
 
     // External Window Opening/Closing Handles
 
-    private void openSettings(object? sender, RoutedEventArgs e)
+    private void OpenSettings(object? sender, RoutedEventArgs e)
     {
         if (_settings == null) _settings = new Settings();
         _settings.Show();
-        _settings.Closed += closedSettings;
+        _settings.Closed += ClosedSettings;
     }
 
-    private void closedSettings(object? sender, EventArgs e)
+    private void ClosedSettings(object? sender, EventArgs e)
     {
         _settings = null;
     }
 
+    private void ProcessButton_Click(object? sender, RoutedEventArgs e)
+    {
+        Bitmap _tmp = ImageExtensions.ConvertToAvaloniaBitmap(_bitmap);
+        ImagePreview.Source = _tmp;
+    }
+
     // Toolbar Handles
 
-    private void minimizeApp(object? sender, RoutedEventArgs e)
+    private void MinimizeApp(object? sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
     }
-    private void quitApp(object? sender, RoutedEventArgs e)
+    private void QuitApp(object? sender, RoutedEventArgs e)
     {
         fullClose();
     }
@@ -63,7 +67,7 @@ public partial class MainWindow : Window
     public void fullClose()
     {
         // Other Cleanup
-        if (_settings != null) { _settings.Close(); }
+        _settings?.Close();
 
         // Main Cleanup
         Close();
@@ -71,7 +75,7 @@ public partial class MainWindow : Window
 
     // User Configuration files
 
-    public void loadConfig(string path)
+    public void LoadConfig(string path)
     {
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) { return; }
@@ -82,26 +86,26 @@ public partial class MainWindow : Window
         AlphaThresholdElement.Text = lines[3];
     }
 
-    public async void loadConfigViaDialog(object? sender, RoutedEventArgs e)
+    public async void LoadConfigViaDialog(object? sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog();
         dialog.Filters.Add(new FileDialogFilter() { Name = "Draw Configuration Files", Extensions = { "drawcfg" } });
         dialog.AllowMultiple = false;
         var result = await dialog.ShowAsync(this);
-        if (result != null && result.Length != 0) loadConfig(result[0]);
+        if (result != null && result.Length != 0) LoadConfig(result[0]);
     }
 
-    public void refreshConfigList()
+    public void RefreshConfigList()
     {
 
     }
 
-    public async void setFolderViaDialog(object? sender, RoutedEventArgs e)
+    public async void SetFolderViaDialog(object? sender, RoutedEventArgs e)
     {
         var dialog = new OpenFolderDialog();
         var result = await dialog.ShowAsync(this);
         if (result == null || result.Length == 0) return;
         Config.setEntry("ConfigFolder", result);
-        refreshConfigList();
+        RefreshConfigList();
     }
 }
