@@ -65,4 +65,16 @@ public partial class MainWindow : Window
         // Main Cleanup
         Close();
     }
+
+    // User Configuration files
+
+    public void loadConfig(string path)
+    {
+
+    }
+
+    public void loadConfigViaDialog()
+    {
+
+    }
 }

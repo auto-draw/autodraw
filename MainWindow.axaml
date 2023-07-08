@@ -190,7 +190,7 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Interval:</TextBlock>
-							<TextBox Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+							<TextBox id="DrawIntervalElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 								10000
 							</TextBox>
 						</Grid>
@@ -200,8 +200,8 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
-							<TextBox Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-								10000
+							<TextBox id="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+								1000
 							</TextBox>
 						</Grid>
 						<Grid Grid.Row="4">
@@ -242,8 +242,8 @@
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Black:</TextBlock>
-								<TextBox Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-									10000
+								<TextBox id="BlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+									127
 								</TextBox>
 							</Grid>
 							<Grid Grid.Row="2">
@@ -252,8 +252,8 @@
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Alpha:</TextBlock>
-								<TextBox Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-									10000
+								<TextBox id="AlphaThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+									200
 								</TextBox>
 							</Grid>
 							<TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
