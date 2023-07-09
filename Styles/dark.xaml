@@ -18,6 +18,7 @@
 	</Style>
 	<Style Selector="ListBoxItem">
 		<Setter Property="FontFamily" Value="Arial"/>
+		<Setter Property="Padding" Value="4 8"/>
 	</Style>
 
 	<Style Selector="Button">

@@ -24,7 +24,7 @@
 		>
 
 	<Window.Styles>
-		<StyleInclude Source="avares://Autodraw/Styles/dark.xaml"/>
+		<StyleInclude Source="avares://Autodraw/Styles/anime.xaml"/>
 	</Window.Styles>
 	
 	<Grid>
@@ -197,19 +197,26 @@
 							</TextBox>
 						</Grid>
 						<Grid Grid.Row="4">
-							<TextBlock HorizontalAlignment="Center" VerticalAlignment="Top">Draw Pattern</TextBlock>
-							<ComboBox HorizontalAlignment="Stretch" Margin="2 24 0 0" BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="24"/>
+								<RowDefinition Height="4"/>
+								<RowDefinition Height="32"/>
+								<RowDefinition Height="4"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="4"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+							<TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Draw Pattern</TextBlock>
+							<ComboBox Grid.Row="2" HorizontalAlignment="Stretch" BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
 								<ComboBoxItem>Horizontal - 12345678</ComboBoxItem>
 								<ComboBoxItem>Vertical - 14627358</ComboBoxItem>
 								<ComboBoxItem>Diagonal - 26573481</ComboBoxItem>
 								<ComboBoxItem>Custom</ComboBoxItem>
 							</ComboBox>
-							<TextBox Name="CustomPatternInput" IsVisible="False" Height="24" MinHeight="24" Padding="2 0" FontFamily="Calibri" FontSize="14" HorizontalAlignment="Left" Width="72" Margin="2 24 0 0" BorderThickness="1" VerticalContentAlignment="Center" CornerRadius="2">
+							<CheckBox Grid.Row="4">Free Draw Bypass</CheckBox>
+							<TextBox Grid.Row="6" Name="CustomPatternInput" IsVisible="True"  Height="24" MinHeight="24" Padding="2 0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="72" VerticalContentAlignment="Center">
 								12345678
 							</TextBox>
-							<Grid Name="CustomPatternDisplay" IsVisible="False" Width="64" Height="64" Background="#fff" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0">
-								
-							</Grid>
 						</Grid>
 					</Grid>
 					<Border Grid.Row="2" Grid.Column="2" Classes="GridBorder"/>

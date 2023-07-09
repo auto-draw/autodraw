@@ -17,19 +17,18 @@ namespace Autodraw
 {
     public static class ImageExtensions
     {
-        public static Bitmap ConvertToAvaloniaBitmap(SKBitmap bitmap)
+        public static Bitmap? ConvertToAvaloniaBitmap(this SKBitmap bitmap)
         {
             if (bitmap == null)
                 return null;
-            using (MemoryStream memory = new MemoryStream())
-            {
-                memory.Seek(0, SeekOrigin.Begin);
-                bitmap.Encode(memory,SKEncodedImageFormat.Png,1);
-                memory.Position = 0;
 
-                Bitmap AvIrBitmap = new Bitmap(memory);
-                return AvIrBitmap;
-            }
+            return new Bitmap
+                (Avalonia.Platform.PixelFormat.Bgra8888, Avalonia.Platform.AlphaFormat.Premul,
+                bitmap.GetPixels(),
+                new Avalonia.PixelSize(bitmap.Width, bitmap.Height),
+                new Avalonia.Vector(96, 96),
+                bitmap.GetPixelSpan().Length
+            );
         }
     }
 
@@ -54,12 +53,12 @@ namespace Autodraw
             return true;
         }
 
-        public static string getEntry(string entry)
+        public static string? getEntry(string entry)
         {
             if (!File.Exists(ConfigPath)) return "";
             string json = File.ReadAllText(ConfigPath);
             JObject parse = JObject.Parse(json);
-            return (string)parse[entry];
+            return (string?)parse[entry];
         }
 
         public static bool setEntry(string entry, string data)

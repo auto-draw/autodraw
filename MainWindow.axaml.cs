@@ -1,3 +1,8 @@
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+
 using Avalonia.Controls;
 using Avalonia.Themes.Fluent;
 using SkiaSharp;
@@ -10,23 +15,34 @@ using Avalonia;
 using System.ComponentModel;
 using Avalonia.Media.Imaging;
 using System.Linq;
+using Avalonia.Platform.Storage;
 
 namespace Autodraw;
 
 public partial class MainWindow : Window
 {
+    //
     private Settings? _settings;
-    private SKBitmap _bitmap = new SKBitmap(318,318,true);
+
+    //
+    private SKBitmap _rawBitmap = new SKBitmap(318,318,true);
+    private Bitmap? _displayedBitmap; // For cleanup so I don't spam GC.Collect
 
     public MainWindow()
     {
         InitializeComponent();
         Config.init();
 
-        CloseAppButton.Click += QuitApp;
-        MinimizeAppButton.Click += MinimizeApp;
-        SettingsButton.Click += OpenSettings;
+        // Taskbar
+        CloseAppButton.Click += QuitApp_Click;
+        MinimizeAppButton.Click += MinimizeApp_Click;
+        SettingsButton.Click += OpenSettings_Click;
+
+        // Base
         ProcessButton.Click += ProcessButton_Click;
+        OpenButton.Click += OpenButton_Click;
+
+        // Config
         OpenConfigElement.Click += LoadConfigViaDialog;
         SelectFolderElement.Click += SetFolderViaDialog;
         RefreshConfigsButton.Click += RefreshConfigList;
@@ -35,37 +51,7 @@ public partial class MainWindow : Window
         RefreshConfigList(this, null);
     }
 
-    // External Window Opening/Closing Handles
 
-    private void OpenSettings(object? sender, RoutedEventArgs e)
-    {
-        if (_settings == null) _settings = new Settings();
-        _settings.Show();
-        _settings.Closed += ClosedSettings;
-    }
-
-    private void ClosedSettings(object? sender, EventArgs e)
-    {
-        _settings = null;
-    }
-
-    private void ProcessButton_Click(object? sender, RoutedEventArgs e)
-    {
-        
-        Bitmap _tmp = ImageExtensions.ConvertToAvaloniaBitmap(_bitmap);
-        ImagePreview.Source = _tmp;
-    }
-
-    // Toolbar Handles
-
-    private void MinimizeApp(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
-    private void QuitApp(object? sender, RoutedEventArgs e)
-    {
-        fullClose();
-    }
 
     // Core Functions
 
@@ -78,7 +64,73 @@ public partial class MainWindow : Window
         Close();
     }
 
-    // User Configuration files
+
+
+    // External Window Opening/Closing Handles
+
+    private void OpenSettings_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_settings == null) _settings = new Settings();
+        _settings.Show();
+        _settings.Closed += Settings_Closed;
+    }
+
+    private void Settings_Closed(object? sender, EventArgs e)
+    {
+        _settings = null;
+    }
+
+
+
+    // Base UI Handles
+
+    private void ProcessButton_Click(object? sender, RoutedEventArgs e)
+    {
+        SKBitmap processedBitmap = ImageProcessing.Process(_rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = 127 });
+
+        Bitmap _tmp = processedBitmap.ConvertToAvaloniaBitmap();
+        ImagePreview.Source = _tmp;
+    }
+
+    private async void OpenButton_Click(Object? sender, RoutedEventArgs e)
+    {
+        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Save Config",
+            FileTypeFilter = new FilePickerFileType[] { FilePickerFileTypes.ImageAll },
+            AllowMultiple = false
+        });
+
+        if (file.Count == 1)
+        {
+            _rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath());
+            Bitmap _tmp = _rawBitmap.ConvertToAvaloniaBitmap();
+            ImagePreview.Source = _tmp;
+        }
+    }
+
+
+
+    // Toolbar Handles
+
+    private void MinimizeApp_Click(object? sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void QuitApp_Click(object? sender, RoutedEventArgs e)
+    {
+        fullClose();
+    }
+
+
+
+    // User Configuration Handles
+
+    public static FilePickerFileType configsFileFilter { get; } = new("Autodraw Config Files")
+    {
+        Patterns = new[] { "*.drawcfg" }
+    };
 
     public void LoadConfig(string path)
     {
@@ -94,24 +146,39 @@ public partial class MainWindow : Window
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
     {
-        var dialog = new SaveFileDialog();
-        dialog.Filters.Add(new FileDialogFilter() { Name = "Draw Configuration Files", Extensions = { "drawcfg" } });
-        var result = await dialog.ShowAsync(this);
-        if (result == null || result.Length == 0) return;
-        string[] values = { DrawIntervalElement.Text, 
-                            ClickDelayElement.Text, 
-                            BlackThresholdElement.Text, 
+        var file = await this.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Config",
+            FileTypeChoices = new FilePickerFileType[] { configsFileFilter }
+        });
+
+        if (file is not null)
+        {
+            await using var stream = await file.OpenWriteAsync();
+            using var streamWriter = new StreamWriter(stream);
+
+            string[] values = { DrawIntervalElement.Text,
+                            ClickDelayElement.Text,
+                            BlackThresholdElement.Text,
                             AlphaThresholdElement.Text };
-        File.WriteAllLines(result, Array.ConvertAll(values, x => x.ToString()));
+
+            streamWriter.Write(string.Join("\r\n", values));
+        }
     }
 
     public async void LoadConfigViaDialog(object? sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog();
-        dialog.Filters.Add(new FileDialogFilter() { Name = "Draw Configuration Files", Extensions = { "drawcfg" } });
-        dialog.AllowMultiple = false;
-        var result = await dialog.ShowAsync(this);
-        if (result != null && result.Length != 0) LoadConfig(result[0]);
+        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Save Config",
+            FileTypeFilter = new FilePickerFileType[] { configsFileFilter },
+            AllowMultiple = false
+        });
+
+        if (file.Count == 1)
+        {
+            LoadConfig(file[0].TryGetLocalPath());
+        }
     }
 
     public void RefreshConfigList(object? sender, RoutedEventArgs? e)
@@ -127,14 +194,13 @@ public partial class MainWindow : Window
 
     public async void SetFolderViaDialog(object? sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog();
-        var result = await dialog.ShowAsync(this);
-        if (result == null || result.Length == 0) return;
-        Config.setEntry("ConfigFolder", result);
-        RefreshConfigList(sender, e);
+        var folder = await this.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions() { AllowMultiple = false });
+        if (folder.Count != 1) return;
+        Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
+        RefreshConfigList(this, null);
     }
 
-    public async void LoadSelectedConfig(object? sender, RoutedEventArgs e)
+    public void LoadSelectedConfig(object? sender, RoutedEventArgs e)
     {
         string SelectedItem = ConfigsListBox.SelectedItem.ToString();
         if (SelectedItem == null) return;
