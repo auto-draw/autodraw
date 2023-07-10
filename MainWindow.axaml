@@ -24,7 +24,7 @@
 		>
 
 	<Window.Styles>
-		<StyleInclude Source="avares://Autodraw/Styles/anime.xaml"/>
+		<StyleInclude Source="avares://Autodraw/Styles/blue.xaml"/>
 	</Window.Styles>
 	
 	<Grid>
