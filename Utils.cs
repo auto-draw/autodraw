@@ -1,17 +1,23 @@
-﻿using System;
+﻿using Bitmap = Avalonia.Media.Imaging.Bitmap;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using SharpHook;
+using SharpHook.Native;
+
+using SkiaSharp;
+
+using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Drawing;
-using Bitmap = Avalonia.Media.Imaging.Bitmap;
 using System.Runtime.Versioning;
-using SkiaSharp;
-using Avalonia.Media.Imaging;
+using Avalonia.Controls;
 
 namespace Autodraw
 {
@@ -30,6 +36,17 @@ namespace Autodraw
                 bitmap.GetPixelSpan().Length
             );
         }
+    }
+
+    public class Inputs
+    {
+        private EventSimulator simulator = new EventSimulator();
+
+        public void Click()
+        {
+
+        }
+
     }
 
     public class Config

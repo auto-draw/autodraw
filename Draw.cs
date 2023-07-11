@@ -1,5 +1,6 @@
 ﻿using Avalonia.Input;
 using SkiaSharp;
+using SharpHook;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,7 +49,7 @@ namespace Autodraw
         private static void Draw(SKBitmap bitmap)
         {
             Scan(bitmap);
-
+            
         }
     }
 }

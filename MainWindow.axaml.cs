@@ -16,6 +16,7 @@ using System.ComponentModel;
 using Avalonia.Media.Imaging;
 using System.Linq;
 using Avalonia.Platform.Storage;
+using System.Text.RegularExpressions;
 
 namespace Autodraw;
 
@@ -40,6 +41,10 @@ public partial class MainWindow : Window
         // Base
         ProcessButton.Click += ProcessButton_Click;
         OpenButton.Click += OpenButton_Click;
+
+        // Inputs
+        DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
+        ClickDelayElement.TextChanging += ClickDelay_TextChanging;
 
         // Config
         OpenConfigElement.Click += LoadConfigViaDialog;
@@ -93,7 +98,7 @@ public partial class MainWindow : Window
         ImagePreview.Source = displayedBitmap;
     }
 
-    private async void OpenButton_Click(Object? sender, RoutedEventArgs e)
+    private async void OpenButton_Click(object? sender, RoutedEventArgs e)
     {
         var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -108,6 +113,32 @@ public partial class MainWindow : Window
             Bitmap _tmp = rawBitmap.ConvertToAvaloniaBitmap();
             ImagePreview.Source = _tmp;
         }
+    }
+
+
+
+    // Inputs Handles
+    Regex numberRegex = new Regex(@"[^0-9]");
+
+    private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        DrawIntervalElement.Text = numberRegex.Replace(DrawIntervalElement.Text, "");
+        e.Handled = true;
+    }
+    private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        ClickDelayElement.Text = numberRegex.Replace(ClickDelayElement.Text, "");
+        e.Handled = true;
+    }
+    private void BlackThreshold_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        BlackThresholdElement.Text = numberRegex.Replace(BlackThresholdElement.Text, "");
+        e.Handled = true;
+    }
+    private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        AlphaThresholdElement.Text = numberRegex.Replace(AlphaThresholdElement.Text, "");
+        e.Handled = true;
     }
 
 
