@@ -21,12 +21,11 @@ namespace Autodraw;
 
 public partial class MainWindow : Window
 {
-    //
     private Settings? _settings;
 
-    //
-    private SKBitmap _rawBitmap = new SKBitmap(318,318,true);
-    private Bitmap? _displayedBitmap; // For cleanup so I don't spam GC.Collect
+    private SKBitmap? rawBitmap = new SKBitmap(318, 318, true);
+    private SKBitmap? processedBitmap;
+    private Bitmap? displayedBitmap;
 
     public MainWindow()
     {
@@ -86,10 +85,12 @@ public partial class MainWindow : Window
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
     {
-        SKBitmap processedBitmap = ImageProcessing.Process(_rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = 127 });
+        if (processedBitmap != null) { processedBitmap.Dispose(); }
+        if (displayedBitmap != null) { displayedBitmap.Dispose(); }
 
-        Bitmap _tmp = processedBitmap.ConvertToAvaloniaBitmap();
-        ImagePreview.Source = _tmp;
+        processedBitmap = ImageProcessing.Process(rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = 127 });
+        displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
+        ImagePreview.Source = displayedBitmap;
     }
 
     private async void OpenButton_Click(Object? sender, RoutedEventArgs e)
@@ -103,8 +104,8 @@ public partial class MainWindow : Window
 
         if (file.Count == 1)
         {
-            _rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath());
-            Bitmap _tmp = _rawBitmap.ConvertToAvaloniaBitmap();
+            rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath());
+            Bitmap _tmp = rawBitmap.ConvertToAvaloniaBitmap();
             ImagePreview.Source = _tmp;
         }
     }

@@ -11,8 +11,7 @@ namespace Autodraw
 {
     public static class ImageProcessing
     {
-
-        private static Stopwatch stopwatch = new Stopwatch();
+        private static long MemPressure = 0;
 
         public class Filters
         {
@@ -23,7 +22,8 @@ namespace Autodraw
 
         public unsafe static SKBitmap Process(SKBitmap SourceBitmap, Filters FilterSettings)
         {
-            stopwatch.Restart();
+            if (MemPressure > 0) GC.RemoveMemoryPressure(MemPressure);
+            MemPressure = SourceBitmap.BytesPerPixel * SourceBitmap.Width * SourceBitmap.Height;
 
             // Create an Output Bitmap
             SKBitmap OutputBitmap = SourceBitmap.Copy();
@@ -51,22 +51,17 @@ namespace Autodraw
                     
                     float luminosity = ( redByte + greenByte + blueByte ) / 3;
 
+                    byte threshColor = (byte)(luminosity > FilterSettings.Threshold || alphaByte < FilterSettings.AlphaThreshold ? 255 : 0);
+                    threshColor = FilterSettings.Invert == false ? threshColor : (byte)(255 - threshColor);
 
-                    byte threshColor = 0;
-                    if (luminosity > FilterSettings.Threshold) {
-                        threshColor = 255;
-                    }
-
+                    * dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
-                    *dstPtr++ = alphaByte;
                 }
             }
 
-            int milliseconds1 = (int)stopwatch.ElapsedMilliseconds;
-            System.Diagnostics.Debug.WriteLine(milliseconds1);
-            System.Diagnostics.Debug.WriteLine(stopwatch.ElapsedTicks);
+            GC.AddMemoryPressure(MemPressure);
 
             return OutputBitmap;
         }
