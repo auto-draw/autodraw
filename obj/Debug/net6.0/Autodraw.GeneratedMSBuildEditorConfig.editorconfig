@@ -18,6 +18,9 @@ build_property.ProjectDir = C:\Users\catsi\Desktop\Avalonia\Autodraw\
 [C:/Users/catsi/Desktop/Avalonia/Autodraw/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[C:/Users/catsi/Desktop/Avalonia/Autodraw/DevTest.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [C:/Users/catsi/Desktop/Avalonia/Autodraw/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
@@ -25,4 +28,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [C:/Users/catsi/Desktop/Avalonia/Autodraw/Settings.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/catsi/Desktop/Avalonia/Autodraw/Styles/universal.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

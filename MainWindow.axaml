@@ -24,7 +24,8 @@
 		>
 
 	<Window.Styles>
-		<StyleInclude Source="avares://Autodraw/Styles/anime.xaml"/>
+		<StyleInclude Source="avares://Autodraw/Styles/universal.axaml"/>
+		<StyleInclude Source="avares://Autodraw/Styles/dark.xaml"/>
 	</Window.Styles>
 	
 	<Grid>
@@ -41,10 +42,10 @@
 			
 			<!--Decorations-->
 			<StackPanel Classes="Toolbar" Orientation="Horizontal">
-				<Label Classes="Title ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
+				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
 					AutoDrawer
 				</Label>
-				<Button Classes="Title" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
+				<Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
 					v2
 				</Button>
 				<Button Name="SettingsButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center">
@@ -64,7 +65,7 @@
 					-
 				</Button>
 				<Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
-					🞩
+					<Image Classes="CloseApp ToolbarButton"></Image>
 				</Button>
 			</Grid>
 		</Canvas>
@@ -258,12 +259,6 @@
 							<TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
 							<Grid Grid.Row="5">
 								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
-									<ListBoxItem Padding="8 2">
-										<CheckBox>Edges</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox>Sketch</CheckBox>
-									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<CheckBox>Border</CheckBox>
 									</ListBoxItem>

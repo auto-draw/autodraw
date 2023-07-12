@@ -2,9 +2,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
-		Width="300"
-		Height="200"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+		Width="400"
+		Height="250"
         x:Class="Autodraw.Window1"
-        Title="Window1">
+		
+		WindowStartupLocation="CenterScreen"
+
+		Title="AutoDraw"
+
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaTitleBarHeightHint="20"
+
+	>
+
+	<Window.Styles>
+		<StyleInclude Source="avares://Autodraw/Styles/anime.xaml"/>
+	</Window.Styles>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"></RowDefinition>
+			<RowDefinition Height="1*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<!--Toolbar-->
+		<Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+			<!--Background-->
+			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
+
+			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20"/>
+
+			<!--Decorations-->
+			<StackPanel Classes="Toolbar" Orientation="Horizontal">
+				<Label Classes="Title ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
+					Alert!
+				</Label>
+			</StackPanel>
+
+			<!--Buttons-->
+			<Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="20"/>
+				</Grid.ColumnDefinitions>
+				<Button Classes="MinimizeApp ToolbarButton" Name="MinimizeAppButton" Grid.Column="2" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+					-
+				</Button>
+				<Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+					🞩
+				</Button>
+			</Grid>
+		</Canvas>
+	</Grid>
 </Window>

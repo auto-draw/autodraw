@@ -1,0 +1,23 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Style Selector="CheckBox">
+		<Setter Property="FontFamily" Value="Arial"/>
+	</Style>
+	<Style Selector="Button">
+		<Setter Property="FontFamily" Value="Arial"/>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
+	</Style>
+	<Style Selector="ListBoxItem">
+		<Setter Property="FontFamily" Value="Arial"/>
+	</Style>
+	
+	<Style Selector="Label.Bold">
+		<Setter Property="FontWeight" Value="Bold"/>
+	</Style>
+	
+	<Style Selector="Image.CloseApp">
+		<Setter Property="Source" Value="avares://Autodraw/Assets/Dark/close.png"/>
+	</Style>
+</Styles>

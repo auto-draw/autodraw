@@ -45,8 +45,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Remove="Styles\universal.axaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Remove="Assets\Window1.axaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Assets\Window1.axaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Assets\add-image.png" />
 	  <None Remove="Assets\anime.png" />
+	  <None Remove="Assets\close.png" />
+	  <None Remove="Assets\Light\close.png" />
 	  <None Remove="Assets\open-doc.png" />
 	  <None Remove="Assets\open-folder.png" />
 	  <None Remove="Assets\reload.png" />
@@ -68,6 +82,9 @@
 	  <AvaloniaResource Update="Styles\light.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>
+	  <AvaloniaXaml Update="Styles\universal.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
 	</ItemGroup>
 
   <ItemGroup>

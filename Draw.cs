@@ -9,6 +9,10 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Threading;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpHook.Native;
 
 namespace Autodraw
 {
@@ -22,8 +26,28 @@ namespace Autodraw
         // Variables
 
         private static int[,]? pixelArray;
+        public static TaskPoolGlobalHook InputHook = new TaskPoolGlobalHook();
+        public static Vector2 MousePos = new Vector2(0,0);
+        public static bool Started = false;
+
+        public static void Start()
+        {
+            if (Started) { return; }
+
+            InputHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { MousePos = new Vector2(e.Data.X, e.Data.Y); };
+
+            InputHook.RunAsync();
+            Started = true;
+        }
 
         // Functions
+
+        public async static Task NOP(long durationTicks)
+        {
+            var sw = Stopwatch.StartNew();
+
+            while(sw.ElapsedTicks < durationTicks) { if (durationTicks - sw.ElapsedTicks > 150000) { await Task.Delay(1); } }
+        }
 
         private static unsafe void Scan(SKBitmap bitmap)
         {
@@ -46,10 +70,35 @@ namespace Autodraw
             return;
         }
 
-        private static void Draw(SKBitmap bitmap)
+        public static async Task<bool> Draw(SKBitmap bitmap)
         {
+
             Scan(bitmap);
-            
+
+            EventSimulator EventSim = new EventSimulator();
+            Vector2 StartPos = MousePos;
+
+            System.Diagnostics.Debug.WriteLine(MousePos);
+
+            if (pixelArray == null) { Debug.Fail("pixelArray was never created."); }
+
+            for (int _y = 0; _y < bitmap.Height; _y++)
+            {
+                for (int _x = 0; _x < bitmap.Width; _x++)
+                {
+                    if (pixelArray[_x, _y] == 1)
+                    {
+                        int x = (int)(_x + StartPos.X);
+                        int y = (int)(_y + StartPos.Y);
+
+                        await NOP(1);
+
+                        EventSim.SimulateMouseMovement((short)x, (short)y);
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

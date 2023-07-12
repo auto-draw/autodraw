@@ -13,11 +13,7 @@
 		<Setter Property="FontSize" Value="12"/>
 	</Style>
 	
-	<Style Selector="CheckBox">
-		<Setter Property="FontFamily" Value="Arial"/>
-	</Style>
 	<Style Selector="ListBoxItem">
-		<Setter Property="FontFamily" Value="Arial"/>
 		<Setter Property="Background" Value="#ee22324d"/>
 	</Style>
 	<Style Selector="ListBox">
@@ -26,16 +22,11 @@
 
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#fff"></Setter>
-		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Padding" Value="4"/>
 	</Style>
 
 	<Style Selector="Label">
 		<Setter Property="Foreground" Value="#fff"></Setter>
 		<Setter Property="FontSize" Value="12"/>
-	</Style>
-	<Style Selector="Label.Title">
-		<Setter Property="FontWeight" Value="Bold"/>
 	</Style>
 
 	<Style Selector="Border.GridBorder">

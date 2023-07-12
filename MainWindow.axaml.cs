@@ -23,6 +23,7 @@ namespace Autodraw;
 public partial class MainWindow : Window
 {
     private Settings? _settings;
+    private DevTest? _devwindow;
 
     private SKBitmap? rawBitmap = new SKBitmap(318, 318, true);
     private SKBitmap? processedBitmap;
@@ -37,10 +38,12 @@ public partial class MainWindow : Window
         CloseAppButton.Click += QuitApp_Click;
         MinimizeAppButton.Click += MinimizeApp_Click;
         SettingsButton.Click += OpenSettings_Click;
+        DevButton.Click += Dev_Click;
 
         // Base
         ProcessButton.Click += ProcessButton_Click;
         OpenButton.Click += OpenButton_Click;
+        RunButton.Click += RunButton_Click;
 
         // Inputs
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
@@ -53,6 +56,8 @@ public partial class MainWindow : Window
         SaveConfigButton.Click += SaveConfigViaDialog;
         LoadSelectButton.Click += LoadSelectedConfig;
         RefreshConfigList(this, null);
+
+        Drawing.Start();
     }
 
 
@@ -63,6 +68,7 @@ public partial class MainWindow : Window
     {
         // Other Cleanup
         _settings?.Close();
+        Drawing.InputHook.Dispose(); // This really stinks x3
 
         // Main Cleanup
         Close();
@@ -82,6 +88,19 @@ public partial class MainWindow : Window
     private void Settings_Closed(object? sender, EventArgs e)
     {
         _settings = null;
+    }
+
+
+    private void OpenDevWindow()
+    {
+        if (_devwindow == null) _devwindow = new DevTest();
+        _devwindow.Show();
+        _devwindow.Closed += DevWindow_Closed;
+    }
+
+    private void DevWindow_Closed(object? sender, EventArgs e)
+    {
+        _devwindow = null;
     }
 
 
@@ -113,6 +132,12 @@ public partial class MainWindow : Window
             Bitmap _tmp = rawBitmap.ConvertToAvaloniaBitmap();
             ImagePreview.Source = _tmp;
         }
+    }
+
+    private async void RunButton_Click(Object? sender, RoutedEventArgs e)
+    {
+        if (processedBitmap == null) { return; }
+        await Drawing.Draw(processedBitmap);
     }
 
 
@@ -153,6 +178,14 @@ public partial class MainWindow : Window
     private void QuitApp_Click(object? sender, RoutedEventArgs e)
     {
         fullClose();
+    }
+
+    private void Dev_Click(object? sender, RoutedEventArgs e)
+    {
+        rawBitmap = DevTest.TestImage(64, 64);
+        Bitmap _tmp = rawBitmap.ConvertToAvaloniaBitmap();
+        ImagePreview.Source = _tmp;
+        OpenDevWindow();
     }
 
 

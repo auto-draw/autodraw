@@ -14,13 +14,6 @@
 		<Setter Property="FontSize" Value="12"/>
 	</Style>
 
-	<Style Selector="CheckBox">
-		<Setter Property="FontFamily" Value="Arial"/>
-	</Style>
-	<Style Selector="ListBoxItem">
-		<Setter Property="FontFamily" Value="Arial"/>
-	</Style>
-
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#fff"></Setter>
 		<Setter Property="CornerRadius" Value="0"/>
@@ -41,6 +34,9 @@
 	<Style Selector="ListBoxItem">
 		<Setter Property="Background" Value="#888"/>
 	</Style>
+	<Style Selector="ListBox">
+		<Setter Property="Background" Value="#888"/>
+	</Style>
 
 
 	<Style Selector="Border.GridBorder">
@@ -59,7 +55,6 @@
 
 	<Style Selector="Label.Title">
 		<Setter Property="Foreground" Value="#000"></Setter>
-		<Setter Property="FontWeight" Value="Bold"/>
 	</Style>
 	<Style Selector="Button.Title">
 		<Setter Property="Foreground" Value="#000"></Setter>
@@ -82,5 +77,9 @@
 	</Style>
 	<Style Selector="Label.ClickThru">
 		<Setter Property="IsHitTestVisible" Value="False"/>
+	</Style>
+
+	<Style Selector="Image.CloseApp">
+		<Setter Property="Source" Value="avares://Autodraw/Assets/Light/close.png"/>
 	</Style>
 </Styles>
