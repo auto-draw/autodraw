@@ -29,6 +29,9 @@ public partial class MainWindow : Window
     private SKBitmap? processedBitmap;
     private Bitmap? displayedBitmap;
 
+    private int BlackThresh = 127;
+    private int AlphaThresh = 127;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -48,6 +51,8 @@ public partial class MainWindow : Window
         // Inputs
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
+        BlackThresholdElement.TextChanging += BlackThreshold_TextChanging;
+        AlphaThresholdElement.TextChanging += AlphaThreshold_TextChanging;
 
         // Config
         OpenConfigElement.Click += LoadConfigViaDialog;
@@ -57,7 +62,7 @@ public partial class MainWindow : Window
         LoadSelectButton.Click += LoadSelectedConfig;
         RefreshConfigList(this, null);
 
-        Drawing.Start();
+        Drawing.Start(); // Not the smartest name
     }
 
 
@@ -112,7 +117,7 @@ public partial class MainWindow : Window
         if (processedBitmap != null) { processedBitmap.Dispose(); }
         if (displayedBitmap != null) { displayedBitmap.Dispose(); }
 
-        processedBitmap = ImageProcessing.Process(rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = 127 });
+        processedBitmap = ImageProcessing.Process(rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = (byte)BlackThresh, AlphaThreshold = (byte)AlphaThresh });
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
         ImagePreview.Source = displayedBitmap;
     }
@@ -159,11 +164,33 @@ public partial class MainWindow : Window
     {
         BlackThresholdElement.Text = numberRegex.Replace(BlackThresholdElement.Text, "");
         e.Handled = true;
+
+        if (AlphaThresholdElement.Text.Length < 1) { return; }
+
+        try
+        {
+            BlackThresh = int.Parse(BlackThresholdElement.Text);
+        }
+        catch
+        {
+            BlackThresh = 127;
+        }
     }
     private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
         AlphaThresholdElement.Text = numberRegex.Replace(AlphaThresholdElement.Text, "");
         e.Handled = true;
+
+        if (AlphaThresholdElement.Text.Length < 1) { return; }
+
+        try
+        {
+            AlphaThresh = int.Parse(AlphaThresholdElement.Text);
+        }
+        catch
+        {
+            AlphaThresh = 127;
+        }
     }
 
 

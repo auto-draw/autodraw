@@ -35,10 +35,6 @@ namespace Autodraw
             int width = OutputBitmap.Width;
             int height = OutputBitmap.Height;
 
-            // Get Bitmap Colortypes (Not used despite RGB vs BGR, I really should, just lazy)
-            SKColorType typeOrg = SourceBitmap.ColorType;
-            SKColorType typeAdj = OutputBitmap.ColorType;
-
             // FILTER: Threshold
             for (int row = 0; row < height; row++)
             {
@@ -54,7 +50,7 @@ namespace Autodraw
                     byte threshColor = (byte)(luminosity > FilterSettings.Threshold || alphaByte < FilterSettings.AlphaThreshold ? 255 : 0);
                     threshColor = FilterSettings.Invert == false ? threshColor : (byte)(255 - threshColor);
 
-                    * dstPtr++ = threshColor;
+                    *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;

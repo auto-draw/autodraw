@@ -13,22 +13,22 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Autodraw
-build_property.ProjectDir = C:\Users\catsi\Desktop\Avalonia\Autodraw\
+build_property.ProjectDir = C:\Users\Siydge\Desktop\Avalonia\autodraw\
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/App.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/DevTest.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/DevTest.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/MainWindow.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/PopupWindow.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/PopupWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/Settings.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/Settings.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/catsi/Desktop/Avalonia/Autodraw/Styles/universal.axaml]
+[C:/Users/Siydge/Desktop/Avalonia/autodraw/Styles/universal.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

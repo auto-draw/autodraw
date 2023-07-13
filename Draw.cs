@@ -64,7 +64,7 @@ namespace Autodraw
                     byte blueByte = *bitPtr++;
                     byte alphaByte = *bitPtr++;
 
-                    pixelArray[x, y] = redByte == 255 ? 1 : 0;
+                    pixelArray[x, y] = redByte == 0 ? 1 : 0;
                 }
             }
             return;
@@ -78,22 +78,23 @@ namespace Autodraw
             EventSimulator EventSim = new EventSimulator();
             Vector2 StartPos = MousePos;
 
-            System.Diagnostics.Debug.WriteLine(MousePos);
-
             if (pixelArray == null) { Debug.Fail("pixelArray was never created."); }
 
             for (int _y = 0; _y < bitmap.Height; _y++)
             {
+                int y = (int)(_y + StartPos.Y);
+                System.Diagnostics.Debug.WriteLine(y);
                 for (int _x = 0; _x < bitmap.Width; _x++)
                 {
                     if (pixelArray[_x, _y] == 1)
                     {
                         int x = (int)(_x + StartPos.X);
-                        int y = (int)(_y + StartPos.Y);
 
-                        await NOP(1);
+                        await NOP(60000);
 
                         EventSim.SimulateMouseMovement((short)x, (short)y);
+                        EventSim.SimulateMousePress(SharpHook.Native.MouseButton.Button1);
+                        EventSim.SimulateMouseRelease(SharpHook.Native.MouseButton.Button1);
                     }
                 }
             }
