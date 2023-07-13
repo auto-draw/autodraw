@@ -51,7 +51,7 @@ namespace Autodraw
 
     public class Config
     {
-        public static string FolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoDraw");
+        public static string FolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoDraw");
         public static string ConfigPath = Path.Combine(FolderPath, "config.json");
 
         public static bool init()
