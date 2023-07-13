@@ -17,6 +17,7 @@ using Avalonia.Media.Imaging;
 using System.Linq;
 using Avalonia.Platform.Storage;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Autodraw;
 
@@ -142,7 +143,10 @@ public partial class MainWindow : Window
     private async void RunButton_Click(Object? sender, RoutedEventArgs e)
     {
         if (processedBitmap == null) { return; }
-        await Drawing.Draw(processedBitmap);
+        if (Drawing.isDrawing) { return; }
+        // Start on new thread because UI will lock without.
+        Thread drawThread = new Thread(()=>Drawing.Draw(processedBitmap));
+        drawThread.Start();
     }
 
 
