@@ -34,6 +34,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpHook" Version="4.2.1" />
+    <PackageReference Include="SimWinMouse" Version="1.0.2" />
   </ItemGroup>
 
 	<ItemGroup>

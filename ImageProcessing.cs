@@ -53,7 +53,7 @@ namespace Autodraw
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
                     *dstPtr++ = threshColor;
-                    *dstPtr++ = threshColor;
+                    *dstPtr++ = 255;
                 }
             }
 

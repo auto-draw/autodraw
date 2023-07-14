@@ -16,6 +16,7 @@ using SharpHook.Native;
 using System.Collections;
 using Tmds.DBus.Protocol;
 using System.IO.Pipes;
+using Avalonia;
 
 namespace Autodraw
 {
@@ -31,26 +32,17 @@ namespace Autodraw
     {
         // Variables
 
-        private static int[,]? pixelArray;
-        private static EventSimulator EventSim = new EventSimulator();
-        public static TaskPoolGlobalHook InputHook = new TaskPoolGlobalHook();
-        public static Vector2 MousePos = new Vector2(0,0);
+        public static int pathValue   = 12345678;
+        public static int interval    = 100000;
+        public static int clickDelay  = 1000; // Milliseconds, please multiply by 10000
+        public static bool isDrawing  = false;
+        public static bool freeDraw2  = false;
+
         private static bool StartedHook = false;
-        public static int pathValue = 12358764;
+        private static int[,]? pixelArray;
         private static int[] path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
-        public static bool isDrawing = false;
 
         // Functions
-
-        public static void Start()
-        {
-            if (StartedHook) { return; }
-
-            InputHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { MousePos = new Vector2(e.Data.X, e.Data.Y); };
-
-            InputHook.RunAsync();
-            StartedHook = true;
-        }
 
         public async static Task NOP(long durationTicks)
         {
@@ -80,22 +72,85 @@ namespace Autodraw
             return;
         }
 
-        private static unsafe void DrawArea(int _x, int _y, Pos startPos, Pos size)
+        private static unsafe void ResetScan(Pos size)
+        {
+            for (int y = 0; y < size.Y; y++)
+            {
+                for (int x = 0; x < size.X; x++)
+                {
+                    pixelArray[x, y] = pixelArray[x, y] == 2 ? 1 : 0;
+                }
+            }
+            return;
+        }
+
+        public static void Halt()
+        {
+            isDrawing = true;
+        }
+
+        public static async Task<bool> Draw(SKBitmap bitmap)
+        {
+            if (isDrawing) return false;
+            isDrawing = true;
+            path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
+
+            Scan(bitmap);
+
+            Pos StartPos = new Pos { X= (int)Input.mousePos.X, Y= (int)Input.mousePos.Y };
+
+            if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
+
+            for (int _y = 0; _y < bitmap.Height; _y++)
+            {
+                if (!isDrawing) { break; }
+                int y = (_y + StartPos.Y);
+                for (int _x = 0; _x < bitmap.Width; _x++)
+                {
+                    if (!isDrawing) { break; }
+                    if (pixelArray[_x, _y] == 1)
+                    {
+                        int x = (_x + StartPos.X);
+
+                        await NOP(clickDelay*10000);
+
+                        Input.MoveTo((short)x, (short)y);
+                        Input.SendClickDown(Input.Types.MouseLeft);
+                        bool complete = await DrawArea(_x, _y, StartPos, new Pos { X = bitmap.Width, Y = bitmap.Height });
+                        Input.SendClickUp(Input.Types.MouseLeft);
+                    }
+                }
+            }
+
+            isDrawing = false;
+            ResetScan(new Pos { X = bitmap.Width, Y = bitmap.Height });
+            return true;
+        }
+
+        private static async Task<bool> DrawArea(int _x, int _y, Pos startPos, Pos size)
         {
             ArrayList stack = new ArrayList();
 
             bool cont;
+            int distanceSinceLastClick = 0;
             while (true)
             {
+                if (!isDrawing) { break; }
                 short x = (short)(_x + startPos.X);
                 short y = (short)(_y + startPos.Y);
-                EventSim.SimulateMouseMovement((short)x, (short)y);
+                Input.MoveTo((short)x, (short)y);
+                if(distanceSinceLastClick > 4096 && freeDraw2)
+                {
+                    Input.SendClickUp(Input.Types.MouseLeft);
+                    await NOP(interval*3);
+                    Input.SendClickDown(Input.Types.MouseLeft);
+                }
 
-                pixelArray[x, y] = 2;
-                NOP(10000);
-                System.Diagnostics.Debug.WriteLine(x);
-                System.Diagnostics.Debug.WriteLine(y);
-                System.Diagnostics.Debug.WriteLine(" ");
+                pixelArray[_x,_y] = 2;
+
+                await NOP(interval);
+
+                if (!isDrawing) { break; }
 
                 cont = false;
                 foreach (int i in Enumerable.Range(0, 7))
@@ -104,52 +159,60 @@ namespace Autodraw
                     {
                         // Not a fan of this "hard-coding" method but it is easiest.
                         case 1:
-                            if (x <= 0 || y <= 0) break;
-                            stack.Add(new Pos { X=_x, Y=_y });
+                            if (_x <= 0 || _y <= 0) break;
+                            if (pixelArray[_x - 1,_y - 1] != 1) break;
+                            stack.Add(new Pos { X = _x, Y = _y });
                             _x -= 1;
                             _y -= 1;
                             cont = true;
                             break;
                         case 2:
-                            if (y <= 0) break;
+                            if (_y <= 0) break;
+                            if (pixelArray[_x,_y - 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _y -= 1;
                             cont = true;
                             break;
                         case 3:
-                            if (y <= 0 || x >= size.X) break;
+                            if (_y <= 0 || _x >= size.X - 1) break;
+                            if (pixelArray[_x + 1,_y - 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x += 1;
                             _y -= 1;
                             cont = true;
                             break;
                         case 4:
-                            if (x <= 0) break;
+                            if (_x <= 0) break;
+                            if (pixelArray[_x - 1,_y] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x -= 1;
                             cont = true;
                             break;
                         case 5:
-                            if (x >= size.X) break;
+                            if (_x >= size.X - 1) break;
+                            if (pixelArray[_x + 1, _y] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x += 1;
                             cont = true;
                             break;
                         case 6:
-                            if (y >= size.Y || x <= 0) break;
+                            if (_y >= size.Y - 1 || _x <= 0) break;
+                            if (pixelArray[_x - 1,_y + 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x -= 1;
                             _y += 1;
                             cont = true;
                             break;
                         case 7:
-                            if (y >= size.Y) break;
+                            if (_y >= size.Y - 1) break;
+                            if (pixelArray[_x,_y + 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _y += 1;
                             cont = true;
                             break;
                         case 8:
-                            if (y >= size.Y || x >= size.X) break;
+                            if (_y >= size.Y - 1 || _x >= size.X - 1) break;
+                            if (pixelArray[_x + 1,_y + 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x += 1;
                             _y += 1;
@@ -158,48 +221,13 @@ namespace Autodraw
                     }
                 }
                 if (cont) continue;
-                if (stack.Count < 1) { break; } else
-                {
-                    Pos backPos = (Pos)stack[^1];
-                    _x = backPos.X;
-                    _y = backPos.Y;
+                if (stack.Count < 1) break;
+                Pos backPos = (Pos)stack[^1];
+                _x = backPos.X;
+                _y = backPos.Y;
 
-                    stack.Remove(backPos);
-                };
+                stack.Remove(backPos);
             }
-        }
-
-        public static async Task<bool> Draw(SKBitmap bitmap)
-        {
-            isDrawing = true;
-            path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
-
-            Scan(bitmap);
-
-            Pos StartPos = new Pos { X= (int)MousePos.X, Y= (int)MousePos.Y };
-
-            if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
-
-            for (int _y = 0; _y < bitmap.Height; _y++)
-            {
-                int y = (_y + StartPos.Y);
-                System.Diagnostics.Debug.WriteLine(y);
-                for (int _x = 0; _x < bitmap.Width; _x++)
-                {
-                    if (pixelArray[_x, _y] == 1)
-                    {
-                        int x = (_x + StartPos.X);
-
-                        await NOP(10000);
-
-                        EventSim.SimulateMouseMovement((short)x, (short)y);
-
-                        DrawArea(_x, _y, StartPos, new Pos { X = bitmap.Width, Y = bitmap.Height });
-                    }
-                }
-            }
-
-            isDrawing = false;
             return true;
         }
 

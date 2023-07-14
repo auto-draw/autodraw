@@ -31,7 +31,7 @@ public partial class MainWindow : Window
     private Bitmap? displayedBitmap;
 
     private int BlackThresh = 127;
-    private int AlphaThresh = 127;
+    private int AlphaThresh = 200;
 
     public MainWindow()
     {
@@ -45,6 +45,7 @@ public partial class MainWindow : Window
         DevButton.Click += Dev_Click;
 
         // Base
+        this.Closing += (object? sender, WindowClosingEventArgs e) => { Cleanup(); };
         ProcessButton.Click += ProcessButton_Click;
         OpenButton.Click += OpenButton_Click;
         RunButton.Click += RunButton_Click;
@@ -63,7 +64,7 @@ public partial class MainWindow : Window
         LoadSelectButton.Click += LoadSelectedConfig;
         RefreshConfigList(this, null);
 
-        Drawing.Start(); // Not the smartest name
+        Input.Start();
     }
 
 
@@ -73,11 +74,16 @@ public partial class MainWindow : Window
     public void fullClose()
     {
         // Other Cleanup
-        _settings?.Close();
-        Drawing.InputHook.Dispose(); // This really stinks x3
+        Cleanup();
 
         // Main Cleanup
         Close();
+    }
+
+    public void Cleanup()
+    {
+        _settings?.Close();
+        Input.Stop();
     }
 
 
@@ -145,7 +151,13 @@ public partial class MainWindow : Window
         if (processedBitmap == null) { return; }
         if (Drawing.isDrawing) { return; }
         // Start on new thread because UI will lock without.
-        Thread drawThread = new Thread(()=>Drawing.Draw(processedBitmap));
+        Drawing.NOP(50000000);
+        Thread drawThread = new Thread(async () =>
+        {
+            WindowState = WindowState.Minimized;
+            await Drawing.Draw(processedBitmap);
+            WindowState = WindowState.Normal;
+        });
         drawThread.Start();
     }
 
@@ -158,18 +170,40 @@ public partial class MainWindow : Window
     {
         DrawIntervalElement.Text = numberRegex.Replace(DrawIntervalElement.Text, "");
         e.Handled = true;
+
+        if (DrawIntervalElement.Text.Length < 1) { return; }
+
+        try
+        {
+            Drawing.interval = int.Parse(DrawIntervalElement.Text);
+        }
+        catch
+        {
+            Drawing.interval = 10000;
+        }
     }
     private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
     {
         ClickDelayElement.Text = numberRegex.Replace(ClickDelayElement.Text, "");
         e.Handled = true;
+
+        if (ClickDelayElement.Text.Length < 1) { return; }
+
+        try
+        {
+            Drawing.clickDelay = int.Parse(ClickDelayElement.Text);
+        }
+        catch
+        {
+            Drawing.clickDelay = 1000;
+        }
     }
     private void BlackThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
         BlackThresholdElement.Text = numberRegex.Replace(BlackThresholdElement.Text, "");
         e.Handled = true;
 
-        if (AlphaThresholdElement.Text.Length < 1) { return; }
+        if (BlackThresholdElement.Text.Length < 1) { return; }
 
         try
         {
