@@ -92,6 +92,13 @@ namespace Autodraw
         public static async Task<bool> Draw(SKBitmap bitmap)
         {
             if (isDrawing) return false;
+
+            void keybindHalt(object? sender, KeyboardHookEventArgs e)
+            {
+                if(e.Data.KeyCode==KeyCode.VcLeftAlt) Halt();
+            }
+            Input.taskHook.KeyReleased += keybindHalt;
+
             isDrawing = true;
             path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
 
@@ -115,12 +122,14 @@ namespace Autodraw
                         await NOP(clickDelay*10000);
 
                         Input.MoveTo((short)x, (short)y);
-                        Input.SendClickDown(Input.Types.MouseLeft);
+                        Input.SendClickDown(Input.MouseTypes.MouseLeft);
                         bool complete = await DrawArea(_x, _y, StartPos, new Pos { X = bitmap.Width, Y = bitmap.Height });
-                        Input.SendClickUp(Input.Types.MouseLeft);
+                        Input.SendClickUp(Input.MouseTypes.MouseLeft);
                     }
                 }
             }
+
+            Input.taskHook.KeyReleased -= keybindHalt;
 
             isDrawing = false;
             ResetScan(new Pos { X = bitmap.Width, Y = bitmap.Height });
@@ -141,9 +150,9 @@ namespace Autodraw
                 Input.MoveTo((short)x, (short)y);
                 if(distanceSinceLastClick > 4096 && freeDraw2)
                 {
-                    Input.SendClickUp(Input.Types.MouseLeft);
+                    Input.SendClickUp(Input.MouseTypes.MouseLeft);
                     await NOP(interval*3);
-                    Input.SendClickDown(Input.Types.MouseLeft);
+                    Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 }
 
                 pixelArray[_x,_y] = 2;
