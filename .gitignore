@@ -372,3 +372,4 @@ Debug/
 Release/
 **/Debug/
 **/Release/
+.vs/
