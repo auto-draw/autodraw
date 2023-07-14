@@ -84,6 +84,7 @@ public partial class MainWindow : Window
     {
         _settings?.Close();
         Input.Stop();
+        Drawing.Halt();
     }
 
 

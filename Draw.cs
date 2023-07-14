@@ -86,7 +86,7 @@ namespace Autodraw
 
         public static void Halt()
         {
-            isDrawing = true;
+            isDrawing = false;
         }
 
         public static async Task<bool> Draw(SKBitmap bitmap)
@@ -95,7 +95,10 @@ namespace Autodraw
 
             void keybindHalt(object? sender, KeyboardHookEventArgs e)
             {
-                if(e.Data.KeyCode==KeyCode.VcLeftAlt) Halt();
+                if (e.Data.KeyCode == KeyCode.VcLeftAlt)
+                {
+                    Halt();
+                }
             }
             Input.taskHook.KeyReleased += keybindHalt;
 

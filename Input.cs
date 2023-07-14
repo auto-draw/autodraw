@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SharpHook;
+#if WINDOWS 
 using SimWinInput;
+#endif
 
 namespace Autodraw
 {
@@ -21,6 +23,7 @@ namespace Autodraw
         // Public
         public static TaskPoolGlobalHook taskHook = new TaskPoolGlobalHook();
         public static Vector2 mousePos = new Vector2();
+        public static event EventHandler mousePosUpdate;
         public static bool forceUio = false;
 
         //// Functions
@@ -37,7 +40,7 @@ namespace Autodraw
         {
             if (taskHook.IsRunning) return;
 
-            taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); };
+            taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); mousePosUpdate?.Invoke(null, EventArgs.Empty); };
 
             taskHook.RunAsync();
         }
@@ -57,8 +60,10 @@ namespace Autodraw
             }
             else
             {
+#if WINDOWS 
                 SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
                 mousePos = new Vector2(x, y);
+#endif
             }
         }
 
@@ -70,8 +75,10 @@ namespace Autodraw
             }
             else
             {
+#if WINDOWS 
                 SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
                 mousePos = new Vector2(xOffset, yOffset);
+#endif
             }
         }
 
@@ -87,12 +94,13 @@ namespace Autodraw
             }
             else
             {
+#if WINDOWS
                 SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
                 SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
 
                 SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
-
+#endif
             }
         }
 
@@ -105,8 +113,10 @@ namespace Autodraw
             }
             else
             {
+#if WINDOWS
                 SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
                 SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+#endif
             }
         }
 
@@ -119,8 +129,10 @@ namespace Autodraw
             }
             else
             {
+#if WINDOWS
                 SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+#endif
             }
         }
 
