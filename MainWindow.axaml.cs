@@ -152,11 +152,10 @@ public partial class MainWindow : Window
         if (Drawing.isDrawing) { return; }
         // Start on new thread because UI will lock without.
         Drawing.NOP(50000000);
+        WindowState = WindowState.Minimized;
         Thread drawThread = new Thread(async () =>
         {
-            WindowState = WindowState.Minimized;
             await Drawing.Draw(processedBitmap);
-            WindowState = WindowState.Normal;
         });
         drawThread.Start();
     }

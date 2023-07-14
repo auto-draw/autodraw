@@ -39,7 +39,7 @@ namespace Autodraw
 
             taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); };
 
-            taskHook.Run();
+            taskHook.RunAsync();
         }
 
         public static void Stop()
@@ -88,7 +88,7 @@ namespace Autodraw
             else
             {
                 SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
-                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
+                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
 
                 SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
@@ -119,7 +119,7 @@ namespace Autodraw
             }
             else
             {
-                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
+                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
             }
         }
