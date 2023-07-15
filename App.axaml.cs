@@ -11,15 +11,16 @@ namespace Autodraw;
 
 public partial class App : Application
 {
-    public static Uri CurrentTheme = new Uri("avares://Autodraw/Styles/dark.axaml");
+    public static Uri CurrentTheme = new Uri(Config.getEntry("theme") == null ? "avares://Autodraw/Styles/dark.axaml" : Config.getEntry("theme"));
 
     public static void LoadTheme(Uri themeUri)
     {
-        App.Current.Styles.Remove(App.Current.Styles[2]);
-        App.Current.Styles.Add((Avalonia.Styling.IStyle)AvaloniaXamlLoader.Load(
+        Current.Styles.Remove(Current.Styles[2]);
+        Current.Styles.Add((IStyle)AvaloniaXamlLoader.Load(
             themeUri
             ));
         CurrentTheme = themeUri;
+        Config.setEntry("theme", themeUri.LocalPath);
     }
 
     public override void Initialize()

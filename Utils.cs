@@ -58,7 +58,7 @@ namespace Autodraw
 
         public static string? getEntry(string entry)
         {
-            if (!File.Exists(ConfigPath)) return "";
+            if (!File.Exists(ConfigPath)) return null;
             string json = File.ReadAllText(ConfigPath);
             JObject parse = JObject.Parse(json);
             return (string?)parse[entry];
