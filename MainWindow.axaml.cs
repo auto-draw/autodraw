@@ -37,6 +37,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         Config.init();
 
+
         // Taskbar
         CloseAppButton.Click += QuitApp_Click;
         MinimizeAppButton.Click += MinimizeApp_Click;
@@ -261,7 +262,7 @@ public partial class MainWindow : Window
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
     {
-        var file = await this.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Config",
             FileTypeChoices = new FilePickerFileType[] { configsFileFilter }
@@ -283,7 +284,7 @@ public partial class MainWindow : Window
 
     public async void LoadConfigViaDialog(object? sender, RoutedEventArgs e)
     {
-        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Save Config",
             FileTypeFilter = new FilePickerFileType[] { configsFileFilter },

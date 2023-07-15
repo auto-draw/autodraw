@@ -46,12 +46,12 @@ namespace Autodraw
             Directory.CreateDirectory(FolderPath);
             JObject obj = new();
             // Migrates old directory list path (from autodrawer v1) to the new config file
-            if (File.Exists(Path.Combine(FolderPath, "dir.txt")))
+            string OldPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoDraw");
+            if (File.Exists(Path.Combine(OldPath, "dir.txt")) && File.ReadAllText(Path.Combine(OldPath, "dir.txt")).Length != 0)
             {
-                obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(FolderPath, "dir.txt")));
+                obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(OldPath, "dir.txt")));
             }
             string emptyJObject = JsonConvert.SerializeObject(obj);
-            
             File.WriteAllText(ConfigPath, emptyJObject);
             return true;
         }
