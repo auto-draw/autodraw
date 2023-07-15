@@ -18,11 +18,11 @@ public partial class DevTest : Window
 
     public unsafe static SKBitmap TestImage(int width, int height)
     {
-        SKBitmap returnbtmp = new SKBitmap(width, height, false);
+        SKBitmap returnbtmp = new(width, height, false);
 
         byte* srcPtr = (byte*)returnbtmp.GetPixels().ToPointer();
 
-        Random rng = new Random();
+        Random rng = new();
 
         // FILTER: Threshold
         for (int row = 0; row < height; row++)
@@ -43,28 +43,28 @@ public partial class DevTest : Window
     {
         Stopwatch sw = Stopwatch.StartNew();
 
-        SKBitmap small = new SKBitmap(64, 64, false);
+        SKBitmap small = new(64, 64, false);
         sw.Restart();
         ImageProcessing.Process(small, new ImageProcessing.Filters() { Invert = true });
         long TimeTookSmall = sw.ElapsedMilliseconds;
 
         BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString();
 
-        SKBitmap avg = new SKBitmap(384, 384, false);
+        SKBitmap avg = new(384, 384, false);
         sw.Restart();
         ImageProcessing.Process(avg, new ImageProcessing.Filters() { Invert = true });
         long TimeTookAvg = sw.ElapsedMilliseconds;
 
         BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString() + "\n384x384: " + TimeTookAvg.ToString();
 
-        SKBitmap med = new SKBitmap(1024, 1024, false);
+        SKBitmap med = new(1024, 1024, false);
         sw.Restart();
         ImageProcessing.Process(med, new ImageProcessing.Filters() { Invert = true });
         long TimeTookMed = sw.ElapsedMilliseconds;
 
         BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString() + "\n384x384: " + TimeTookAvg.ToString() + "\n1024x1024: " + TimeTookMed.ToString();
 
-        SKBitmap large = new SKBitmap(3072, 3072, false);
+        SKBitmap large = new(3072, 3072, false);
         sw.Restart();
         ImageProcessing.Process(large, new ImageProcessing.Filters() { Invert = true });
         long TimeTookLarge = sw.ElapsedMilliseconds;

@@ -4,5 +4,7 @@
 			 RequestedThemeVariant="Dark">
 	<Application.Styles>
 		<FluentTheme />
+		<StyleInclude Source="avares://Autodraw/Styles/universal.axaml"/>
+		<StyleInclude Source="avares://Autodraw/Styles/dark.axaml"/>
 	</Application.Styles>
 </Application>

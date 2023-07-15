@@ -2,15 +2,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="508" d:DesignHeight="330"
         x:Class="Autodraw.Settings"
         Title="Settings"
 		WindowStartupLocation="CenterScreen"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
-		Width="700"
-		Height="400"
-		CanResize="False"
+		Width="500"
+		Height="300"
 		>
-  
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"></RowDefinition>
+			<RowDefinition Height="1*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<!--Toolbar-->
+		<Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+			<!--Background-->
+			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
+
+			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20"/>
+
+			<!--Decorations-->
+			<StackPanel Classes="Toolbar" Orientation="Horizontal">
+				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
+					Settings
+				</Label>
+			</StackPanel>
+
+			<!--Buttons-->
+			<Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="20"/>
+				</Grid.ColumnDefinitions>
+				<Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+					<Image Classes="CloseApp ToolbarButton"></Image>
+				</Button>
+			</Grid>
+		</Canvas>
+		<Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="128"/>
+				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="4"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<TextBlock Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
+			
+			<Canvas Grid.Column="0" Grid.Row="2" Background="#3f000000"></Canvas>
+
+			<Grid Grid.Column="2" Grid.Row="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Button Grid.Row="0" VerticalAlignment="Top" Name="ToggleTheme">Togggle Theme</Button>
+				<Button Grid.Row="2" VerticalAlignment="Top" Name="BlueTheme">Blue Theme</Button>
+				<Button Grid.Row="4" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
+			</Grid>
+		</Grid>
+	</Grid>
 </Window>

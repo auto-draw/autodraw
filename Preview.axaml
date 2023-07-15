@@ -4,7 +4,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
         x:Class="Autodraw.Preview"
-        Title="Preview">
+        Title="Preview"
+		Background="#0fff"
+		SystemDecorations="None"
+		Opacity="80">
 	<Image Name="previewImage">
 		
 	</Image>

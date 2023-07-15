@@ -18,12 +18,12 @@ namespace Autodraw
         //// Variables
 
         // Private
-        private static EventSimulator eventSim = new EventSimulator();
+        private static EventSimulator eventSim = new();
 
         // Public
-        public static TaskPoolGlobalHook taskHook = new TaskPoolGlobalHook();
-        public static Vector2 mousePos = new Vector2();
-        public static event EventHandler mousePosUpdate;
+        public static TaskPoolGlobalHook taskHook = new();
+        public static Vector2 mousePos = new();
+        public static event EventHandler? mousePosUpdate;
         public static bool forceUio = false;
 
         //// Functions
@@ -39,6 +39,7 @@ namespace Autodraw
         public static void Start()
         {
             if (taskHook.IsRunning) return;
+            if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
 
             taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); mousePosUpdate?.Invoke(null, EventArgs.Empty); };
 

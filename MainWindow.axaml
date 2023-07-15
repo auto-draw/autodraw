@@ -20,13 +20,7 @@
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaTitleBarHeightHint="20"
-	
 		>
-
-	<Window.Styles>
-		<StyleInclude Source="avares://Autodraw/Styles/universal.axaml"/>
-		<StyleInclude Source="avares://Autodraw/Styles/dark.xaml"/>
-	</Window.Styles>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -43,7 +37,7 @@
 			<!--Decorations-->
 			<StackPanel Classes="Toolbar" Orientation="Horizontal">
 				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
-					AutoDrawer
+					AutoDrawer CLOSED PREVIEW -
 				</Label>
 				<Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
 					v2
@@ -194,6 +188,7 @@
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
 							<TextBox Name="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+								
 								1000
 							</TextBox>
 						</Grid>

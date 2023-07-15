@@ -51,6 +51,10 @@
 
 	<ItemGroup>
 	  <AvaloniaXaml Remove="Assets\Window1.axaml" />
+	  <AvaloniaXaml Remove="Styles\anime.axaml" />
+	  <AvaloniaXaml Remove="Styles\blue.axaml" />
+	  <AvaloniaXaml Remove="Styles\dark.axaml" />
+	  <AvaloniaXaml Remove="Styles\light.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -62,25 +66,28 @@
 	  <None Remove="Assets\anime.png" />
 	  <None Remove="Assets\close.png" />
 	  <None Remove="Assets\Light\close.png" />
+	  <None Remove="Assets\Message\error.png" />
+	  <None Remove="Assets\Message\info.png" />
+	  <None Remove="Assets\Message\nerd.png" />
+	  <None Remove="Assets\Message\pog.png" />
+	  <None Remove="Assets\Message\privacy-warn.png" />
+	  <None Remove="Assets\Message\warn.png" />
 	  <None Remove="Assets\open-doc.png" />
 	  <None Remove="Assets\open-folder.png" />
 	  <None Remove="Assets\reload.png" />
 	  <None Remove="Assets\remove.png" />
 	  <None Remove="Assets\Save.png" />
 	  <None Remove="Assets\test-pattern.jpg" />
-	  <None Remove="Styles\anime.xaml" />
-	  <None Remove="Styles\blue.xaml" />
-	  <None Remove="Styles\light.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaResource Update="Styles\anime.xaml">
+	  <AvaloniaResource Update="Styles\anime.axaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>
-	  <AvaloniaResource Update="Styles\blue.xaml">
+	  <AvaloniaResource Update="Styles\blue.axaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>
-	  <AvaloniaResource Update="Styles\light.xaml">
+	  <AvaloniaResource Update="Styles\light.axaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>
 	  <AvaloniaXaml Update="Styles\universal.axaml">
@@ -93,9 +100,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PopupWindow.axaml.cs">
-      <DependentUpon>PopupWindow.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Autodraw;
 
-public partial class Window1 : Window
+public partial class MessageBox : Window
 {
-    public Window1()
+    public MessageBox()
     {
         InitializeComponent();
     }

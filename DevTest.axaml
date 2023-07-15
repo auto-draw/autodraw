@@ -22,7 +22,7 @@
 			<ColumnDefinition Width="200"/>
 			<ColumnDefinition Width="200"/>
 			<ColumnDefinition Width="200"/>
-			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="300"/>
 		</Grid.ColumnDefinitions>
 		<TextBox Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Background="#ccc" IsReadOnly="True" CornerRadius="0" Cursor="None">
 			This is for testing features upon implimentation, don't be surprised by the lack of stuff.
@@ -32,5 +32,6 @@
 		<TextBlock Grid.Row="3" Height="300" TextWrapping="Wrap" Name="BenchmarkResults" VerticalAlignment="Top" HorizontalAlignment="Left">
 			Results:
 		</TextBlock>
+		<Button Grid.Row="1" Grid.Column="1"  Name="TestPreview" VerticalAlignment="Center" HorizontalAlignment="Center">Spawn Preview Window</Button>
 	</Grid>
 </Window>

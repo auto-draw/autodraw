@@ -23,11 +23,8 @@ namespace Autodraw
 {
     public static class ImageExtensions
     {
-        public static Bitmap? ConvertToAvaloniaBitmap(this SKBitmap bitmap)
+        public static Bitmap ConvertToAvaloniaBitmap(this SKBitmap bitmap)
         {
-            if (bitmap == null)
-                return null;
-
             return new Bitmap
                 (Avalonia.Platform.PixelFormat.Bgra8888, Avalonia.Platform.AlphaFormat.Premul,
                 bitmap.GetPixels(),
@@ -36,17 +33,6 @@ namespace Autodraw
                 bitmap.GetPixelSpan().Length
             );
         }
-    }
-
-    public class Inputs
-    {
-        private EventSimulator simulator = new EventSimulator();
-
-        public void Click()
-        {
-
-        }
-
     }
 
     public class Config
@@ -58,7 +44,7 @@ namespace Autodraw
         {
             if (File.Exists(ConfigPath)) return true;
             Directory.CreateDirectory(FolderPath);
-            JObject obj = new JObject();
+            JObject obj = new();
             // Migrates old directory list path (from autodrawer v1) to the new config file
             if (File.Exists(Path.Combine(FolderPath, "dir.txt")))
             {
@@ -98,7 +84,7 @@ namespace Autodraw
             Console.WriteLine(text);
             if (Config.getEntry("logsEnabled") != "true") return;
             Directory.CreateDirectory(LogsPath);
-            File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now.ToString("dd.MM.yyyy")}.txt"), $"{text}\r\n");
+            File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
         }
     }
 }

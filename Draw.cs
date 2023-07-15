@@ -33,12 +33,18 @@ namespace Autodraw
         // Variables
 
         public static int pathValue   = 12345678;
-        public static int interval    = 100000;
+
+        public static int interval    = 10000;
         public static int clickDelay  = 1000; // Milliseconds, please multiply by 10000
+
         public static bool isDrawing  = false;
         public static bool freeDraw2  = false;
 
-        private static bool StartedHook = false;
+        public static Vector2 lastPos = new(0, 0);
+        public static bool useLastPos = false;
+
+        
+
         private static int[,]? pixelArray;
         private static int[] path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
 
@@ -107,7 +113,10 @@ namespace Autodraw
 
             Scan(bitmap);
 
-            Pos StartPos = new Pos { X= (int)Input.mousePos.X, Y= (int)Input.mousePos.Y };
+            Vector2 usedPos = useLastPos ? lastPos : Input.mousePos;
+            lastPos = usedPos;
+            Pos StartPos = new() { X= (int)usedPos.X-bitmap.Width/2, Y= (int)usedPos.Y - bitmap.Height / 2 };
+            
 
             if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
 
@@ -141,7 +150,7 @@ namespace Autodraw
 
         private static async Task<bool> DrawArea(int _x, int _y, Pos startPos, Pos size)
         {
-            ArrayList stack = new ArrayList();
+            ArrayList stack = new();
 
             bool cont;
             int distanceSinceLastClick = 0;
@@ -186,7 +195,7 @@ namespace Autodraw
                             cont = true;
                             break;
                         case 3:
-                            if (_y <= 0 || _x >= size.X - 1) break;
+                            if (_x >= size.X - 1 || _y <= 0) break;
                             if (pixelArray[_x + 1,_y - 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x += 1;
@@ -208,7 +217,7 @@ namespace Autodraw
                             cont = true;
                             break;
                         case 6:
-                            if (_y >= size.Y - 1 || _x <= 0) break;
+                            if (_x <= 0 || _y >= size.Y - 1) break;
                             if (pixelArray[_x - 1,_y + 1] != 1) break;
                             stack.Add(new Pos { X = _x, Y = _y });
                             _x -= 1;
@@ -231,6 +240,7 @@ namespace Autodraw
                             cont = true;
                             break;
                     }
+                    if (cont) break;
                 }
                 if (cont) continue;
                 if (stack.Count < 1) break;

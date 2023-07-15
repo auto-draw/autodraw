@@ -1,12 +1,25 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Style Selector="Window">
-		<Setter Property="Background" Value="#9fff"/>
+		<Setter Property="Background" Value="#eddd"/>
 		<Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>
 	</Style>
 
+	<Style Selector="AccessText">
+		<Setter Property="Foreground" Value="#000"/>
+	</Style>
+	<Style Selector="TextBlock">
+		<Setter Property="Foreground" Value="#000"/>
+	</Style>
+
+	<Style Selector="ComboBox">
+		<Setter Property="Background" Value="#2fff"/>
+	</Style>
+
 	<Style Selector="TextBox">
-		<Setter Property="Foreground" Value="#fff"/>
+		<Setter Property="BorderBrush" Value="#3000"/>
+		<Setter Property="Foreground" Value="#000"/>
+		<Setter Property="Background" Value="#2fff"/>
 		<Setter Property="CornerRadius" Value="0"/>
 		<Setter Property="Padding" Value="4"/>
 		<Setter Property="MinHeight" Value="24"/>
@@ -15,7 +28,8 @@
 	</Style>
 
 	<Style Selector="Button">
-		<Setter Property="Foreground" Value="#fff"></Setter>
+		<Setter Property="Foreground" Value="#000"></Setter>
+		<Setter Property="Background" Value="#4fff"></Setter>
 		<Setter Property="CornerRadius" Value="0"/>
 		<Setter Property="Padding" Value="4"/>
 	</Style>
@@ -32,10 +46,10 @@
 	</Style>
 
 	<Style Selector="ListBoxItem">
-		<Setter Property="Background" Value="#888"/>
+		<Setter Property="Background" Value="#0000"/>
 	</Style>
 	<Style Selector="ListBox">
-		<Setter Property="Background" Value="#888"/>
+		<Setter Property="Background" Value="#8888"/>
 	</Style>
 
 
@@ -46,15 +60,12 @@
 	</Style>
 
 	<Style Selector="Label">
-		<Setter Property="Foreground" Value="#fff"></Setter>
-		<Setter Property="FontSize" Value="12"/>
-	</Style>
-	<Style Selector="TextBlock">
-		<Setter Property="Foreground" Value="#fff"></Setter>
+		<Setter Property="Foreground" Value="#000"/>
 	</Style>
 
 	<Style Selector="Label.Title">
 		<Setter Property="Foreground" Value="#000"></Setter>
+		<Setter Property="FontSize" Value="12"/>
 	</Style>
 	<Style Selector="Button.Title">
 		<Setter Property="Foreground" Value="#000"></Setter>

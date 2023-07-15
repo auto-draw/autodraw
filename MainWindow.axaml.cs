@@ -1,6 +1,5 @@
 #pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 
 using Avalonia.Controls;
@@ -26,7 +25,7 @@ public partial class MainWindow : Window
     private Settings? _settings;
     private DevTest? _devwindow;
 
-    private SKBitmap? rawBitmap = new SKBitmap(318, 318, true);
+    private SKBitmap? rawBitmap = new(318, 318, true);
     private SKBitmap? processedBitmap;
     private Bitmap? displayedBitmap;
 
@@ -71,17 +70,9 @@ public partial class MainWindow : Window
 
     // Core Functions
 
-    public void fullClose()
-    {
-        // Other Cleanup
-        Cleanup();
-
-        // Main Cleanup
-        Close();
-    }
-
     public void Cleanup()
     {
+        _devwindow?.Close();
         _settings?.Close();
         Input.Stop();
         Drawing.Halt();
@@ -93,7 +84,7 @@ public partial class MainWindow : Window
 
     private void OpenSettings_Click(object? sender, RoutedEventArgs e)
     {
-        if (_settings == null) _settings = new Settings();
+        _settings ??= new Settings();
         _settings.Show();
         _settings.Closed += Settings_Closed;
     }
@@ -106,7 +97,7 @@ public partial class MainWindow : Window
 
     private void OpenDevWindow()
     {
-        if (_devwindow == null) _devwindow = new DevTest();
+        _devwindow ??= new DevTest();
         _devwindow.Show();
         _devwindow.Closed += DevWindow_Closed;
     }
@@ -122,8 +113,8 @@ public partial class MainWindow : Window
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
     {
-        if (processedBitmap != null) { processedBitmap.Dispose(); }
-        if (displayedBitmap != null) { displayedBitmap.Dispose(); }
+        processedBitmap?.Dispose();
+        displayedBitmap?.Dispose();
 
         processedBitmap = ImageProcessing.Process(rawBitmap, new ImageProcessing.Filters() { Invert = false, Threshold = (byte)BlackThresh, AlphaThreshold = (byte)AlphaThresh });
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
@@ -151,20 +142,14 @@ public partial class MainWindow : Window
     {
         if (processedBitmap == null) { return; }
         if (Drawing.isDrawing) { return; }
-        // Start on new thread because UI will lock without.
-        Drawing.NOP(50000000);
         WindowState = WindowState.Minimized;
-        Thread drawThread = new Thread(async () =>
-        {
-            await Drawing.Draw(processedBitmap);
-        });
-        drawThread.Start();
+        new Preview().ReadyDraw(processedBitmap);
     }
 
 
 
     // Inputs Handles
-    Regex numberRegex = new Regex(@"[^0-9]");
+    Regex numberRegex = new(@"[^0-9]");
 
     private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
     {
@@ -242,7 +227,7 @@ public partial class MainWindow : Window
 
     private void QuitApp_Click(object? sender, RoutedEventArgs e)
     {
-        fullClose();
+        Close();
     }
 
     private void Dev_Click(object? sender, RoutedEventArgs e)
