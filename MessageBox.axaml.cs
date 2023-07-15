@@ -6,6 +6,11 @@ namespace Autodraw;
 
 public partial class MessageBox : Window
 {
+    public static void ShowMessageBox(string title, string description, string icon = "info")
+    {
+
+    }
+
     public MessageBox()
     {
         InitializeComponent();

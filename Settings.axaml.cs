@@ -28,27 +28,23 @@ public partial class Settings : Window
 
     private void AnimeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        App.LoadTheme(new Uri("avares://Autodraw/Styles/anime.axaml"));
-        App.Current.RequestedThemeVariant = ThemeVariant.Dark;
+        App.LoadTheme("avares://Autodraw/Styles/anime.axaml");
     }
 
     private void BlueTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        App.LoadTheme(new Uri("avares://Autodraw/Styles/blue.axaml"));
-        App.Current.RequestedThemeVariant = ThemeVariant.Dark;
+        App.LoadTheme("avares://Autodraw/Styles/blue.axaml");
     }
 
     private void ToggleTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (App.CurrentTheme == new Uri("avares://Autodraw/Styles/dark.axaml"))
+        if (App.CurrentTheme == "avares://Autodraw/Styles/dark.axaml")
         {
-            App.LoadTheme(new Uri("avares://Autodraw/Styles/light.axaml"));
-            App.Current.RequestedThemeVariant = ThemeVariant.Light; // I hate that I have to do this but as of Avalonia 11, you can't override some things... :(
+            App.LoadTheme("avares://Autodraw/Styles/light.axaml", false);
         }
         else
         {
-            App.LoadTheme(new Uri("avares://Autodraw/Styles/dark.axaml"));
-            App.Current.RequestedThemeVariant = ThemeVariant.Dark;
+            App.LoadTheme("avares://Autodraw/Styles/dark.axaml");
         }
     }
 }
