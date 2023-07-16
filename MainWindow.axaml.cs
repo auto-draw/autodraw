@@ -60,7 +60,6 @@ public partial class MainWindow : Window
 
         // Inputs
         SizeSlider.ValueChanged += SizeSlider_ValueChanged;
-        SizeSlider.Holding += SizeSlider_Holding;
 
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
@@ -80,11 +79,6 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
-    private void SizeSlider_Holding(object? sender, Avalonia.Input.HoldingRoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
 
 
     // Core Functions
@@ -95,6 +89,18 @@ public partial class MainWindow : Window
         _settings?.Close();
         Input.Stop();
         Drawing.Halt();
+    }
+
+    private ImageProcessing.Filters getSelectFilters()
+    {
+        currentFilters.Threshold = (byte)BlackThresh;
+        currentFilters.AlphaThreshold = (byte)AlphaThresh;
+        currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
+        currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
+        currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
+        currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
+
+        return currentFilters;
     }
 
 
@@ -135,8 +141,7 @@ public partial class MainWindow : Window
         processedBitmap?.Dispose();
         displayedBitmap?.Dispose();
 
-        currentFilters = new ImageProcessing.Filters() { Invert = false, Threshold = (byte)BlackThresh, AlphaThreshold = (byte)AlphaThresh };
-        processedBitmap = ImageProcessing.Process(preFXBitmap, currentFilters);
+        processedBitmap = ImageProcessing.Process(preFXBitmap, getSelectFilters());
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
         ImagePreview.Source = displayedBitmap;
     }
@@ -152,18 +157,18 @@ public partial class MainWindow : Window
 
         if (file.Count == 1)
         {
-            rawBitmap = ImageProcessing.fixBitmap(SKBitmap.Decode(file[0].TryGetLocalPath()));
+            rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath()).NormalizeColor();
             preFXBitmap = rawBitmap.Copy();
-            Bitmap _tmp = new Bitmap(file[0].TryGetLocalPath());
+            displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
             processedBitmap?.Dispose();
             processedBitmap = null;
-            ImagePreview.Source = _tmp;
+            ImagePreview.Source = displayedBitmap;
 
             SizeSlider.Value = 100;
 
             PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-            WidthInput.Text = _tmp.Size.Width.ToString();
-            HeightInput.Text = _tmp.Size.Height.ToString();
+            WidthInput.Text = displayedBitmap.Size.Width.ToString();
+            HeightInput.Text = displayedBitmap.Size.Height.ToString();
         }
     }
 
@@ -186,7 +191,6 @@ public partial class MainWindow : Window
 
         if (GC.GetTotalMemory(false) < lastMem)
         {
-            System.Diagnostics.Debug.WriteLine(GC.GetTotalMemory(false) - lastMem);
             GC.RemoveMemoryPressure(lastMem);
         }
         lastMem = GC.GetTotalMemory(false);
@@ -194,8 +198,6 @@ public partial class MainWindow : Window
 
         if (processedBitmap == null)
         {
-            if (preFXBitmap.Info.ColorType == SKColorType.Gray8) return;
-
             SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)(rawBitmap.Width * SizeSlider.Value / 100), (int)(rawBitmap.Height * SizeSlider.Value / 100)), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
@@ -206,11 +208,10 @@ public partial class MainWindow : Window
             MemPressure += resizedBitmap.ByteCount;
         }else if (processedBitmap != null)
         {
-            currentFilters = new ImageProcessing.Filters() { Invert = false, Threshold = (byte)BlackThresh, AlphaThreshold = (byte)AlphaThresh };
             SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)(rawBitmap.Width * SizeSlider.Value / 100), (int)(rawBitmap.Height * SizeSlider.Value / 100)), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
-            SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, currentFilters);
+            SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, getSelectFilters());
             processedBitmap.Dispose();
             processedBitmap = postProcessBitmap;
             displayedBitmap?.Dispose();
@@ -296,9 +297,7 @@ public partial class MainWindow : Window
 
     private void FreeDrawCheckbox_Click(object? sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine(FreeDrawCheckbox.IsChecked);
         Drawing.freeDraw2 = FreeDrawCheckbox.IsChecked ?? false;
-        System.Diagnostics.Debug.WriteLine(Drawing.freeDraw2);
     }
 
 

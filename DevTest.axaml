@@ -6,7 +6,7 @@
 		Width="600"
 		Height="350"
         x:Class="Autodraw.DevTest"
-        Title="DevTest"
+        Title="Developer Tools"
 		RequestedThemeVariant="Light">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -32,6 +32,5 @@
 		<TextBlock Grid.Row="3" Height="300" TextWrapping="Wrap" Name="BenchmarkResults" VerticalAlignment="Top" HorizontalAlignment="Left">
 			Results:
 		</TextBlock>
-		<Button Grid.Row="1" Grid.Column="1"  Name="TestPreview" VerticalAlignment="Center" HorizontalAlignment="Center">Spawn Preview Window</Button>
 	</Grid>
 </Window>

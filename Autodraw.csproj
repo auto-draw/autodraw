@@ -83,8 +83,6 @@
 	  <None Remove="Assets\reload.png" />
 	  <None Remove="Assets\remove.png" />
 	  <None Remove="Assets\Save.png" />
-	  <None Remove="Assets\Sounds\nerd.mp3" />
-	  <None Remove="Assets\Sounds\nerd.wav" />
 	  <None Remove="Assets\test-pattern.jpg" />
 	</ItemGroup>
 

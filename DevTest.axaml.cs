@@ -15,7 +15,6 @@ public partial class DevTest : Window
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
-        new MessageBox().ShowMessageBox("Drawing Finished!", "The drawing has finished! Yippee!", "nerd", "nerd.wav");
     }
 
     private void TestPopup_Click(object? sender, RoutedEventArgs e)
@@ -31,7 +30,6 @@ public partial class DevTest : Window
 
         Random rng = new();
 
-        // FILTER: Threshold
         for (int row = 0; row < height; row++)
         {
             for (int col = 0; col < width; col++)

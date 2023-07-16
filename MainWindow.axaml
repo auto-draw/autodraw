@@ -254,22 +254,22 @@
 							<Grid Grid.Row="5">
 								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Border</CheckBox>
+										<CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Invert</CheckBox>
+										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Crosshatch</CheckBox>
+										<CheckBox Name="CrosshatchFilterCheck">Crosshatch</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Diagonal-Cross</CheckBox>
+										<CheckBox Name="DiagCrossFilterCheck">Diagonal-Cross</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Honeycomb</CheckBox>
+										<CheckBox Name="HoneycombFilterCheck" IsEnabled="False">Honeycomb</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox>Shingles</CheckBox>
+										<CheckBox Name="ShinglesFilterCheck" IsEnabled="False">Shingles</CheckBox>
 									</ListBoxItem>
 								</ListBox>
 							</Grid>
