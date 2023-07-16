@@ -7,7 +7,11 @@
         Title="Preview"
 		Background="#0fff"
 		SystemDecorations="None"
-		Opacity="80">
+		Opacity="90"
+		
+		TransparencyLevelHint="None"
+		
+		Topmost="True">
 	<Image Name="previewImage">
 		
 	</Image>

@@ -15,6 +15,9 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <StartupObject></StartupObject>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>7.15.2023</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,6 +36,8 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.0" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpAudio" Version="1.0.65-beta" />
+    <PackageReference Include="SharpAudio.Codec" Version="1.0.65-beta" />
     <PackageReference Include="SharpHook" Version="4.2.1" />
     <PackageReference Include="SimWinMouse" Version="1.0.2" />
   </ItemGroup>
@@ -63,6 +68,7 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\add-image.png" />
+	  <None Remove="Assets\alert.wav" />
 	  <None Remove="Assets\anime.png" />
 	  <None Remove="Assets\close.png" />
 	  <None Remove="Assets\Light\close.png" />
@@ -77,6 +83,8 @@
 	  <None Remove="Assets\reload.png" />
 	  <None Remove="Assets\remove.png" />
 	  <None Remove="Assets\Save.png" />
+	  <None Remove="Assets\Sounds\nerd.mp3" />
+	  <None Remove="Assets\Sounds\nerd.wav" />
 	  <None Remove="Assets\test-pattern.jpg" />
 	</ItemGroup>
 

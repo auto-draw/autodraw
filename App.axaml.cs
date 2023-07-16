@@ -6,6 +6,7 @@ using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Autodraw;
 
@@ -28,8 +29,15 @@ public partial class App : Application
 
     public override void Initialize()
     {
+        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AvaloniaXamlLoader.Load(this);
         LoadTheme(CurrentTheme, SavedIsDark);
+    }
+
+    private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        Utils.Log(e.Exception.ToString());
+        Utils.Log(e.Exception.Message);
     }
 
     public override void OnFrameworkInitializationCompleted()

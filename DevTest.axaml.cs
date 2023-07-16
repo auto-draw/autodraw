@@ -14,6 +14,13 @@ public partial class DevTest : Window
     {
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
+        TestPopup.Click += TestPopup_Click;
+        new MessageBox().ShowMessageBox("Drawing Finished!", "The drawing has finished! Yippee!", "nerd", "nerd.wav");
+    }
+
+    private void TestPopup_Click(object? sender, RoutedEventArgs e)
+    {
+        new MessageBox().ShowMessageBox("Hi", "Loser");
     }
 
     public unsafe static SKBitmap TestImage(int width, int height)

@@ -82,7 +82,7 @@ namespace Autodraw
         public static void Log(string text)
         {
             Console.WriteLine(text);
-            if (Config.getEntry("logsEnabled") != "true") return;
+            if (false && Config.getEntry("logsEnabled") != "true") return;
             Directory.CreateDirectory(LogsPath);
             File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
         }

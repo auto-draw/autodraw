@@ -11,12 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpHook.Native;
 using System.Collections;
 using Tmds.DBus.Protocol;
 using System.IO.Pipes;
 using Avalonia;
+using Avalonia.Threading;
 
 namespace Autodraw
 {
@@ -72,7 +72,7 @@ namespace Autodraw
                     byte blueByte = *bitPtr++;
                     byte alphaByte = *bitPtr++;
 
-                    pixelArray[x, y] = redByte == 0 ? 1 : 0;
+                    pixelArray[x, y] = redByte < 127 ? 1 : 0;
                 }
             }
             return;
@@ -131,12 +131,14 @@ namespace Autodraw
                     {
                         int x = (_x + StartPos.X);
 
-                        await NOP(clickDelay*10000);
 
-                        Input.MoveTo((short)x, (short)y);
+                        Input.MoveTo((short)x, (short)(y - 1));
+                        await NOP(clickDelay * 5000);
+                        Input.MoveTo((short)x, (short)(y + 1));
                         Input.SendClickDown(Input.MouseTypes.MouseLeft);
                         bool complete = await DrawArea(_x, _y, StartPos, new Pos { X = bitmap.Width, Y = bitmap.Height });
                         Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                        await NOP(clickDelay * 5000);
                     }
                 }
             }
@@ -145,6 +147,10 @@ namespace Autodraw
 
             isDrawing = false;
             ResetScan(new Pos { X = bitmap.Width, Y = bitmap.Height });
+            Dispatcher.UIThread.Invoke(()=>
+            {
+                new MessageBox().ShowMessageBox("Drawing Finished!", "The drawing has finished! Yippee!", "info");
+            });
             return true;
         }
 
@@ -160,8 +166,10 @@ namespace Autodraw
                 short x = (short)(_x + startPos.X);
                 short y = (short)(_y + startPos.Y);
                 Input.MoveTo((short)x, (short)y);
-                if(distanceSinceLastClick > 4096 && freeDraw2)
+                distanceSinceLastClick++;
+                if (distanceSinceLastClick > 4000 && freeDraw2)
                 {
+                    distanceSinceLastClick = 0;
                     Input.SendClickUp(Input.MouseTypes.MouseLeft);
                     await NOP(interval*3);
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);

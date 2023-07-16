@@ -68,7 +68,7 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			
-			<Image Name="MessageImage" Grid.Row="0" Grid.Column="0" Source="/Assets/Message/info.png"/>
+			<Image Name="MessageIcon" Grid.Row="0" Grid.Column="0" Source="/Assets/Message/info.png"/>
 			<TextBlock Name="MessageTitle" Grid.Row="0" Grid.Column="2" FontSize="16">Info!</TextBlock>
 			<TextBox Name="MessageContent" Grid.Row="2" Grid.ColumnSpan="3" FontSize="16">Info Content!</TextBox>
 		</Grid>

@@ -94,11 +94,11 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
-					<TextBox Grid.Column="0" Name="WidthInput" Text="100" Watermark="Width" HorizontalContentAlignment="Right"></TextBox>
-					<TextBox Grid.Column="2" Name="PercentageNumber" Text="100%" Watermark="Width" HorizontalContentAlignment="Center"></TextBox>
-					<TextBox Grid.Column="4" Name="HeightInput" Text="100" Watermark="Height"></TextBox>
+					<TextBox Grid.Column="0" Name="WidthInput" Text="" IsReadOnly="True" Watermark="Width" HorizontalContentAlignment="Right"></TextBox>
+					<TextBox Grid.Column="2" Name="PercentageNumber" Text="" IsReadOnly="True" Watermark="Scale" HorizontalContentAlignment="Center"></TextBox>
+					<TextBox Grid.Column="4" Name="HeightInput" Text="" IsReadOnly="True" Watermark="Height"></TextBox>
 				</Grid>
-				<Slider Grid.Row="4" VerticalAlignment="Center" Name="Slider" Minimum="1" Maximum="200" Value="100" Padding="8 0 8 0"></Slider>
+				<Slider Grid.Row="4" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100" TickFrequency="1" Padding="8 0 8 0"></Slider>
 			</Grid>
 			<Grid Grid.Column="2">
 				<Grid.RowDefinitions>
@@ -188,7 +188,6 @@
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
 							<TextBox Name="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-								
 								1000
 							</TextBox>
 						</Grid>
@@ -209,7 +208,7 @@
 								<ComboBoxItem>Diagonal - 26573481</ComboBoxItem>
 								<ComboBoxItem>Custom</ComboBoxItem>
 							</ComboBox>
-							<CheckBox Grid.Row="4">Free Draw Bypass</CheckBox>
+							<CheckBox Grid.Row="4" Name="FreeDrawCheckbox">Free Draw Bypass</CheckBox>
 							<TextBox Grid.Row="6" Name="CustomPatternInput" IsVisible="True"  Height="24" MinHeight="24" Padding="2 0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="72" VerticalContentAlignment="Center">
 								12345678
 							</TextBox>
