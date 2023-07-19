@@ -82,7 +82,8 @@ namespace Autodraw
         public static void Log(string text)
         {
             Console.WriteLine(text);
-            if (false && Config.getEntry("logsEnabled") != "true") return;
+            //if (false && Config.getEntry("logsEnabled") != "true") return;
+            // Change code later, you shouldn't call file reads so much, instead make it an in the house variable, and update that variable when needed.
             Directory.CreateDirectory(LogsPath);
             File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
         }

@@ -59,6 +59,7 @@
 	  <AvaloniaXaml Remove="Styles\anime.axaml" />
 	  <AvaloniaXaml Remove="Styles\blue.axaml" />
 	  <AvaloniaXaml Remove="Styles\dark.axaml" />
+	  <AvaloniaXaml Remove="Styles\landscape.axaml" />
 	  <AvaloniaXaml Remove="Styles\light.axaml" />
 	</ItemGroup>
 
@@ -70,6 +71,7 @@
 	  <None Remove="Assets\add-image.png" />
 	  <None Remove="Assets\alert.wav" />
 	  <None Remove="Assets\anime.png" />
+	  <None Remove="Assets\Built-In_ThemeItems\Anime2\background.jpg" />
 	  <None Remove="Assets\close.png" />
 	  <None Remove="Assets\Light\close.png" />
 	  <None Remove="Assets\Message\error.png" />
@@ -87,6 +89,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Update="Styles\landscape.axaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </AvaloniaResource>
 	  <AvaloniaResource Update="Styles\anime.axaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </AvaloniaResource>

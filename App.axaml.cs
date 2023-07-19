@@ -17,14 +17,29 @@ public partial class App : Application
 
     public static void LoadTheme(string themeUri, bool isDark = true)
     {
-        App.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-        Current.Styles.Remove(Current.Styles[2]);
-        Current.Styles.Add((IStyle)AvaloniaXamlLoader.Load(
-            new Uri(themeUri)
-            ));
-        CurrentTheme = themeUri;
-        Config.setEntry("theme", themeUri);
-        Config.setEntry("isDarkTheme", isDark.ToString());
+        try
+        {
+            App.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+            Current.Styles.Remove(Current.Styles[2]);
+            Current.Styles.Add((IStyle)AvaloniaXamlLoader.Load(
+                new Uri(themeUri)
+                ));
+            CurrentTheme = themeUri;
+            Config.setEntry("theme", themeUri);
+            Config.setEntry("isDarkTheme", isDark.ToString());
+        }
+        catch
+        {
+            App.Current.RequestedThemeVariant = ThemeVariant.Dark;
+            if(Current.Styles.Count > 2)
+                Current.Styles.Remove(Current.Styles[2]);
+            Current.Styles.Add((IStyle)AvaloniaXamlLoader.Load(
+                new Uri("avares://Autodraw/Styles/dark.axaml")
+                ));
+            CurrentTheme = "avares://Autodraw/Styles/dark.axaml";
+            Config.setEntry("theme", "avares://Autodraw/Styles/dark.axaml");
+            Config.setEntry("isDarkTheme", true.ToString());
+        }
     }
 
     public override void Initialize()

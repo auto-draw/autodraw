@@ -66,10 +66,15 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="2"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<Button Grid.Row="0" VerticalAlignment="Top" Name="ToggleTheme">Togggle Theme</Button>
-				<Button Grid.Row="2" VerticalAlignment="Top" Name="BlueTheme">Blue Theme</Button>
-				<Button Grid.Row="4" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
+				<Button Grid.Row="2" VerticalAlignment="Top" Name="ToggleTheme">Togggle Theme</Button>
+				<Button Grid.Row="4" VerticalAlignment="Top" Name="BlueTheme">Blue Theme</Button>
+				<Button Grid.Row="6" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
+				<Button Grid.Row="8" VerticalAlignment="Top" Name="LandscapeTheme">Anime Theme 2: Electric Bogaloo</Button>
 			</Grid>
 		</Grid>
 	</Grid>

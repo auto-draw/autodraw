@@ -37,6 +37,7 @@ namespace Autodraw
             public byte Threshold = 127;
             public bool Invert = false;
             public bool Outline = false;
+            public bool OutlineSharp = false;
             public bool Crosshatch = false;
             public bool DiagCrosshatch = false;
         }
@@ -98,6 +99,7 @@ namespace Autodraw
 
             bool doinvert = FilterSettings.Invert;
             bool outline = FilterSettings.Outline;
+            bool sharpoutline = FilterSettings.OutlineSharp;
 
             bool crosshatch = FilterSettings.Crosshatch;
             bool diagcross = FilterSettings.DiagCrosshatch;
@@ -122,13 +124,12 @@ namespace Autodraw
                         continue;
                     }
 
-
                     byte returnByte = 255;
 
                     if (outline)
                     {
                         bool doOutline = false;
-                        foreach (int i in Enumerable.Range(0, 7))
+                        foreach (int i in Enumerable.Range(0, 8))
                         {
                             switch (i)
                             {
@@ -206,10 +207,58 @@ namespace Autodraw
                                 break;
                             }
                         }
+                    }else if (sharpoutline)
+                    {
+                        bool doOutline = false;
+                        foreach (int i in Enumerable.Range(0, 4))
+                        {
+                            switch (i)
+                            {
+                                case 0:
+                                    byte rByte, gByte, bByte, aByte;
+                                    float lumen;
+                                    byte localThresh;
+                                    if (y - 1 < 0) break;
+                                    GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
+                                    lumen = (rByte + gByte + bByte) / 3;
+                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
+                                    if (localThresh == 255) { doOutline = true; }
+                                    break;
+                                case 1:
+                                    if (x - 1 < 0) break;
+                                    GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
+                                    lumen = (rByte + gByte + bByte) / 3;
+                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
+                                    if (localThresh == 255) { doOutline = true; }
+                                    break;
+                                case 2:
+                                    if (x + 1 >= width) break;
+                                    GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
+                                    lumen = (rByte + gByte + bByte) / 3;
+                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
+                                    if (localThresh == 255) { doOutline = true; }
+                                    break;
+                                case 3:
+                                    if (y + 1 >= height) break;
+                                    GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
+                                    lumen = (rByte + gByte + bByte) / 3;
+                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
+                                    if (localThresh == 255) { doOutline = true; }
+                                    break;
+                            }
+                            if (doOutline)
+                            {
+                                returnByte = 0;
+                            }
+                        }
                     }
 
                     // Pattern Filters
-                    if (crosshatch || diagcross) {
+                    if (returnByte != 0 && (crosshatch || diagcross)) {
                         
                         if (crosshatch) // Crosshatch
                         {
@@ -232,7 +281,7 @@ namespace Autodraw
                             }
                         }
                     }
-                    else if(!outline) returnByte = threshByte;
+                    else if(!outline && !sharpoutline) returnByte = threshByte;
 
                     *returnPtr++ = MakePixel(returnByte, returnByte, returnByte, 255);
                 }

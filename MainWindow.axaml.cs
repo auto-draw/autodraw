@@ -64,6 +64,9 @@ public partial class MainWindow : Window
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
         BlackThresholdElement.TextChanging += BlackThreshold_TextChanging;
+
+        CustomPatternInput.TextChanging += CustomPatternInput_TextChanging;
+
         AlphaThresholdElement.TextChanging += AlphaThreshold_TextChanging;
 
         FreeDrawCheckbox.Click += FreeDrawCheckbox_Click;
@@ -91,14 +94,51 @@ public partial class MainWindow : Window
         Drawing.Halt();
     }
 
+    private void setPath(int path)
+    {
+        PatternSelection.SelectedIndex =
+            path == 12345678 ? 0 :
+            path == 14627358 ? 1 :
+            path == 26573481 ? 2 :
+            3;
+        if (PatternSelection.SelectedIndex == 3)
+        {
+            CustomPatternInput.Text = path.ToString();
+        }
+        updatePath();
+    }
+
+    private void updatePath()
+    {
+        int Path = 12345678;
+        try
+        {
+            if (CustomPatternInput.Text.Length == 8)
+            {
+                Path = int.Parse(CustomPatternInput.Text);
+            }
+        }
+        catch { Path = 12345678; }
+
+        Drawing.pathValue =
+            PatternSelection.SelectedIndex == 0 ? 12345678 :
+            PatternSelection.SelectedIndex == 1 ? 14627358 :
+            PatternSelection.SelectedIndex == 2 ? 26573481 :
+            PatternSelection.SelectedIndex == 3 ? Path
+            : 12345678;
+    }
+
     private ImageProcessing.Filters getSelectFilters()
     {
         currentFilters.Threshold = (byte)BlackThresh;
         currentFilters.AlphaThreshold = (byte)AlphaThresh;
         currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
+        currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
         currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
+
+        updatePath();
 
         return currentFilters;
     }
@@ -174,6 +214,7 @@ public partial class MainWindow : Window
 
     private async void RunButton_Click(Object? sender, RoutedEventArgs e)
     {
+        updatePath();
         if (processedBitmap == null) { new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error"); return; }
         if (Drawing.isDrawing) { return; }
         WindowState = WindowState.Minimized;
@@ -294,6 +335,14 @@ public partial class MainWindow : Window
         }
     }
 
+    private void CustomPatternInput_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        CustomPatternInput.Text = numberRegex.Replace(CustomPatternInput.Text, "");
+        e.Handled = true;
+
+        if (CustomPatternInput.Text.Length < 1) { return; }
+    }
+
 
     private void FreeDrawCheckbox_Click(object? sender, RoutedEventArgs e)
     {
@@ -337,10 +386,16 @@ public partial class MainWindow : Window
         if (!path.EndsWith(".drawcfg")) { return; }
         string[] lines = File.ReadAllLines(path);
         SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
-        DrawIntervalElement.Text = lines[0];
-        ClickDelayElement.Text = lines[1];
-        BlackThresholdElement.Text = lines[2];
-        AlphaThresholdElement.Text = lines[3];
+        DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
+        ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
+        BlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
+        AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
+        if (lines.Length <= 4) return;
+        if (!bool.TryParse(lines[4], out bool _fd2)) return;
+        FreeDrawCheckbox.IsChecked = _fd2;
+        if (lines.Length <= 5) return;
+        if (!int.TryParse(lines[5], out int _path)) return;
+        setPath(_path);
     }
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -353,13 +408,17 @@ public partial class MainWindow : Window
 
         if (file is not null)
         {
+            updatePath();
             await using var stream = await file.OpenWriteAsync();
             using var streamWriter = new StreamWriter(stream);
 
             string[] values = { DrawIntervalElement.Text,
                             ClickDelayElement.Text,
                             BlackThresholdElement.Text,
-                            AlphaThresholdElement.Text };
+                            AlphaThresholdElement.Text,
+                            FreeDrawCheckbox.IsChecked.ToString(),
+                            Drawing.pathValue.ToString()
+            };
 
             streamWriter.Write(string.Join("\r\n", values));
         }
@@ -384,6 +443,7 @@ public partial class MainWindow : Window
     {
         string ConfigFolder = Config.getEntry("ConfigFolder");
         if (ConfigFolder == null) return;
+        if (!Directory.Exists(ConfigFolder)) return;
         string[] files = Directory.GetFiles(ConfigFolder, "*.drawcfg");
         string[] fileNames = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
         ConfigsListBox.ClearValue(ItemsControl.ItemsSourceProperty);
@@ -401,6 +461,7 @@ public partial class MainWindow : Window
 
     public void LoadSelectedConfig(object? sender, RoutedEventArgs e)
     {
+        if (ConfigsListBox.SelectedItem == null) return;
         string SelectedItem = ConfigsListBox.SelectedItem.ToString();
         if (SelectedItem == null) return;
         LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");

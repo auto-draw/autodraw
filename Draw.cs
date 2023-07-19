@@ -182,7 +182,7 @@ namespace Autodraw
                 if (!isDrawing) { break; }
 
                 cont = false;
-                foreach (int i in Enumerable.Range(0, 7))
+                foreach (int i in Enumerable.Range(0, 8))
                 {
                     switch (path[i])
                     {

@@ -15,15 +15,19 @@ public partial class Settings : Window
     public Settings()
     {
         InitializeComponent();
+
         ToggleTheme.Click += ToggleTheme_Click;
+
         BlueTheme.Click += BlueTheme_Click;
         AnimeTheme.Click += AnimeTheme_Click;
+        LandscapeTheme.Click += LandscapeTheme_Click;
+
         CloseAppButton.Click += CloseAppButton_Click;
     }
 
-    private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void LandscapeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        this.Close();
+        App.LoadTheme("avares://Autodraw/Styles/landscape.axaml");
     }
 
     private void AnimeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -36,6 +40,7 @@ public partial class Settings : Window
         App.LoadTheme("avares://Autodraw/Styles/blue.axaml");
     }
 
+
     private void ToggleTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (App.CurrentTheme == "avares://Autodraw/Styles/dark.axaml")
@@ -46,5 +51,11 @@ public partial class Settings : Window
         {
             App.LoadTheme("avares://Autodraw/Styles/dark.axaml");
         }
+    }
+
+
+    private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        this.Close();
     }
 }

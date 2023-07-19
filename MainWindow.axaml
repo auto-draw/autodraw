@@ -202,7 +202,7 @@
 								<RowDefinition Height="*"/>
 							</Grid.RowDefinitions>
 							<TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Draw Pattern</TextBlock>
-							<ComboBox Grid.Row="2" HorizontalAlignment="Stretch" BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
+							<ComboBox Name="PatternSelection" Grid.Row="2" HorizontalAlignment="Stretch" BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
 								<ComboBoxItem>Horizontal - 12345678</ComboBoxItem>
 								<ComboBoxItem>Vertical - 14627358</ComboBoxItem>
 								<ComboBoxItem>Diagonal - 26573481</ComboBoxItem>
@@ -255,6 +255,9 @@
 								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2">
+										<CheckBox Name="SharpOutlineFilterCheck">Sharp Outline</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
