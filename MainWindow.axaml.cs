@@ -18,6 +18,10 @@ using Avalonia.Platform.Storage;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Diagnostics;
+using Avalonia.Input;
+using SharpGen.Runtime;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Autodraw;
 
@@ -79,10 +83,11 @@ public partial class MainWindow : Window
         LoadSelectButton.Click += LoadSelectedConfig;
         RefreshConfigList(this, null);
 
+        //Drag and Drop
+        this.AddHandler(DragDrop.DropEvent, OnDragDrop);
+
         Input.Start();
     }
-
-
 
     // Core Functions
 
@@ -143,6 +148,21 @@ public partial class MainWindow : Window
         return currentFilters;
     }
 
+    private void SelectImage(string file)
+    {
+        rawBitmap = SKBitmap.Decode(file).NormalizeColor();
+        preFXBitmap = rawBitmap.Copy();
+        displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
+        processedBitmap?.Dispose();
+        processedBitmap = null;
+        ImagePreview.Source = displayedBitmap;
+
+        SizeSlider.Value = 100;
+
+        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
+        WidthInput.Text = displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = displayedBitmap.Size.Height.ToString();
+    }
 
 
     // External Window Opening/Closing Handles
@@ -188,7 +208,7 @@ public partial class MainWindow : Window
 
     private async void OpenButton_Click(object? sender, RoutedEventArgs e)
     {
-        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Save Config",
             FileTypeFilter = new FilePickerFileType[] { FilePickerFileTypes.ImageAll },
@@ -197,18 +217,7 @@ public partial class MainWindow : Window
 
         if (file.Count == 1)
         {
-            rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath()).NormalizeColor();
-            preFXBitmap = rawBitmap.Copy();
-            displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
-            processedBitmap?.Dispose();
-            processedBitmap = null;
-            ImagePreview.Source = displayedBitmap;
-
-            SizeSlider.Value = 100;
-
-            PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-            WidthInput.Text = displayedBitmap.Size.Width.ToString();
-            HeightInput.Text = displayedBitmap.Size.Height.ToString();
+            SelectImage(file[0].TryGetLocalPath());
         }
     }
 
@@ -465,5 +474,30 @@ public partial class MainWindow : Window
         string SelectedItem = ConfigsListBox.SelectedItem.ToString();
         if (SelectedItem == null) return;
         LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");
+    }
+
+    // Drag and Drop
+
+    public void OnDragDrop(object sender, DragEventArgs e)
+    {
+        var files = e.Data.GetFileNames();
+        if (files != null && files.Count() != 1) return;
+        var first = files.First();
+        switch (Path.GetExtension(first).ToLower())
+        {
+            case ".drawcfg":
+                LoadConfig(first);
+                break;
+            case ".axaml":
+                // Not implemented, used for theme loading
+                break;
+            case ".png":
+            case ".jpg":
+            case ".jpeg":
+            case ".gif":
+            case ".bmp":
+                SelectImage(first);
+                break;
+        }
     }
 }
