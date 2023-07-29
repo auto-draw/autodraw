@@ -5,6 +5,7 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using System;
+using System.Collections.Generic;
 
 namespace Autodraw;
 
@@ -23,8 +24,12 @@ public partial class Settings : Window
         LandscapeTheme.Click += LandscapeTheme_Click;
 
         CloseAppButton.Click += CloseAppButton_Click;
+        GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
+        ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
+        MarketplaceButton.Click += (sender, e) => OpenMenu("Marketplace");
+        DevButton.Click += (sender, e) => OpenMenu("Developers");
     }
-
+   
     private void LandscapeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         App.LoadTheme("avares://Autodraw/Styles/landscape.axaml");
@@ -53,9 +58,27 @@ public partial class Settings : Window
         }
     }
 
-
     private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
+
+    private void DeactivateItem(List<string> menus)
+    {
+        foreach (var menu in menus)
+        {
+            var myControl = this.FindControl<Control>(menu);
+            if (myControl == null) continue;
+            myControl.IsVisible = false;
+        }
+    }
+
+    private void OpenMenu(string menu)
+    {
+        var myControl = this.FindControl<Control>(menu);
+        DeactivateItem(new List<string>() { "General", "Themes", "Marketplace", "Developers" });
+        if (myControl == null) return;
+        myControl.IsVisible = true;
+    }
+
 }
