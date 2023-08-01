@@ -83,7 +83,7 @@
 				</Grid.RowDefinitions>
 				<Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
 					<Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Border>
-					<Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Image>
+					<Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}" DragDrop.AllowDrop="True"></Image>
 				</Canvas>
 				<Grid Grid.Row="2">
 					<Grid.ColumnDefinitions>
@@ -94,9 +94,9 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 
-					<TextBox Grid.Column="0" Name="WidthInput" Text="" IsReadOnly="True" Watermark="Width" HorizontalContentAlignment="Right"></TextBox>
-					<TextBox Grid.Column="2" Name="PercentageNumber" Text="" IsReadOnly="True" Watermark="Scale" HorizontalContentAlignment="Center"></TextBox>
-					<TextBox Grid.Column="4" Name="HeightInput" Text="" IsReadOnly="True" Watermark="Height"></TextBox>
+					<TextBox Grid.Column="0" Name="WidthInput" Text="" Watermark="Width" HorizontalContentAlignment="Right"/>
+					<TextBox Grid.Column="2" Name="PercentageNumber" Text="100%" Watermark="Scale" HorizontalContentAlignment="Center"/>
+					<TextBox Grid.Column="4" Name="HeightInput" Text="" Watermark="Height"/>
 				</Grid>
 				<Slider Grid.Row="4" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100" TickFrequency="1" Padding="8 0 8 0"></Slider>
 			</Grid>
@@ -253,6 +253,9 @@
 							<TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
 							<Grid Grid.Row="5">
 								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
+									<ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
+										Primary Filters
+									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
 									</ListBoxItem>
@@ -268,11 +271,20 @@
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="DiagCrossFilterCheck">Diagonal-Cross</CheckBox>
 									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="HoneycombFilterCheck" IsEnabled="False">Honeycomb</CheckBox>
+									<ListBoxItem Padding="8 2" IsEnabled="False">
+										<CheckBox Name="AntiOutlineFilterCheck">Anti Sharp Outline</CheckBox>
 									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="ShinglesFilterCheck" IsEnabled="False">Shingles</CheckBox>
+									<ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
+										Dithering Filters
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2" IsEnabled="False">
+										<CheckBox Name="HorizontalDitherCheck">Horizontal Dither</CheckBox>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2" IsEnabled="False">
+										<CheckBox Name="DiagonalDitherCheck">Diagonal Dither</CheckBox>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2" IsEnabled="False">
+										<CheckBox Name="VerticalDitherCheck">Vertical Dither</CheckBox>
 									</ListBoxItem>
 								</ListBox>
 							</Grid>

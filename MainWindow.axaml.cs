@@ -18,6 +18,8 @@ using Avalonia.Platform.Storage;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Diagnostics;
+using Avalonia.Input;
+using System.Security.Cryptography;
 
 namespace Autodraw;
 
@@ -37,6 +39,7 @@ public partial class MainWindow : Window
 
     private int BlackThresh = 127;
     private int AlphaThresh = 200;
+    private bool MidChange = false;
 
     private ImageProcessing.Filters currentFilters = new ImageProcessing.Filters() { Invert = false, Threshold = (byte)127, AlphaThreshold = (byte)200 };
 
@@ -60,6 +63,10 @@ public partial class MainWindow : Window
 
         // Inputs
         SizeSlider.ValueChanged += SizeSlider_ValueChanged;
+
+        WidthInput.TextChanging += WidthInput_TextChanged;
+        HeightInput.TextChanging += HeightInput_TextChanged;
+        PercentageNumber.TextChanging += PercentageNumber_TextChanged;
 
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
@@ -130,13 +137,18 @@ public partial class MainWindow : Window
 
     private ImageProcessing.Filters getSelectFilters()
     {
+        // Generic Filters
         currentFilters.Threshold = (byte)BlackThresh;
         currentFilters.AlphaThreshold = (byte)AlphaThresh;
+
+        // Primary Filters
         currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
         currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
         currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
+
+        // Dither Filters
 
         updatePath();
 
@@ -190,25 +202,36 @@ public partial class MainWindow : Window
     {
         var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Save Config",
+            Title = "Open Image",
             FileTypeFilter = new FilePickerFileType[] { FilePickerFileTypes.ImageAll },
             AllowMultiple = false
         });
 
         if (file.Count == 1)
         {
+            Debug.WriteLine("1");
             rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath()).NormalizeColor();
+            Debug.WriteLine("2");
             preFXBitmap = rawBitmap.Copy();
+            Debug.WriteLine("3");
             displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
+            Debug.WriteLine("4");
             processedBitmap?.Dispose();
+            Debug.WriteLine("5");
             processedBitmap = null;
             ImagePreview.Source = displayedBitmap;
+            Debug.WriteLine("6");
 
+            Debug.WriteLine("7");
+            MidChange = true;
             SizeSlider.Value = 100;
 
+            Debug.WriteLine("8");
             PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
             WidthInput.Text = displayedBitmap.Size.Width.ToString();
             HeightInput.Text = displayedBitmap.Size.Height.ToString();
+            MidChange = false;
+            Debug.WriteLine("9");
         }
     }
 
@@ -225,21 +248,19 @@ public partial class MainWindow : Window
 
     // Inputs Handles
 
-    private void SizeSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    private void ResizeImage(double width, double height)
     {
-        if (DateTime.Now.ToFileTime()-Time < 1_000_000) return;
-        Time = DateTime.Now.ToFileTime();
-
+        width = Math.Max(1, width);
+        height = Math.Max(1, height);
         if (GC.GetTotalMemory(false) < lastMem)
         {
             GC.RemoveMemoryPressure(lastMem);
         }
         lastMem = GC.GetTotalMemory(false);
-        // Dirty? yes. Works? yes.
 
         if (processedBitmap == null)
         {
-            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)(rawBitmap.Width * SizeSlider.Value / 100), (int)(rawBitmap.Height * SizeSlider.Value / 100)), SKFilterQuality.High);
+            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
             displayedBitmap?.Dispose();
@@ -247,9 +268,10 @@ public partial class MainWindow : Window
             ImagePreview.Source = displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             MemPressure += resizedBitmap.ByteCount;
-        }else if (processedBitmap != null)
+        }
+        else if (processedBitmap != null)
         {
-            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)(rawBitmap.Width * SizeSlider.Value / 100), (int)(rawBitmap.Height * SizeSlider.Value / 100)), SKFilterQuality.High);
+            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
             SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, getSelectFilters());
@@ -261,14 +283,91 @@ public partial class MainWindow : Window
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             MemPressure += resizedBitmap.ByteCount;
         }
+    }
 
+    private void SizeSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (MidChange) return;
+        if (DateTime.Now.ToFileTime()-Time < 333_333) return;
+        Time = DateTime.Now.ToFileTime();
+
+        ResizeImage(rawBitmap.Width * SizeSlider.Value / 100, rawBitmap.Height * SizeSlider.Value / 100);
+
+        MidChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
         WidthInput.Text = displayedBitmap.Size.Width.ToString();
         HeightInput.Text = displayedBitmap.Size.Height.ToString();
+        MidChange = false;
+    }
+
+    Regex numberRegex = new(@"[^0-9]");
+
+    private void PercentageNumber_TextChanged(object? sender, TextChangingEventArgs e)
+    {
+        if (MidChange) return;
+        Debug.WriteLine("Percent");
+        string numberText = numberRegex.Replace(PercentageNumber.Text, "");
+        PercentageNumber.Text = numberText+"%";
+        e.Handled = true;
+
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 500) { PercentageNumber.Text = "500%"; return; }
+
+        ResizeImage(rawBitmap.Width * setNumber / 100, rawBitmap.Height * setNumber / 100);
+
+        MidChange = true;
+        WidthInput.Text = displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = displayedBitmap.Size.Height.ToString();
+        MidChange = false;
+    }
+
+    private void HeightInput_TextChanged(object? sender, TextChangingEventArgs e)
+    {
+        if (MidChange) return;
+        Debug.WriteLine("Height");
+        string numberText = numberRegex.Replace(HeightInput.Text, "");
+        HeightInput.Text = numberText;
+        e.Handled = true;
+
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 8096) { PercentageNumber.Text = "8096"; return; }
+
+        // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
+        ResizeImage(((float)rawBitmap.Width / (float)rawBitmap.Height)*setNumber, setNumber);
+
+        MidChange = true;
+        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
+        WidthInput.Text = displayedBitmap.Size.Width.ToString();
+        MidChange = false;
+    }
+
+    private void WidthInput_TextChanged(object? sender, TextChangingEventArgs e)
+    {
+        if (MidChange) return;
+        Debug.WriteLine("Width");
+        string numberText = numberRegex.Replace(WidthInput.Text, "");
+        WidthInput.Text = numberText;
+        e.Handled = true;
+
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 8096) { PercentageNumber.Text = "8096"; return; }
+
+        // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
+        ResizeImage(setNumber, ((float)rawBitmap.Height/ (float)rawBitmap.Width)*setNumber);
+
+        MidChange = true;
+        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
+        HeightInput.Text = displayedBitmap.Size.Height.ToString();
+        MidChange = false;
     }
 
 
-    Regex numberRegex = new(@"[^0-9]");
 
     private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
     {

@@ -17,6 +17,7 @@ using Tmds.DBus.Protocol;
 using System.IO.Pipes;
 using Avalonia;
 using Avalonia.Threading;
+using Avalonia.Media.Imaging;
 
 namespace Autodraw
 {
@@ -43,10 +44,16 @@ namespace Autodraw
         public static Vector2 lastPos = new(0, 0);
         public static bool useLastPos = false;
 
-        
+        public static bool ShowPopup = Config.getEntry("showPopup") != null ? bool.Parse(Config.getEntry("showPopup")) : true;
 
+
+
+        private static DrawDataDisplay? dataDisplay;
         private static int[,]? pixelArray;
         private static int[] path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
+
+        private static int totalScanSize = 0;
+        private static int completeTotalScan = 0;
 
         // Functions
 
@@ -59,6 +66,8 @@ namespace Autodraw
 
         private static unsafe void Scan(SKBitmap bitmap)
         {
+            totalScanSize = 0;
+            completeTotalScan = 0;
             pixelArray = new int[bitmap.Width, bitmap.Height];
             byte* bitPtr = (byte*)bitmap.GetPixels().ToPointer();
 
@@ -73,6 +82,10 @@ namespace Autodraw
                     byte alphaByte = *bitPtr++;
 
                     pixelArray[x, y] = redByte < 127 ? 1 : 0;
+                    if(redByte < 127)
+                    {
+                        totalScanSize += 1;
+                    }
                 }
             }
             return;
@@ -99,6 +112,7 @@ namespace Autodraw
         {
             if (isDrawing) return false;
 
+
             void keybindHalt(object? sender, KeyboardHookEventArgs e)
             {
                 if (e.Data.KeyCode == KeyCode.VcLeftAlt)
@@ -116,7 +130,14 @@ namespace Autodraw
             Vector2 usedPos = useLastPos ? lastPos : Input.mousePos;
             lastPos = usedPos;
             Pos StartPos = new() { X= (int)usedPos.X-bitmap.Width/2, Y= (int)usedPos.Y - bitmap.Height / 2 };
-            
+
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                dataDisplay = new DrawDataDisplay();
+                dataDisplay.Show();
+                dataDisplay.Position = new Avalonia.PixelPoint((int)(usedPos.X+bitmap.Width/2), (int)(usedPos.Y + bitmap.Height / 2));
+            });
+
 
             if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
 
@@ -130,7 +151,6 @@ namespace Autodraw
                     if (pixelArray[_x, _y] == 1)
                     {
                         int x = (_x + StartPos.X);
-
 
                         Input.MoveTo((short)x, (short)(y - 1));
                         await NOP(clickDelay * 5000);
@@ -149,7 +169,8 @@ namespace Autodraw
             ResetScan(new Pos { X = bitmap.Width, Y = bitmap.Height });
             Dispatcher.UIThread.Invoke(()=>
             {
-                new MessageBox().ShowMessageBox("Drawing Finished!", "The drawing has finished! Yippee!", "info");
+                dataDisplay.Close();
+                if (ShowPopup) { new MessageBox().ShowMessageBox("Drawing Finished!", "The drawing has finished! Yippee!", "info"); };
             });
             return true;
         }
@@ -162,7 +183,14 @@ namespace Autodraw
             int distanceSinceLastClick = 0;
             while (true)
             {
-                if (!isDrawing) { break; }
+                if (!isDrawing) {
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        dataDisplay.DataDisplayText.Text = $"Total Image Done: {completeTotalScan}/{totalScanSize}\nSearching...";
+                    });
+                    break;
+                }
+
                 short x = (short)(_x + startPos.X);
                 short y = (short)(_y + startPos.Y);
                 Input.MoveTo((short)x, (short)y);
@@ -175,7 +203,16 @@ namespace Autodraw
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 }
 
+                if (pixelArray[_x,_y] == 1)
+                {
+                    completeTotalScan += 1;
+                }
                 pixelArray[_x,_y] = 2;
+
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    dataDisplay.DataDisplayText.Text = $"Total Image Done: {completeTotalScan}/{totalScanSize}\nCurrent Stack Size: {stack.Count}";
+                });
 
                 await NOP(interval);
 

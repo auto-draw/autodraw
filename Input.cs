@@ -23,7 +23,7 @@ namespace Autodraw
         // Public
         public static TaskPoolGlobalHook taskHook = new();
         public static Vector2 mousePos = new();
-        public static event EventHandler? mousePosUpdate;
+        public static event EventHandler? MousePosUpdate;
         public static bool forceUio = false;
 
         //// Functions
@@ -41,7 +41,7 @@ namespace Autodraw
             if (taskHook.IsRunning) return;
             if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
 
-            taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); mousePosUpdate?.Invoke(null, EventArgs.Empty); };
+            taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); MousePosUpdate?.Invoke(null, EventArgs.Empty); };
 
             taskHook.RunAsync();
         }

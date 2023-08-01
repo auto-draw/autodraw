@@ -22,7 +22,7 @@ public partial class Preview : Window
     {
         InitializeComponent();
         this.Closing += OnClosing;
-        Input.mousePosUpdate += updateMousePosition;
+        Input.MousePosUpdate += updateMousePosition;
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
