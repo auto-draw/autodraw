@@ -1,1 +1,0 @@
-This is a selfcontained build, which contains additional shit like dotnet runtime pre-packaged, necessary for linux as not many people have it pre-installed, not often necessary for Windows however due to its ubandance. This build is more for stability since previous builds were self-contained. 

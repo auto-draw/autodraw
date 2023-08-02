@@ -123,20 +123,25 @@ namespace Autodraw
             Input.taskHook.KeyReleased += keybindHalt;
 
             isDrawing = true;
-            path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
-
-            Scan(bitmap);
-
             Vector2 usedPos = useLastPos ? lastPos : Input.mousePos;
-            lastPos = usedPos;
-            Pos StartPos = new() { X= (int)usedPos.X-bitmap.Width/2, Y= (int)usedPos.Y - bitmap.Height / 2 };
 
             Dispatcher.UIThread.Invoke(() =>
             {
                 dataDisplay = new DrawDataDisplay();
                 dataDisplay.Show();
-                dataDisplay.Position = new Avalonia.PixelPoint((int)(usedPos.X+bitmap.Width/2), (int)(usedPos.Y + bitmap.Height / 2));
+                dataDisplay.Position = new Avalonia.PixelPoint((int)(usedPos.X + bitmap.Width / 2), (int)(usedPos.Y + bitmap.Height / 2));
             });
+
+            path = pathValue.ToString().Select(t => int.Parse(t.ToString())).ToArray();
+
+            Scan(bitmap);
+
+            lastPos = usedPos;
+            Pos StartPos = new() { X= (int)usedPos.X-bitmap.Width/2, Y= (int)usedPos.Y - bitmap.Height / 2 };
+            Input.MoveTo((short)StartPos.X, (short)StartPos.Y);
+            Input.SendClick(Input.MouseTypes.MouseLeft);
+
+            await NOP(100000);
 
 
             if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
