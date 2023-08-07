@@ -17,19 +17,27 @@ namespace Autodraw
     {
         private static long Process_MemPressure = 0;
 
-        private static Pattern patternCrosshatch = new Pattern() { 
+        private static readonly Pattern patternHorizonalLines = new()
+        {
+            Pat = "1\n0\n0\n0\n0\n0\n0\n",
+            Width = 1,
+            Height = 6
+        };
+
+        private static readonly Pattern patternCrosshatch = new() { 
             Pat = "0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n1 1 1 1 1 1 1\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n",
             Width = 7, Height = 7
         };
 
-        private static Pattern patternDiagCross  = new Pattern() {
+        private static readonly Pattern patternDiagCross  = new() {
             Pat = "1 0 0 0 0 0 1\n0 1 0 0 0 1 0\n0 0 1 0 1 0 0\n0 0 0 1 0 0 0\n0 0 1 0 1 0 0\n0 1 0 0 0 1 0\n1 0 0 0 0 0 1\n",
             Width = 6,
             Height = 6
         };
 
-        private static List<int[]> listCrosshatch = readPattern(patternCrosshatch.Pat);
-        private static List<int[]> listDiagCross  = readPattern(patternDiagCross.Pat);
+        private static readonly List<int[]> listHorizontalLines = ReadPattern(patternHorizonalLines.Pat);
+        private static readonly List<int[]> listCrosshatch = ReadPattern(patternCrosshatch.Pat);
+        private static readonly List<int[]> listDiagCross  = ReadPattern(patternDiagCross.Pat);
 
         public class Filters
         {
@@ -40,6 +48,7 @@ namespace Autodraw
             public bool OutlineSharp = false;
             public bool Crosshatch = false;
             public bool DiagCrosshatch = false;
+            public bool HorizontalLines = false;
         }
         public class Pattern
         {
@@ -47,11 +56,11 @@ namespace Autodraw
             public int Height = 2;
             public string Pat = "0 0\n0 0";
         }
-        public static List<int[]> readPattern(string pat)
+        public static List<int[]> ReadPattern(string pat)
         {
             string[] lines = pat.Split('\n');
 
-            List<int[]> positions = new List<int[]>();
+            List<int[]> positions = new();
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -86,7 +95,7 @@ namespace Autodraw
             Process_MemPressure = SourceBitmap.BytesPerPixel * SourceBitmap.Width * SourceBitmap.Height;
 
             // Create an Output Bitmap
-            SKBitmap OutputBitmap = new SKBitmap(SourceBitmap.Width, SourceBitmap.Height);
+            SKBitmap OutputBitmap = new(SourceBitmap.Width, SourceBitmap.Height);
 
             uint* basePtr = (uint*)SourceBitmap.GetPixels().ToPointer();
             uint* returnPtr = (uint*)OutputBitmap.GetPixels().ToPointer();
@@ -103,14 +112,14 @@ namespace Autodraw
 
             bool crosshatch = FilterSettings.Crosshatch;
             bool diagcross = FilterSettings.DiagCrosshatch;
+            bool horizontals = FilterSettings.HorizontalLines;
 
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++)
                 {
                     uint* srcPtr = basePtr + width * y + x;
 
-                    byte redByte, greenByte, blueByte, alphaByte;
-                    GetPixel(srcPtr, out redByte, out greenByte, out blueByte, out alphaByte);
+                    GetPixel(srcPtr, out byte redByte, out byte greenByte, out byte blueByte, out byte alphaByte);
 
                     float luminosity = (redByte + greenByte + blueByte) / 3;
 
@@ -258,13 +267,12 @@ namespace Autodraw
                     }
 
                     // Pattern Filters
-                    if (returnByte != 0 && (crosshatch || diagcross)) {
-                        
-                        if (crosshatch) // Crosshatch
+                    if (returnByte != 0 && (crosshatch || diagcross || horizontals)) {
+                        if (horizontals)  // Horizontal Stripes
                         {
-                            foreach (var patPoint in listCrosshatch)
+                            foreach (var patPoint in listHorizontalLines)
                             {
-                                if (x % patternCrosshatch.Width == patPoint[0] && y % patternCrosshatch.Height == patPoint[1])
+                                if (x % patternHorizonalLines.Width == patPoint[0] && y % patternHorizonalLines.Height == patPoint[1])
                                 {
                                     returnByte = 0;
                                 }
@@ -275,6 +283,16 @@ namespace Autodraw
                             foreach (var patPoint in listDiagCross)
                             {
                                 if (x % patternDiagCross.Width == patPoint[0] && y % patternDiagCross.Height == patPoint[1])
+                                {
+                                    returnByte = 0;
+                                }
+                            }
+                        }
+                        if (crosshatch) // Crosshatch
+                        {
+                            foreach (var patPoint in listCrosshatch)
+                            {
+                                if (x % patternCrosshatch.Width == patPoint[0] && y % patternCrosshatch.Height == patPoint[1])
                                 {
                                     returnByte = 0;
                                 }
@@ -300,7 +318,7 @@ namespace Autodraw
             if (srcColor == SKColorType.Bgra8888) return SourceBitmap;
             // Ensure we don't need to normalize it.
 
-            SKBitmap OutputBitmap = new SKBitmap(SourceBitmap.Width, SourceBitmap.Height);
+            SKBitmap OutputBitmap = new(SourceBitmap.Width, SourceBitmap.Height);
 
             byte* srcPtr = (byte*)SourceBitmap.GetPixels().ToPointer();
             byte* dstPtr = (byte*)OutputBitmap.GetPixels().ToPointer();

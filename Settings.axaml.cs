@@ -6,6 +6,7 @@ using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Autodraw;
 
@@ -18,6 +19,11 @@ public partial class Settings : Window
         InitializeComponent();
 
         ToggleTheme.Click += ToggleTheme_Click;
+
+        GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
+        ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
+        MarketplaceButton.Click += (sender, e) => OpenMenu("Marketplace");
+        DevButton.Click += (sender, e) => OpenMenu("Developers");
 
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
         ShowPopup.IsCheckedChanged += ShowPopup_IsCheckedChanged;
@@ -40,14 +46,14 @@ public partial class Settings : Window
 
     private void ShowPopup_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine("Hi2");
+        if (ShowPopup.IsChecked == null) return;
         Drawing.ShowPopup = (bool)ShowPopup.IsChecked;
-        Config.setEntry("showPopup", ShowPopup.IsChecked.ToString());
+        Config.setEntry("showPopup", ShowPopup.IsChecked.ToString() ?? "true");
     }
 
     private void AltMouseControl_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine("Hi1");
+        if (AltMouseControl.IsChecked == null) return;
         Input.forceUio = (bool)AltMouseControl.IsChecked;
     }
 
@@ -82,6 +88,24 @@ public partial class Settings : Window
 
     private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        this.Close();
+        Close();
+    }
+
+    private void DeactivateItem(List<string> menus)
+    {
+        foreach (var menu in menus)
+        {
+            var myControl = this.FindControl<Control>(menu);
+            if (myControl == null) continue;
+            myControl.IsVisible = false;
+        }
+    }
+
+    private void OpenMenu(string menu)
+    {
+        var myControl = this.FindControl<Control>(menu);
+        DeactivateItem(new List<string>() { "General", "Themes", "Marketplace", "Developers" });
+        if (myControl == null) return;
+        myControl.IsVisible = true;
     }
 }

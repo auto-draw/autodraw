@@ -44,7 +44,7 @@ namespace Autodraw
         public static Vector2 lastPos = new(0, 0);
         public static bool useLastPos = false;
 
-        public static bool ShowPopup = Config.getEntry("showPopup") != null ? bool.Parse(Config.getEntry("showPopup")) : true;
+        public static bool ShowPopup = Config.getEntry("showPopup") == null || bool.Parse(Config.getEntry("showPopup") ?? "true");
 
 
 
@@ -112,8 +112,7 @@ namespace Autodraw
         {
             if (isDrawing) return false;
 
-
-            void keybindHalt(object? sender, KeyboardHookEventArgs e)
+            static void keybindHalt(object? sender, KeyboardHookEventArgs e)
             {
                 if (e.Data.KeyCode == KeyCode.VcLeftAlt)
                 {

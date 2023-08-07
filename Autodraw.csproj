@@ -39,7 +39,9 @@
     <PackageReference Include="SharpAudio" Version="1.0.65-beta" />
     <PackageReference Include="SharpAudio.Codec" Version="1.0.65-beta" />
     <PackageReference Include="SharpHook" Version="4.2.1" />
-    <PackageReference Include="SimWinMouse" Version="1.0.2" />
+    <PackageReference Include="SimWinMouse" Version="1.0.2">
+      <NoWarn>true</NoWarn>
+    </PackageReference>
   </ItemGroup>
 
 	<ItemGroup>

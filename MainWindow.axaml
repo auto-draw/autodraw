@@ -267,6 +267,9 @@
 										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
+										<CheckBox Name="HorizontalFilterCheck">Horizontal Stripes</CheckBox>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2">
 										<CheckBox Name="CrosshatchFilterCheck">Crosshatch</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">

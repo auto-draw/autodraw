@@ -13,7 +13,7 @@ namespace Autodraw;
 public partial class App : Application
 {
     public static string CurrentTheme = Config.getEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
-    public static bool SavedIsDark = Config.getEntry("isDarkTheme") != null ? bool.Parse(Config.getEntry("isDarkTheme")) : true;
+    public static bool SavedIsDark = Config.getEntry("isDarkTheme") == null || bool.Parse(Config.getEntry("isDarkTheme") ?? "true");
 
     public static void LoadTheme(string themeUri, bool isDark = true)
     {

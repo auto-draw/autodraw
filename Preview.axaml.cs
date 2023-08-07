@@ -22,7 +22,7 @@ public partial class Preview : Window
     {
         InitializeComponent();
         this.Closing += OnClosing;
-        Input.MousePosUpdate += updateMousePosition;
+        Input.MousePosUpdate += UpdateMousePosition;
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
@@ -30,7 +30,7 @@ public partial class Preview : Window
         renderedBitmap.Dispose();
     }
 
-    private void updateMousePosition(object? sender, EventArgs e)
+    private void UpdateMousePosition(object? sender, EventArgs e)
     {
         Dispatcher.UIThread.Invoke(new Action(() =>
         {
@@ -45,6 +45,7 @@ public partial class Preview : Window
     {
         if (e.Data.KeyCode == SharpHook.Native.KeyCode.VcLeftShift || e.Data.KeyCode == SharpHook.Native.KeyCode.VcRightShift)
         {
+            if (inputBitmap.IsNull) return;
             Thread drawThread = new(async () =>
             {
                 await Drawing.Draw(inputBitmap);

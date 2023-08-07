@@ -1,7 +1,3 @@
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-
 using Avalonia.Controls;
 using Avalonia.Themes.Fluent;
 using SkiaSharp;
@@ -33,7 +29,9 @@ public partial class MainWindow : Window
     private SKBitmap? processedBitmap;
     private Bitmap? displayedBitmap;
 
-    private int MemPressure = 0;
+#pragma warning disable IDE0052 // Such lies.
+    private long MemPressure;
+#pragma warning restore IDE0052
     private long lastMem = 0;
     private long Time = DateTime.Now.ToFileTime();
 
@@ -41,7 +39,7 @@ public partial class MainWindow : Window
     private int AlphaThresh = 200;
     private bool MidChange = false;
 
-    private ImageProcessing.Filters currentFilters = new ImageProcessing.Filters() { Invert = false, Threshold = (byte)127, AlphaThreshold = (byte)200 };
+    private readonly ImageProcessing.Filters currentFilters = new() { Invert = false, Threshold = (byte)127, AlphaThreshold = (byte)200 };
 
     public MainWindow()
     {
@@ -101,7 +99,7 @@ public partial class MainWindow : Window
         Drawing.Halt();
     }
 
-    private void setPath(int path)
+    private void SetPath(int path)
     {
         PatternSelection.SelectedIndex =
             path == 12345678 ? 0 :
@@ -112,10 +110,10 @@ public partial class MainWindow : Window
         {
             CustomPatternInput.Text = path.ToString();
         }
-        updatePath();
+        UpdatePath();
     }
 
-    private void updatePath()
+    private void UpdatePath()
     {
         int Path = 12345678;
         try
@@ -135,7 +133,7 @@ public partial class MainWindow : Window
             : 12345678;
     }
 
-    private ImageProcessing.Filters getSelectFilters()
+    private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
         currentFilters.Threshold = (byte)BlackThresh;
@@ -145,12 +143,13 @@ public partial class MainWindow : Window
         currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
         currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
+        currentFilters.HorizontalLines = HorizontalFilterCheck.IsChecked ?? false;
         currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
 
         // Dither Filters
 
-        updatePath();
+        UpdatePath();
 
         return currentFilters;
     }
@@ -190,10 +189,11 @@ public partial class MainWindow : Window
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
     {
+        if (preFXBitmap.IsNull) return;
         processedBitmap?.Dispose();
         displayedBitmap?.Dispose();
 
-        processedBitmap = ImageProcessing.Process(preFXBitmap, getSelectFilters());
+        processedBitmap = ImageProcessing.Process(preFXBitmap, GetSelectFilters());
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
         ImagePreview.Source = displayedBitmap;
     }
@@ -209,35 +209,26 @@ public partial class MainWindow : Window
 
         if (file.Count == 1)
         {
-            Debug.WriteLine("1");
             rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath()).NormalizeColor();
-            Debug.WriteLine("2");
             preFXBitmap = rawBitmap.Copy();
-            Debug.WriteLine("3");
             displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
-            Debug.WriteLine("4");
             processedBitmap?.Dispose();
-            Debug.WriteLine("5");
             processedBitmap = null;
             ImagePreview.Source = displayedBitmap;
-            Debug.WriteLine("6");
 
-            Debug.WriteLine("7");
             MidChange = true;
             SizeSlider.Value = 100;
 
-            Debug.WriteLine("8");
             PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
             WidthInput.Text = displayedBitmap.Size.Width.ToString();
             HeightInput.Text = displayedBitmap.Size.Height.ToString();
             MidChange = false;
-            Debug.WriteLine("9");
         }
     }
 
-    private async void RunButton_Click(Object? sender, RoutedEventArgs e)
+    private void RunButton_Click(Object? sender, RoutedEventArgs e)
     {
-        updatePath();
+        UpdatePath();
         if (processedBitmap == null) { new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error"); return; }
         if (Drawing.isDrawing) { return; }
         WindowState = WindowState.Minimized;
@@ -274,7 +265,7 @@ public partial class MainWindow : Window
             SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
-            SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, getSelectFilters());
+            SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, GetSelectFilters());
             processedBitmap.Dispose();
             processedBitmap = postProcessBitmap;
             displayedBitmap?.Dispose();
@@ -300,12 +291,12 @@ public partial class MainWindow : Window
         MidChange = false;
     }
 
-    Regex numberRegex = new(@"[^0-9]");
+    readonly Regex numberRegex = new(@"[^0-9]");
 
     private void PercentageNumber_TextChanged(object? sender, TextChangingEventArgs e)
     {
+        if (PercentageNumber.Text == null) return;
         if (MidChange) return;
-        Debug.WriteLine("Percent");
         string numberText = numberRegex.Replace(PercentageNumber.Text, "");
         PercentageNumber.Text = numberText+"%";
         e.Handled = true;
@@ -325,8 +316,8 @@ public partial class MainWindow : Window
 
     private void HeightInput_TextChanged(object? sender, TextChangingEventArgs e)
     {
+        if (HeightInput.Text == null) return;
         if (MidChange) return;
-        Debug.WriteLine("Height");
         string numberText = numberRegex.Replace(HeightInput.Text, "");
         HeightInput.Text = numberText;
         e.Handled = true;
@@ -347,8 +338,8 @@ public partial class MainWindow : Window
 
     private void WidthInput_TextChanged(object? sender, TextChangingEventArgs e)
     {
+        if (WidthInput.Text == null) return;
         if (MidChange) return;
-        Debug.WriteLine("Width");
         string numberText = numberRegex.Replace(WidthInput.Text, "");
         WidthInput.Text = numberText;
         e.Handled = true;
@@ -371,6 +362,7 @@ public partial class MainWindow : Window
 
     private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
     {
+        if (DrawIntervalElement.Text == null) return;
         DrawIntervalElement.Text = numberRegex.Replace(DrawIntervalElement.Text, "");
         e.Handled = true;
 
@@ -387,6 +379,7 @@ public partial class MainWindow : Window
     }
     private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
     {
+        if (ClickDelayElement.Text == null) return;
         ClickDelayElement.Text = numberRegex.Replace(ClickDelayElement.Text, "");
         e.Handled = true;
 
@@ -403,6 +396,7 @@ public partial class MainWindow : Window
     }
     private void BlackThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
+        if (BlackThresholdElement.Text == null) return;
         BlackThresholdElement.Text = numberRegex.Replace(BlackThresholdElement.Text, "");
         e.Handled = true;
 
@@ -419,6 +413,7 @@ public partial class MainWindow : Window
     }
     private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
+        if (AlphaThresholdElement.Text == null) return;
         AlphaThresholdElement.Text = numberRegex.Replace(AlphaThresholdElement.Text, "");
         e.Handled = true;
 
@@ -436,6 +431,7 @@ public partial class MainWindow : Window
 
     private void CustomPatternInput_TextChanging(object? sender, TextChangingEventArgs e)
     {
+        if (CustomPatternInput.Text == null) return;
         CustomPatternInput.Text = numberRegex.Replace(CustomPatternInput.Text, "");
         e.Handled = true;
 
@@ -474,7 +470,7 @@ public partial class MainWindow : Window
 
     // User Configuration Handles
 
-    public static FilePickerFileType configsFileFilter { get; } = new("Autodraw Config Files")
+    public static FilePickerFileType ConfigsFileFilter { get; } = new("Autodraw Config Files")
     {
         Patterns = new[] { "*.drawcfg" }
     };
@@ -494,7 +490,7 @@ public partial class MainWindow : Window
         FreeDrawCheckbox.IsChecked = _fd2;
         if (lines.Length <= 5) return;
         if (!int.TryParse(lines[5], out int _path)) return;
-        setPath(_path);
+        SetPath(_path);
     }
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -502,12 +498,12 @@ public partial class MainWindow : Window
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Config",
-            FileTypeChoices = new FilePickerFileType[] { configsFileFilter }
+            FileTypeChoices = new FilePickerFileType[] { ConfigsFileFilter }
         });
 
         if (file is not null)
         {
-            updatePath();
+            UpdatePath();
             await using var stream = await file.OpenWriteAsync();
             using var streamWriter = new StreamWriter(stream);
 
@@ -528,7 +524,7 @@ public partial class MainWindow : Window
         var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Save Config",
-            FileTypeFilter = new FilePickerFileType[] { configsFileFilter },
+            FileTypeFilter = new FilePickerFileType[] { ConfigsFileFilter },
             AllowMultiple = false
         });
 

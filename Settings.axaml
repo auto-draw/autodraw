@@ -55,11 +55,29 @@
 				<RowDefinition Height="4"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-			<TextBlock Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
-			
-			<Canvas Grid.Column="0" Grid.Row="2" Background="#3f000000"></Canvas>
+			<Grid Grid.Column="0" Grid.Row="2" Background="#3f000000">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Button Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,2,5,0" HorizontalContentAlignment="Center" Name="GeneralMenuButton">General</Button>
+				<Button Grid.Row="4" HorizontalAlignment="Stretch" Margin="5,0,5,0" HorizontalContentAlignment="Center" Name="ThemeMenuButton">Themes</Button>
+				<Button Grid.Row="10" HorizontalAlignment="Stretch" Margin="5,0,5,0" HorizontalContentAlignment="Center" Name="MarketplaceButton" VerticalAlignment="Bottom">Marketplace</Button>
+				<Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5" HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom" >Dev. options</Button>
+			</Grid>
 
-			<Grid Grid.Column="2" Grid.Row="2">
+			<Grid Name="General" Grid.Column="2" Grid.Row="2" IsVisible="True">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="0"/>
@@ -70,16 +88,35 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="2"/>
 					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<CheckBox Grid.Row="0" Name="AltMouseControl">Alternative Mouse Control (Buggy)</CheckBox>
-				<CheckBox Grid.Row="2" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
+				<CheckBox Grid.Row="2" Name="AltMouseControl">Alternative Mouse Control (Buggy)</CheckBox>
+				<CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
+				<TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
+			</Grid>
+			<Grid Name="Themes" Grid.Column="2" Grid.Row="2" IsVisible="False">
+				<Grid Grid.Column="2" Grid.Row="2">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="2"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="2"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="2"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
 				
-				<Button Grid.Row="4" VerticalAlignment="Top" Name="ToggleTheme">Togggle Theme</Button>
-				<Button Grid.Row="6" VerticalAlignment="Top" Name="BlueTheme">Blue Theme</Button>
-				<Button Grid.Row="8" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
-				<Button Grid.Row="10" VerticalAlignment="Top" Name="LandscapeTheme">Anime Theme 2: Electric Bogaloo</Button>
+					<Button Grid.Row="0" VerticalAlignment="Top" Name="ToggleTheme">Togggle Theme</Button>
+					<Button Grid.Row="2" VerticalAlignment="Top" Name="BlueTheme">Blue Theme</Button>
+					<Button Grid.Row="4" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
+					<Button Grid.Row="6" VerticalAlignment="Top" Name="LandscapeTheme">Anime Theme 2: Electric Bogaloo</Button>
+				</Grid>
+
+				<Grid Name="Marketplace" Grid.Column="2" Grid.Row="2" IsVisible="False">
+					<TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
+				</Grid>
+				<Grid Name="Developers" Grid.Column="2" Grid.Row="2" IsVisible="False">
+					<TextBlock Grid.ColumnSpan="3">Developers.</TextBlock>
+				</Grid>
 			</Grid>
 		</Grid>
 	</Grid>
