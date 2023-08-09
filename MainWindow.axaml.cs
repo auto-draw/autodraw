@@ -70,6 +70,9 @@ public partial class MainWindow : Window
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
         BlackThresholdElement.TextChanging += BlackThreshold_TextChanging;
 
+        HorizontalFilterCheck.TextChanging += HorizontalFilterCheck_TextChanging;
+        VerticalFilterCheck.TextChanging += VerticalFilterCheck_TextChanging;
+
         CustomPatternInput.TextChanging += CustomPatternInput_TextChanging;
 
         AlphaThresholdElement.TextChanging += AlphaThreshold_TextChanging;
@@ -143,7 +146,8 @@ public partial class MainWindow : Window
         currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
         currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
-        currentFilters.HorizontalLines = HorizontalFilterCheck.IsChecked ?? false;
+        currentFilters.HorizontalLines = int.Parse(HorizontalFilterCheck.Text ?? "0");
+        currentFilters.VerticalLines = int.Parse(VerticalFilterCheck.Text ?? "0");
         currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
 
@@ -436,6 +440,24 @@ public partial class MainWindow : Window
         e.Handled = true;
 
         if (CustomPatternInput.Text.Length < 1) { return; }
+    }
+
+    private void HorizontalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        if (HorizontalFilterCheck.Text == null) return;
+        HorizontalFilterCheck.Text = numberRegex.Replace(HorizontalFilterCheck.Text, "");
+        e.Handled = true;
+
+        if (HorizontalFilterCheck.Text.Length < 1) { HorizontalFilterCheck.Text = "0"; return; }
+    }
+
+    private void VerticalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        if (VerticalFilterCheck.Text == null) return;
+        VerticalFilterCheck.Text = numberRegex.Replace(VerticalFilterCheck.Text, "");
+        e.Handled = true;
+
+        if (VerticalFilterCheck.Text.Length < 1) { VerticalFilterCheck.Text = "0"; return; }
     }
 
 

@@ -17,13 +17,6 @@ namespace Autodraw
     {
         private static long Process_MemPressure = 0;
 
-        private static readonly Pattern patternHorizonalLines = new()
-        {
-            Pat = "1\n0\n0\n0\n0\n0\n0\n",
-            Width = 1,
-            Height = 6
-        };
-
         private static readonly Pattern patternCrosshatch = new() { 
             Pat = "0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n1 1 1 1 1 1 1\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n",
             Width = 7, Height = 7
@@ -35,7 +28,6 @@ namespace Autodraw
             Height = 6
         };
 
-        private static readonly List<int[]> listHorizontalLines = ReadPattern(patternHorizonalLines.Pat);
         private static readonly List<int[]> listCrosshatch = ReadPattern(patternCrosshatch.Pat);
         private static readonly List<int[]> listDiagCross  = ReadPattern(patternDiagCross.Pat);
 
@@ -48,7 +40,8 @@ namespace Autodraw
             public bool OutlineSharp = false;
             public bool Crosshatch = false;
             public bool DiagCrosshatch = false;
-            public bool HorizontalLines = false;
+            public decimal HorizontalLines = 0;
+            public decimal VerticalLines = 0;
         }
         public class Pattern
         {
@@ -112,7 +105,8 @@ namespace Autodraw
 
             bool crosshatch = FilterSettings.Crosshatch;
             bool diagcross = FilterSettings.DiagCrosshatch;
-            bool horizontals = FilterSettings.HorizontalLines;
+            decimal horizontals = FilterSettings.HorizontalLines;
+            decimal verticals = FilterSettings.VerticalLines;
 
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++)
@@ -267,15 +261,19 @@ namespace Autodraw
                     }
 
                     // Pattern Filters
-                    if (returnByte != 0 && (crosshatch || diagcross || horizontals)) {
-                        if (horizontals)  // Horizontal Stripes
+                    if (returnByte != 0 && (crosshatch || diagcross || horizontals > 0 || verticals > 0)) {
+                        if (horizontals > 0)  // Horizontal Stripes
                         {
-                            foreach (var patPoint in listHorizontalLines)
+                            if (y % horizontals == 0)
                             {
-                                if (x % patternHorizonalLines.Width == patPoint[0] && y % patternHorizonalLines.Height == patPoint[1])
-                                {
-                                    returnByte = 0;
-                                }
+                                returnByte = 0;
+                            }
+                        }
+                        if (verticals > 0)  // Vertical Stripes
+                        {
+                            if (x % verticals == 0)
+                            {
+                                returnByte = 0;
                             }
                         }
                         if (diagcross)  // Diag Crosshatch

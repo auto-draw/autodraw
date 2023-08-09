@@ -13,11 +13,15 @@ using System.Diagnostics;
 using System.Threading;
 using SharpHook.Native;
 using System.Collections;
+
 using Tmds.DBus.Protocol;
 using System.IO.Pipes;
+
 using Avalonia;
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
+
+using SharpAudio.Codec;
 
 namespace Autodraw
 {
@@ -45,7 +49,6 @@ namespace Autodraw
         public static bool useLastPos = false;
 
         public static bool ShowPopup = Config.getEntry("showPopup") == null || bool.Parse(Config.getEntry("showPopup") ?? "true");
-
 
 
         private static DrawDataDisplay? dataDisplay;

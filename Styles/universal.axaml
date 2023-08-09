@@ -20,10 +20,6 @@
 	<Style Selector="Image.CloseApp">
 		<Setter Property="Source" Value="avares://Autodraw/Assets/Dark/close.png"/>
 	</Style>
-	
-	<Style Selector="CheckBox">
-		<Setter Property="MinHeight" Value="16"/>
-	</Style>
 
 	<Style Selector="CheckBox /template/ Border#NormalRectangle">
 		<Setter Property="Width" Value="16"/>

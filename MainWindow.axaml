@@ -267,7 +267,16 @@
 										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox Name="HorizontalFilterCheck">Horizontal Stripes</CheckBox>
+										<StackPanel Orientation="Horizontal">
+											<TextBox Name="HorizontalFilterCheck" Text="0"/>
+											<Label>Horizontal Stripes</Label>
+										</StackPanel>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2">
+										<StackPanel Orientation="Horizontal">
+											<TextBox Name="VerticalFilterCheck" Text="0"/>
+											<Label>Vertical Stripes</Label>
+										</StackPanel>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="CrosshatchFilterCheck">Crosshatch</CheckBox>

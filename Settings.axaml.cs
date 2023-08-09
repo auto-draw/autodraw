@@ -18,21 +18,18 @@ public partial class Settings : Window
     {
         InitializeComponent();
 
-        ToggleTheme.Click += ToggleTheme_Click;
+        // Main Handle
+        CloseAppButton.Click += CloseAppButton_Click;
 
+        // Sidebar
         GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
         ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
         MarketplaceButton.Click += (sender, e) => OpenMenu("Marketplace");
         DevButton.Click += (sender, e) => OpenMenu("Developers");
 
+        // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
         ShowPopup.IsCheckedChanged += ShowPopup_IsCheckedChanged;
-
-        BlueTheme.Click += BlueTheme_Click;
-        AnimeTheme.Click += AnimeTheme_Click;
-        LandscapeTheme.Click += LandscapeTheme_Click;
-
-        CloseAppButton.Click += CloseAppButton_Click;
 
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
@@ -42,6 +39,15 @@ public partial class Settings : Window
             System.Diagnostics.Debug.WriteLine("Hi3");
             Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
         }
+
+        // Themes
+        ToggleTheme.Click += ToggleTheme_Click;
+
+        BlueTheme.Click += BlueTheme_Click;
+        AnimeTheme.Click += AnimeTheme_Click;
+        LandscapeTheme.Click += LandscapeTheme_Click;
+
+        // Developer
     }
 
     private void ShowPopup_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

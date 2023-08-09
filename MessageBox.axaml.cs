@@ -20,17 +20,9 @@ public partial class MessageBox : Window
         MessageTitle.Text = title;
         MessageContent.Text = description;
 
-        if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
-        {
-            // Linux doesnt like sound system LOL
-            Show();
-            return;
-        }
-        var Engine = AudioEngine.CreateDefault();
-        var soundStream = new SoundStream(AssetLoader.Open(new Uri($"avares://Autodraw/Assets/Sounds/{sound}")), Engine);
+        Audio.PlaySound($"avares://Autodraw/Assets/Sounds/{sound}");
 
         Show();
-        soundStream.Play();
     }
 
     public MessageBox()

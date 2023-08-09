@@ -77,7 +77,7 @@
 				<Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5" HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom" >Dev. options</Button>
 			</Grid>
 
-			<Grid Name="General" Grid.Column="2" Grid.Row="2" IsVisible="True">
+			<Grid Name="General" Grid.Column="2" Grid.Row="2" IsVisible="False">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="0"/>
@@ -110,13 +110,21 @@
 					<Button Grid.Row="4" VerticalAlignment="Top" Name="AnimeTheme">Anime Theme</Button>
 					<Button Grid.Row="6" VerticalAlignment="Top" Name="LandscapeTheme">Anime Theme 2: Electric Bogaloo</Button>
 				</Grid>
+			</Grid>
 
-				<Grid Name="Marketplace" Grid.Column="2" Grid.Row="2" IsVisible="False">
-					<TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
-				</Grid>
-				<Grid Name="Developers" Grid.Column="2" Grid.Row="2" IsVisible="False">
-					<TextBlock Grid.ColumnSpan="3">Developers.</TextBlock>
-				</Grid>
+			<Grid Name="Marketplace" Grid.Column="2" Grid.Row="2" IsVisible="False">
+				<TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
+			</Grid>
+			
+			<Grid Name="Developers" Grid.Column="2" Grid.Row="2" IsVisible="True">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="2"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Grid.ColumnSpan="3">Developer stuff x3</TextBlock>
 			</Grid>
 		</Grid>
 	</Grid>
