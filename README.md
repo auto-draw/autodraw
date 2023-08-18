@@ -15,8 +15,8 @@ AutoDraw
 ##### Table of Contents  
 - [Introduction](#Introduction)  
 - [Installation](#Installation)  
-        - [Version 2](#Version2)  
-        - [Version 1](#Version1)  
+    - [Version 2](#Version2)  
+    - [Version 1](#Version1)  
 - [Support](#Support)  
     - [FAQ](#FAQ)  
     - [Operating Systems](#OperatingSystems)  
