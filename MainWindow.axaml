@@ -119,10 +119,7 @@
 						<RowDefinition Height="2*"/>
 					</Grid.RowDefinitions>
 					<Border Grid.Row="0" Grid.Column="0" Classes="GridBorder"/>
-					<Grid Grid.Row="0" Grid.Column="0">
-					</Grid>
-					<Border Grid.Row="0" Grid.Column="2" Classes="GridBorder"/>
-					<Grid Grid.Row="0" Grid.Column="2" Margin="4">
+					<Grid Grid.Row="0" Grid.Column="0" Margin="4">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="24"/>
 							<RowDefinition Height="4"/>
@@ -215,8 +212,8 @@
 							</TextBox>
 						</Grid>
 					</Grid>
-					<Border Grid.Row="2" Grid.Column="2" Classes="GridBorder"/>
-					<Grid Grid.Row="2" Grid.Column="2">
+					<Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Classes="GridBorder"/>
+					<Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="2">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="32"/>
 							<RowDefinition Height="*"/>
@@ -258,23 +255,29 @@
 										Primary Filters
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
-										<CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="SharpOutlineFilterCheck">Sharp Outline</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
+										<CheckBox  Name="InvertFilterCheck">Invert</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<StackPanel Orientation="Horizontal">
-											<TextBox Name="HorizontalFilterCheck" Text="0"/>
+											<TextBox Name="OutlineFilterCheck" MinWidth="32" Text="0"/>
+											<Label>Outline</Label>
+										</StackPanel>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2" IsEnabled="true">
+										<StackPanel Orientation="Horizontal">
+											<TextBox Name="AntiOutlineFilterCheck" MinWidth="32" Text="0"/>
+											<Label>Erosion</Label>
+										</StackPanel>
+									</ListBoxItem>
+									<ListBoxItem Padding="8 2">
+										<StackPanel Orientation="Horizontal">
+											<TextBox Name="HorizontalFilterCheck" MinWidth="32" Text="0"/>
 											<Label>Horizontal Stripes</Label>
 										</StackPanel>
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<StackPanel Orientation="Horizontal">
-											<TextBox Name="VerticalFilterCheck" Text="0"/>
+											<TextBox Name="VerticalFilterCheck" MinWidth="32" Text="0"/>
 											<Label>Vertical Stripes</Label>
 										</StackPanel>
 									</ListBoxItem>
@@ -283,9 +286,6 @@
 									</ListBoxItem>
 									<ListBoxItem Padding="8 2">
 										<CheckBox Name="DiagCrossFilterCheck">Diagonal-Cross</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2" IsEnabled="False">
-										<CheckBox Name="AntiOutlineFilterCheck">Anti Sharp Outline</CheckBox>
 									</ListBoxItem>
 									<ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
 										Dithering Filters

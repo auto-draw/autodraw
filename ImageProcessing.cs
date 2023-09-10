@@ -1,7 +1,10 @@
-﻿using Avalonia.Controls.Shapes;
+﻿using Avalonia;
+using Avalonia.Controls.Shapes;
+using Avalonia.Platform;
 using FFmpeg.AutoGen;
 using HarfBuzzSharp;
 using SkiaSharp;
+using SkiaSharp.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Autodraw
@@ -17,53 +21,36 @@ namespace Autodraw
     {
         private static long Process_MemPressure = 0;
 
-        private static readonly Pattern patternCrosshatch = new() { 
-            Pat = "0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n1 1 1 1 1 1 1\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n0 0 0 1 0 0 0\n",
-            Width = 7, Height = 7
-        };
-
-        private static readonly Pattern patternDiagCross  = new() {
-            Pat = "1 0 0 0 0 0 1\n0 1 0 0 0 1 0\n0 0 1 0 1 0 0\n0 0 0 1 0 0 0\n0 0 1 0 1 0 0\n0 1 0 0 0 1 0\n1 0 0 0 0 0 1\n",
-            Width = 6,
-            Height = 6
-        };
-
-        private static readonly List<int[]> listCrosshatch = ReadPattern(patternCrosshatch.Pat);
-        private static readonly List<int[]> listDiagCross  = ReadPattern(patternDiagCross.Pat);
 
         public class Filters
         {
             public byte AlphaThreshold = 127;
             public byte Threshold = 127;
             public bool Invert = false;
-            public bool Outline = false;
-            public bool OutlineSharp = false;
+            public int AntiOutline = 0;
+            public int Outline = 0;
             public bool Crosshatch = false;
             public bool DiagCrosshatch = false;
             public decimal HorizontalLines = 0;
             public decimal VerticalLines = 0;
         }
-        public class Pattern
-        {
-            public int Width = 2;
-            public int Height = 2;
-            public string Pat = "0 0\n0 0";
-        }
-        public static List<int[]> ReadPattern(string pat)
-        {
-            string[] lines = pat.Split('\n');
 
-            List<int[]> positions = new();
+        public static unsafe List<int[]> ReadPattern(SKBitmap bmp)
+        {
+            uint* basePtr = (uint*)bmp.GetPixels().ToPointer();
 
-            for (int i = 0; i < lines.Length; i++)
+            List<int[]> positions = new List<int[]>();
+
+            for (int x = 0; x < bmp.Width; x++)
             {
-                string[] numbers = lines[i].Split(' ');
-
-                for (int j = 0; j < numbers.Length; j++)
+                for (int y = 0; y < bmp.Height; y++)
                 {
-                    if (numbers[j] == "1")
+                    uint* srcPtr = basePtr + bmp.Width * y + x;
+
+                    byte pixel = (byte)(*srcPtr & 0xFF);
+                    if (pixel == 0)
                     {
-                        positions.Add(new int[] { j, i  });
+                        positions.Add(new int[] {x, y});
                     }
                 }
             }
@@ -100,206 +87,107 @@ namespace Autodraw
             byte athresh = FilterSettings.AlphaThreshold;
 
             bool doinvert = FilterSettings.Invert;
-            bool outline = FilterSettings.Outline;
-            bool sharpoutline = FilterSettings.OutlineSharp;
+            int antioutline = FilterSettings.AntiOutline;
+            int outline = FilterSettings.Outline;
 
             bool crosshatch = FilterSettings.Crosshatch;
             bool diagcross = FilterSettings.DiagCrosshatch;
             decimal horizontals = FilterSettings.HorizontalLines;
             decimal verticals = FilterSettings.VerticalLines;
+            
+            var invert = new float[20] {
+                -1f, 0f,  0f,  0f,  1f,
+                0f,  -1f, 0f,  0f,  1f,
+                0f,  0f,  -1f, 0f,  1f,
+                0f,  0f,  0f,  1f,  0f
+            };
+
+            var greyscale = new float[]
+            {
+                0.21f, 0.72f, 0.07f, 0, 0,
+                0.21f, 0.72f, 0.07f, 0, 0,
+                0.21f, 0.72f, 0.07f, 0, 0,
+                0,     0,     0,     1, 0
+            };
+
 
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++)
                 {
                     uint* srcPtr = basePtr + width * y + x;
 
-                    GetPixel(srcPtr, out byte redByte, out byte greenByte, out byte blueByte, out byte alphaByte);
+                    // Performance is better when embedded directly, refer to function GetPixel()
+                    byte red = (byte)(*srcPtr & 0xFF);
+                    byte green = (byte)((*srcPtr >> 8) & 0xFF);
+                    byte blue = (byte)((*srcPtr >> 16) & 0xFF);
+                    byte alpha = (byte)((*srcPtr >> 24) & 0xFF);
 
-                    float luminosity = (redByte + greenByte + blueByte) / 3;
+                    byte outputByte = (byte)((float)red / 3 + (float)green / 3 + (float)blue / 3);
 
-                    byte threshByte = (byte)(luminosity > thresh || alphaByte < athresh ? 255 : 0); // Thresholds Filter
+                    outputByte = outputByte > thresh ? (byte)255 : (byte)0;
+                    outputByte = alpha < athresh ? (byte)255 : outputByte;
 
-                    threshByte = doinvert == false ? threshByte : (byte)(255 - threshByte); // Invert
+                    // Tried exclusive OR operator, but it shows worse performance.
+                    if (doinvert) { outputByte = outputByte == 255 ? (byte)0 : (byte)255; }
 
-                    if (threshByte == 255)
+                    *returnPtr++ = (uint)((255 << 24) | (outputByte << 16) | (outputByte << 8) | outputByte);
+                }
+            }
+
+            SKImage OutImage = SKImage.FromBitmap(OutputBitmap);
+            // TODO: Move entire for loop process to graphics here for performance boosts
+            //       ↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+            //OutImage = OutImage.ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(greyscale)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
+
+
+            if (antioutline > 0)
+            {
+                SKImage OutImageAnti = OutImage.ApplyImageFilter(SKImageFilter.CreateDilate(antioutline, antioutline), new SKRectI(0, 0, width, height), new SKRectI(antioutline, antioutline, width - antioutline, height - antioutline), out _, out SKPoint _);
+                OutImage = OutImageAnti;
+            }
+            if (outline > 0)
+            {
+                SKImage OutImageAnti = OutImage.ApplyImageFilter(SKImageFilter.CreateDilate(outline, outline), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width - outline, height - outline), out _, out SKPoint _);
+                OutImageAnti = OutImageAnti.ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
+                SKImage MergeImage = OutImage.ApplyImageFilter(SKImageFilter.CreateBlendMode(SKBlendMode.Lighten, SKImageFilter.CreateImage(OutImageAnti)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
+                OutImage = MergeImage;
+            }
+
+            OutputBitmap = SKBitmap.FromImage(OutImage);
+
+            // TODO: Move this to Graphics as a repeating bitmap thing or whatever its called.
+            returnPtr = (uint*)OutputBitmap.GetPixels().ToPointer();
+            if ((horizontals > 1 || verticals > 1) && outline <= 0)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
                     {
-                        *returnPtr++ = 0xffffffff;
-                        continue;
-                    }
+                        uint* srcPtr = returnPtr + width * y + x;
 
-                    byte returnByte = 255;
+                        byte outputByte = (byte)(*srcPtr & 0xFF);
 
-                    if (outline)
-                    {
-                        bool doOutline = false;
-                        foreach (int i in Enumerable.Range(0, 8))
+                        if (outputByte == 0)
                         {
-                            switch (i)
+                            outputByte = 255;
+                            if (horizontals > 1)
                             {
-                                case 0:
-                                    byte rByte, gByte, bByte, aByte;
-                                    float lumen;
-                                    byte localThresh;
-                                    if (x - 1 < 0 || y - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y - 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 1:
-                                    if (y - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 2:
-                                    if (x + 1 >= width || y - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y - 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 3:
-                                    if (x - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 4:
-                                    if (x + 1 >= width) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 5:
-                                    if (x - 1 < 0 || y + 1 >= height) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y + 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 6:
-                                    if (y + 1 >= height) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 7:
-                                    if (x + 1 >= width || y + 1 >= height) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y + 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                            }
-                            if (doOutline)
-                            {
-                                returnByte = 0;
-                                break;
-                            }
-                        }
-                    }else if (sharpoutline)
-                    {
-                        bool doOutline = false;
-                        foreach (int i in Enumerable.Range(0, 4))
-                        {
-                            switch (i)
-                            {
-                                case 0:
-                                    byte rByte, gByte, bByte, aByte;
-                                    float lumen;
-                                    byte localThresh;
-                                    if (y - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 1:
-                                    if (x - 1 < 0) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 2:
-                                    if (x + 1 >= width) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                                case 3:
-                                    if (y + 1 >= height) { doOutline = true; break; };
-                                    GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
-                                    lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
-                                    localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                                    if (localThresh == 255) { doOutline = true; }
-                                    break;
-                            }
-                            if (doOutline)
-                            {
-                                returnByte = 0;
-                            }
-                        }
-                    }
-
-                    // Pattern Filters
-                    if (returnByte != 0 && (crosshatch || diagcross || horizontals > 0 || verticals > 0)) {
-                        if (horizontals > 0)  // Horizontal Stripes
-                        {
-                            if (y % horizontals == 0)
-                            {
-                                returnByte = 0;
-                            }
-                        }
-                        if (verticals > 0)  // Vertical Stripes
-                        {
-                            if (x % verticals == 0)
-                            {
-                                returnByte = 0;
-                            }
-                        }
-                        if (diagcross)  // Diag Crosshatch
-                        {
-                            foreach (var patPoint in listDiagCross)
-                            {
-                                if (x % patternDiagCross.Width == patPoint[0] && y % patternDiagCross.Height == patPoint[1])
+                                if (y % horizontals == 1)
                                 {
-                                    returnByte = 0;
+                                    outputByte = 0;
+                                }
+                            }
+                            if (verticals > 1)
+                            {
+                                if (x % verticals == 1)
+                                {
+                                    outputByte = 0;
                                 }
                             }
                         }
-                        if (crosshatch) // Crosshatch
-                        {
-                            foreach (var patPoint in listCrosshatch)
-                            {
-                                if (x % patternCrosshatch.Width == patPoint[0] && y % patternCrosshatch.Height == patPoint[1])
-                                {
-                                    returnByte = 0;
-                                }
-                            }
-                        }
+                        *srcPtr = (uint)((255 << 24) | (outputByte << 16) | (outputByte << 8) | outputByte);
                     }
-                    else if(!outline && !sharpoutline) returnByte = threshByte;
-
-                    *returnPtr++ = MakePixel(returnByte, returnByte, returnByte, 255);
                 }
             }
 

@@ -4,9 +4,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Microsoft.CodeAnalysis;
 using SharpHook;
 using SkiaSharp;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 
@@ -17,6 +19,8 @@ public partial class Preview : Window
     public Bitmap? renderedBitmap;
     public SKBitmap? inputBitmap;
     public bool hasStarted = false;
+    public Stopwatch sw = Stopwatch.StartNew();
+    public long ReccomendedTimeLimit = 16;
 
     public Preview()
     {
@@ -32,6 +36,8 @@ public partial class Preview : Window
 
     private void UpdateMousePosition(object? sender, EventArgs e)
     {
+
+        if (sender is null && sw.ElapsedMilliseconds < 16) return;
         Dispatcher.UIThread.Invoke(new Action(() =>
         {
             Vector2 usedPos = Drawing.useLastPos ? Drawing.lastPos : Input.mousePos;
@@ -71,6 +77,7 @@ public partial class Preview : Window
         {
             if (Drawing.lastPos.X == 0 && Drawing.lastPos.Y == 0) Drawing.lastPos = Input.mousePos;
             Drawing.useLastPos = !Drawing.useLastPos;
+            UpdateMousePosition(sender, e);
         }
     }
 

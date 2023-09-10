@@ -144,8 +144,8 @@ public partial class MainWindow : Window
 
         // Primary Filters
         currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
-        currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
-        currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
+        currentFilters.Outline = int.Parse(OutlineFilterCheck.Text ?? "0");
+        currentFilters.AntiOutline = int.Parse(AntiOutlineFilterCheck.Text ?? "0");
         currentFilters.HorizontalLines = int.Parse(HorizontalFilterCheck.Text ?? "0");
         currentFilters.VerticalLines = int.Parse(VerticalFilterCheck.Text ?? "0");
         currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;

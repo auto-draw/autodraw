@@ -42,6 +42,8 @@
     <PackageReference Include="SimWinMouse" Version="1.0.2">
       <NoWarn>true</NoWarn>
     </PackageReference>
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.Views" Version="2.88.3" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -84,6 +86,7 @@
 	  <None Remove="Assets\Message\warn.png" />
 	  <None Remove="Assets\open-doc.png" />
 	  <None Remove="Assets\open-folder.png" />
+	  <None Remove="Assets\Patterns\Bitmap1.bmp" />
 	  <None Remove="Assets\reload.png" />
 	  <None Remove="Assets\remove.png" />
 	  <None Remove="Assets\Save.png" />
