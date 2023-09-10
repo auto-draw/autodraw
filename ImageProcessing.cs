@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls.Shapes;
-using FFmpeg.AutoGen;
 using HarfBuzzSharp;
 using SkiaSharp;
 using System;

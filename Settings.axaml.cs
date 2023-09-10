@@ -36,16 +36,8 @@ public partial class Settings : Window
 
         if (Config.getEntry("showPopup") == null)
         {
-            System.Diagnostics.Debug.WriteLine("Hi3");
             Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
         }
-
-        // Themes
-        ToggleTheme.Click += ToggleTheme_Click;
-
-        BlueTheme.Click += BlueTheme_Click;
-        AnimeTheme.Click += AnimeTheme_Click;
-        LandscapeTheme.Click += LandscapeTheme_Click;
 
         // Developer
     }
@@ -61,21 +53,6 @@ public partial class Settings : Window
     {
         if (AltMouseControl.IsChecked == null) return;
         Input.forceUio = (bool)AltMouseControl.IsChecked;
-    }
-
-    private void LandscapeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        App.LoadTheme("avares://Autodraw/Styles/landscape.axaml");
-    }
-
-    private void AnimeTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        App.LoadTheme("avares://Autodraw/Styles/anime.axaml");
-    }
-
-    private void BlueTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        App.LoadTheme("avares://Autodraw/Styles/blue.axaml");
     }
 
 

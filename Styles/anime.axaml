@@ -12,10 +12,11 @@
 		<Setter Property="MinWidth" Value="24"/>
 		<Setter Property="FontSize" Value="12"/>
 	</Style>
-
+	
 	<Style Selector="ListBoxItem">
 		<Setter Property="Background" Value="#ee22324d"/>
 	</Style>
+
 	<Style Selector="ListBox">
 		<Setter Property="Background" Value="#ee22324d"/>
 	</Style>
@@ -42,10 +43,11 @@
 		<Setter Property="BorderBrush" Value="#3000"/>
 		<Setter Property="CornerRadius" Value="2"/>
 	</Style>
-
+	
 	<Style Selector="Canvas.Toolbar">
 		<Setter Property="Background" Value="#cc2d446b"/>
 	</Style>
+	
 	<Style Selector="Canvas.ImagePreview">
 		<Setter Property="Background" Value="#8000"/>
 	</Style>

@@ -5,8 +5,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
 
-using SharpAudio;
-using SharpAudio.Codec;
 using System.Runtime.InteropServices;
 
 namespace Autodraw;
@@ -19,8 +17,6 @@ public partial class MessageBox : Window
         MessageIcon.Source = bmp;
         MessageTitle.Text = title;
         MessageContent.Text = description;
-
-        Audio.PlaySound($"avares://Autodraw/Assets/Sounds/{sound}");
 
         Show();
     }

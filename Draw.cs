@@ -21,8 +21,6 @@ using Avalonia;
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
 
-using SharpAudio.Codec;
-
 namespace Autodraw
 {
     // Most of this code is going to implement the same methods used for previous versions.

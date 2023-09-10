@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using SkiaSharp;
 using System;
 using System.Diagnostics;
@@ -15,6 +16,25 @@ public partial class DevTest : Window
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
+        ThemeTest.Click += ThemeTest_Click;
+    }
+
+    private async void ThemeTest_Click(object? sender, RoutedEventArgs e)
+    {
+        var filetype = new FilePickerFileType[] { new("ElementsData") { Patterns = new[] { "*.axaml", "*.darkaxaml", "*.lightaxaml" }, MimeTypes = new[] { "*/*" } }, FilePickerFileTypes.All };
+        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Theme",
+            FileTypeFilter = filetype,
+            AllowMultiple = false
+        });
+
+        if (file.Count == 1)
+        {
+            string? Error = App.LoadTheme(file[0].TryGetLocalPath(), true);
+            if (Error is null) { return; }
+            Debug.WriteLine(Error);
+        }
     }
 
     private void TestPopup_Click(object? sender, RoutedEventArgs e)

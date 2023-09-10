@@ -32,5 +32,7 @@
 		<TextBlock Grid.Row="3" Height="300" TextWrapping="Wrap" Name="BenchmarkResults" VerticalAlignment="Top" HorizontalAlignment="Left">
 			Results:
 		</TextBlock>
+
+		<Button Grid.Row="1" Grid.Column="1"  Name="ThemeTest" VerticalAlignment="Center" HorizontalAlignment="Center">Test ThemeLoad</Button>
 	</Grid>
 </Window>
