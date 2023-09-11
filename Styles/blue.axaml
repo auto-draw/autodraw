@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia">
 	<Style Selector="Window">
 		<Setter Property="Background" Value="#90142f5e"/>
 		<Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>

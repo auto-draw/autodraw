@@ -1,17 +1,20 @@
+
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="508" d:DesignHeight="330"
+		
+		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+		
+        mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="375"
         x:Class="Autodraw.Settings"
         Title="Settings"
 		WindowStartupLocation="CenterScreen"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
-		Width="500"
-		Height="300"
+		Width="650"
+		Height="375"
 		>
-
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="20"></RowDefinition>
@@ -44,18 +47,22 @@
 				</Button>
 			</Grid>
 		</Canvas>
-		<Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
+		<Grid Classes="Body" Grid.Row="1" Name="Body">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="128"/>
+				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="120"/>
 				<ColumnDefinition Width="4"/>
 				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="4"/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
+				<RowDefinition Height="4"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="4"/>
 				<RowDefinition Height="*"/>
+				<RowDefinition Height="4"/>
 			</Grid.RowDefinitions>
-			<Grid Grid.Column="0" Grid.Row="2" Background="#3f000000">
+			<Grid Grid.Column="1" Grid.Row="3" Background="#3f000000">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="2"/>
@@ -77,7 +84,7 @@
 				<Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5" HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom" >Dev. options</Button>
 			</Grid>
 
-			<Grid Name="General" Grid.Column="2" Grid.Row="2" IsVisible="False">
+			<Grid Name="General" Grid.Column="3" Grid.Row="3" IsVisible="False">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="0"/>
@@ -93,30 +100,66 @@
 				<CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
 			</Grid>
-			<Grid Name="Themes" Grid.Column="2" Grid.Row="2" IsVisible="True">
-				<Grid Grid.Column="2" Grid.Row="2">
+			<Grid Name="Themes" Grid.Column="3" Grid.Row="3" IsVisible="True">
+				<Grid Grid.Column="0" Grid.Row="0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="4"/>
+						<RowDefinition Height="*"/>
 						<RowDefinition Height="2"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="2"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="2"/>
+						<RowDefinition Height="64"/>
+						<RowDefinition Height="4"/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="2"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="2*"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="2"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-
-					<Button Grid.Column="0" Grid.Row="0">Dark/Light</Button>
-					<Button Grid.Column="4" Grid.Row="0">Open Theme</Button>
-					<Button Grid.Column="6" Grid.Row="0">Save Theme</Button>
+					<Grid Grid.Column="0" Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Button Grid.Column="0" Name="DarkLightThemeToggle">Dark/Light</Button>
+						<Button Grid.Column="4" Name="NewTheme">New Theme</Button>
+						<Button Grid.Column="6" Name="OpenTheme">Open Theme</Button>
+						<Button Grid.Column="8" Name="SaveTheme">Save Theme</Button>
+					</Grid>
+					<Grid Grid.Row="2">
+						<AvaloniaEdit:TextEditor
+							Name="ThemeInput"
+							Background="#1f000000"
+							SyntaxHighlighting="axaml"
+							Text=""
+							ShowLineNumbers="True"
+							FontSize="11"
+							FontFamily="Cascadia Code,Consolas,Menlo,Monospace"/>
+					</Grid>
+					<Grid Grid.Row="4">
+						<AvaloniaEdit:TextEditor
+							Name="ThemeOutput"
+							IsReadOnly="True"
+							Grid.Column="2"
+							Background="#1f000000"
+							SyntaxHighlighting="axaml"
+							Text="Errors will appear here!"
+							ShowLineNumbers="True"
+							WordWrap="True"
+							FontSize="11"
+							FontFamily="Cascadia Code,Consolas,Menlo,Monospace"/>
+					</Grid>
+					<Grid Grid.Row="6">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="4"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Button Name="LoadTheme">Load Theme</Button>
+						<CheckBox Name="ThemeIsDark" Grid.Column="2" IsChecked="True">Dark Theme?</CheckBox>
+					</Grid>
 				</Grid>
 			</Grid>
 

@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia">
 	<Style Selector="Window">
 		<Setter Property="Background" Value="#eddd"/>
 		<Setter Property="TransparencyLevelHint" Value="AcrylicBlur"/>
@@ -20,18 +21,11 @@
 		<Setter Property="BorderBrush" Value="#3000"/>
 		<Setter Property="Foreground" Value="#000"/>
 		<Setter Property="Background" Value="#2fff"/>
-		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Padding" Value="4"/>
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="MinWidth" Value="24"/>
-		<Setter Property="FontSize" Value="12"/>
 	</Style>
 
 	<Style Selector="Button">
 		<Setter Property="Foreground" Value="#000"></Setter>
 		<Setter Property="Background" Value="#4fff"></Setter>
-		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Padding" Value="4"/>
 	</Style>
 	<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 		<Setter Property="Background" Value="#ccc" />
@@ -50,13 +44,6 @@
 	</Style>
 	<Style Selector="ListBox">
 		<Setter Property="Background" Value="#8888"/>
-	</Style>
-
-
-	<Style Selector="Border.GridBorder">
-		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="BorderBrush" Value="#3000"/>
-		<Setter Property="CornerRadius" Value="2"/>
 	</Style>
 
 	<Style Selector="Label">
@@ -80,14 +67,6 @@
 	</Style>
 	<Style Selector="Canvas.ImagePreview">
 		<Setter Property="Background" Value="#777"/>
-	</Style>
-
-	<!--Click Thru's, very important, don't touch.-->
-	<Style Selector="Canvas.ClickThru">
-		<Setter Property="IsHitTestVisible" Value="False"/>
-	</Style>
-	<Style Selector="Label.ClickThru">
-		<Setter Property="IsHitTestVisible" Value="False"/>
 	</Style>
 
 	<Style Selector="Image.CloseApp">
