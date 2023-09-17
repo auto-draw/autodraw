@@ -6,9 +6,12 @@
 	<Style Selector="Button">
 		<Setter Property="FontFamily" Value="Arial"/>
 		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Padding" Value="4"/>
 	</Style>
-	
+
+	<Style Selector="Button.GeneralButton">
+		<Setter Property="Padding" Value="0"/>
+	</Style>
+
 
 	<Style Selector="Border.GridBorder">
 		<Setter Property="BorderThickness" Value="1"/>

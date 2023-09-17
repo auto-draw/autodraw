@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Runtime.Versioning;
 using Avalonia.Controls;
+using Avalonia.Platform;
 
 namespace Autodraw
 {
@@ -39,21 +40,33 @@ namespace Autodraw
     {
         public static string FolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoDraw");
         public static string ConfigPath = Path.Combine(FolderPath, "config.json");
+        public static string ThemesPath = Path.Combine(FolderPath, "Themes");
 
-        public static bool init()
+        public static void init()
         {
-            if (File.Exists(ConfigPath)) return true;
             Directory.CreateDirectory(FolderPath);
-            JObject obj = new();
-            // Migrates old directory list path (from autodrawer v1) to the new config file
-            string OldPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoDraw");
-            if (File.Exists(Path.Combine(OldPath, "dir.txt")) && File.ReadAllText(Path.Combine(OldPath, "dir.txt")).Length != 0)
+            if (!File.Exists(ConfigPath))
             {
-                obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(OldPath, "dir.txt")));
+                JObject obj = new();
+                // Migrates old directory list path (from autodrawer v1) to the new config file
+                string OldPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoDraw");
+                if (File.Exists(Path.Combine(OldPath, "dir.txt")) && File.ReadAllText(Path.Combine(OldPath, "dir.txt")).Length != 0)
+                {
+                    obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(OldPath, "dir.txt")));
+                }
+                string emptyJObject = JsonConvert.SerializeObject(obj);
+                File.WriteAllText(ConfigPath, emptyJObject);
             }
-            string emptyJObject = JsonConvert.SerializeObject(obj);
-            File.WriteAllText(ConfigPath, emptyJObject);
-            return true;
+            Utils.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Styles"), ThemesPath);
+            if(getEntry("SavedPath") is null || !Directory.Exists(getEntry("SavedPath")))
+            {
+                Directory.CreateDirectory(ThemesPath);
+                setEntry("SavedPath", ThemesPath);
+            }
+            else
+            {
+                ThemesPath = getEntry("SavedPath");
+            }
         }
 
         public static string? getEntry(string entry)
@@ -86,6 +99,34 @@ namespace Autodraw
             // ^^ Change code later, prob shouldn't call file reads so much, instead make it a variable like Utils.LoggingEnabled, and update that variable when needed.
             Directory.CreateDirectory(LogsPath);
             File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
+        }
+
+        public static void Copy(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
         }
     }
 }

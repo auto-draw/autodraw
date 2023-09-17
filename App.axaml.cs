@@ -67,7 +67,7 @@ public partial class App : Application
             }
             else
             {
-                OutputMessage += "Warning: You have not saved this theme, so it won't parse style:./ if you attempt.\n-------> Images using style:./ just won't load.\n";
+                OutputMessage += "- You have not saved this theme, so it won't parse style:./.\n\n";
             }
 
             var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
@@ -87,9 +87,10 @@ public partial class App : Application
         catch (Exception ex)
         {
             ThemeFailed();
-            OutputMessage += "Theme has failed to load successfully due to an error.\n" + ex.Message;
+            OutputMessage += "# Theme has failed to load successfully due to an error.\n" + ex.Message;
+            return OutputMessage;
         }
-        if(OutputMessage == "") { OutputMessage = "All checks have passed as a success!\nTheme loaded successfully!"; }
+        OutputMessage += "# Theme loaded successfully!\n";
         return OutputMessage;
     }
 

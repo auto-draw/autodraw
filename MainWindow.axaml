@@ -34,12 +34,12 @@
 			<!--Background-->
 			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
 
-			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20"/>
+			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Width="{Binding $parent[Window].Bounds.Width}" Height="20" Stretch="UniformToFill"></Image>
 			
 			<!--Decorations-->
 			<StackPanel Classes="Toolbar" Orientation="Horizontal">
 				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
-					AutoDrawer CLOSED PREVIEW -
+					AutoDraw Beta -
 				</Label>
 				<Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
 					v2
@@ -67,7 +67,7 @@
 		</Canvas>
 
 		<!--Body Stuff-->
-		<Image Classes="Body" Grid.Row="1"/>
+		<Image Classes="MainBody" Grid.Row="1"/>
 		
 		<Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
 			<Grid.ColumnDefinitions>
@@ -146,20 +146,20 @@
 								<ColumnDefinition Width="4"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
-							<Button Name="RefreshConfigsButton" Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Source="avares://Autodraw/Assets/reload.png"></Image>
+							<Button Name="RefreshConfigsButton" Classes="GeneralButton ReloadConfigs_Button" Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Classes="ButtonIcon ReloadConfigs_Button" Margin="4" Source="avares://Autodraw/Assets/reload.png"></Image>
 							</Button>
-							<Button Name="SelectFolderElement" Grid.Column="2" ToolTip.Tip="Set config folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Source="avares://Autodraw/Assets/open-folder.png"></Image>
+							<Button Name="SelectFolderElement" Classes="GeneralButton OpenConfigsFolder_Button" Grid.Column="2" ToolTip.Tip="Set config folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Classes="ButtonIcon OpenConfigsFolder_Button" Source="avares://Autodraw/Assets/open-folder.png"></Image>
 							</Button>
-							<Button Name="SaveConfigButton" Grid.Column="4" ToolTip.Tip="Save Config to File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Source="avares://Autodraw/Assets/save.png"></Image>
+							<Button Name="SaveConfigButton" Classes="GeneralButton SaveConfigFile_Button" Grid.Column="4" ToolTip.Tip="Save Config to File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Classes="ButtonIcon SaveConfigFile_Button" Source="avares://Autodraw/Assets/save.png"></Image>
 							</Button>
-							<Button Name="OpenConfigElement" Grid.Column="6" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Source="avares://Autodraw/Assets/open-doc.png"></Image>
+							<Button Name="OpenConfigElement" Classes="GeneralButton OpenConfigFile_Button" Grid.Column="6" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+								<Image Classes="ButtonIcon OpenConfigFile_Button" Source="avares://Autodraw/Assets/open-doc.png"></Image>
 							</Button>
-							<Button Name="LoadSelectButton" Grid.Column="8" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-								Load
+							<Button Name="LoadSelectButton" Classes="GeneralButton LoadSelectConfig_Button" Grid.Column="8" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+								<Label Classes="ButtonIcon" VerticalAlignment="Center" HorizontalAlignment="Center">Load</Label>
 							</Button>
 						</Grid>
 						<ListBox Name="ConfigsListBox" Classes="Configs" Grid.Row="4" Margin="1 0 0 0" FontFamily="Calibri" Padding="0" CornerRadius="4" SelectionMode="Single"/>

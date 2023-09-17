@@ -20,7 +20,7 @@ used both as a reference, or as a default preference
 		<Setter Property="Background" Value="#ee22324d"/>
 	</Style>
 
-	<Style Selector="Image.Body">
+	<Style Selector="Image.MainBody">
 		<Setter Property="asyncImageLoader:ImageLoader.Source" Value="style:./character.png"/>
 		<Setter Property="Effect" Value="blur(8)"/>
 		<Setter Property="HorizontalAlignment" Value="Right"/>

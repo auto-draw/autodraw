@@ -43,6 +43,8 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        DevToolsExtensions.AttachDevTools(this);
+
         InitializeComponent();
 
         Config.init();

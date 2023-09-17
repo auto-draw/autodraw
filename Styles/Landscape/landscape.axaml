@@ -19,7 +19,7 @@ used both as a reference, or as a default preference
 		<Setter Property="Background" Value="#336A9699"/>
 	</Style>
 
-	<Style Selector="Image.Body">
+	<Style Selector="Image.MainBody">
 		<Setter Property="asyncImageLoader:ImageLoader.Source" Value="style:./landscape.jpg"/>
 		<Setter Property="Opacity" Value="30"/>
 		<Setter Property="Stretch" Value="Fill"/>

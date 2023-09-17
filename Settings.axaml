@@ -10,8 +10,10 @@
         x:Class="Autodraw.Settings"
         Title="Settings"
 		WindowStartupLocation="CenterScreen"
-		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaToDecorationsHint="True"
+		MinWidth="550"
+		MinHeight="325"
 		Width="650"
 		Height="375"
 		>
@@ -84,7 +86,12 @@
 				<Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5" HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom" >Dev. options</Button>
 			</Grid>
 
-			<Grid Name="General" Grid.Column="3" Grid.Row="3" IsVisible="False">
+			<Grid Name="General" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+				<Grid.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
+					</Transitions>
+				</Grid.Transitions>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="0"/>
@@ -100,14 +107,19 @@
 				<CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
 			</Grid>
-			<Grid Name="Themes" Grid.Column="3" Grid.Row="3" IsVisible="True">
+			<Grid Name="Themes" Grid.Column="3" Grid.Row="3" Opacity="1" IsHitTestVisible="True">
+				<Grid.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
+					</Transitions>
+				</Grid.Transitions>
 				<Grid Grid.Column="0" Grid.Row="0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="4"/>
 						<RowDefinition Height="*"/>
 						<RowDefinition Height="2"/>
-						<RowDefinition Height="64"/>
+						<RowDefinition Height="80"/>
 						<RowDefinition Height="4"/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
@@ -116,36 +128,37 @@
 							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition Width="2"/>
 							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="4"/>
 							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="4"/>
 							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="2"/>
+							<ColumnDefinition Width="4"/>
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Button Grid.Column="0" Name="DarkLightThemeToggle">Dark/Light</Button>
-						<Button Grid.Column="4" Name="NewTheme">New Theme</Button>
-						<Button Grid.Column="6" Name="OpenTheme">Open Theme</Button>
-						<Button Grid.Column="8" Name="SaveTheme">Save Theme</Button>
+						<Button Grid.Column="4" Name="NewTheme">New</Button>
+						<Button Grid.Column="6" Name="OpenTheme">Open</Button>
+						<Button Grid.Column="8" Name="SaveTheme">Save</Button>
 					</Grid>
 					<Grid Grid.Row="2">
 						<AvaloniaEdit:TextEditor
+							Padding="4"
 							Name="ThemeInput"
-							Background="#1f000000"
-							SyntaxHighlighting="axaml"
-							Text=""
-							ShowLineNumbers="True"
+							Background="#222"
+							Foreground="#DDD"
 							FontSize="11"
-							FontFamily="Cascadia Code,Consolas,Menlo,Monospace"/>
+							FontFamily="Lucida Console, Consolas, Cascadia Code, Menlo, Monospace"
+							ShowLineNumbers="True"/>
 					</Grid>
 					<Grid Grid.Row="4">
 						<AvaloniaEdit:TextEditor
+							Padding="4"
 							Name="ThemeOutput"
 							IsReadOnly="True"
 							Grid.Column="2"
-							Background="#1f000000"
-							SyntaxHighlighting="axaml"
-							Text="Errors will appear here!"
+							Background="#222"
+							Foreground="#DDD"
+							Text="# This is the error handler."
 							ShowLineNumbers="True"
 							WordWrap="True"
 							FontSize="11"
@@ -163,11 +176,21 @@
 				</Grid>
 			</Grid>
 
-			<Grid Name="Marketplace" Grid.Column="2" Grid.Row="2" IsVisible="False">
+			<Grid Name="Marketplace" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+				<Grid.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
+					</Transitions>
+				</Grid.Transitions>
 				<TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
 			</Grid>
 			
-			<Grid Name="Developers" Grid.Column="2" Grid.Row="2" IsVisible="False">
+			<Grid Name="Developers" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+				<Grid.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
+					</Transitions>
+				</Grid.Transitions>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
