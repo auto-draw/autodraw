@@ -34,7 +34,7 @@
 			<!--Background-->
 			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
 
-			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Width="{Binding $parent[Window].Bounds.Width}" Height="20" Stretch="UniformToFill"></Image>
+			<Image Classes="Toolbar"/>
 			
 			<!--Decorations-->
 			<StackPanel Classes="Toolbar" Orientation="Horizontal">
