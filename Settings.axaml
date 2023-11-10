@@ -27,6 +27,10 @@
 			<!--Background-->
 			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
 
+			<Image Classes="SettingsToolbar"/>
+			<Image Classes="SettingsToolbarSecond"/>
+			<Image Classes="SettingsToolbarThird"/>
+			
 			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20"/>
 
 			<!--Decorations-->
@@ -49,6 +53,9 @@
 				</Button>
 			</Grid>
 		</Canvas>
+		<Image Classes="SettingsBody" Grid.Row="1"/>
+		<Image Classes="SettingsBodySecond" Grid.Row="1"/>
+		<Image Classes="SettingsBodyThird" Grid.Row="1"/>
 		<Grid Classes="Body" Grid.Row="1" Name="Body">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="4"/>

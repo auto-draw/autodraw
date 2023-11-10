@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="420"
         x:Class="Autodraw.Preview"
         Title="Preview"
 		Background="#0fff"
@@ -12,7 +12,14 @@
 		TransparencyLevelHint="None"
 		
 		Topmost="True">
-	<Image Name="previewImage">
-		
-	</Image>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Label Padding="0" Background="#1000" Foreground="#1fff" HorizontalAlignment="Center" HorizontalContentAlignment="Center" >Shift to Start, Alt to Stop/Exit, Ctrl to Lock</Label>
+		<Image Name="previewImage" Grid.Row="2">
+
+		</Image>
+	</Grid>
 </Window>

@@ -44,7 +44,7 @@ then
 	cd -
 	rm -r Builds/Autodraw-win-$buildExtension
 fi
-if [ $choice == "3" ] || [ $choice == "6" ]
+if [ $choice == "4" ] || [ $choice == "6" ]
 then
 	echo "Building for MacOS"
 	dotnet publish \autodraw.csproj -r osx-x64 -c Release -p:publishsinglefile=true --self-contained true -p:debugsymbols=false -p:debugtype=none -o Builds/Autodraw-macos-x64-$buildExtension/Autodraw

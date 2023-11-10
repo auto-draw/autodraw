@@ -17,6 +17,7 @@ public partial class Preview : Window
     public Bitmap? renderedBitmap;
     public SKBitmap? inputBitmap;
     public bool hasStarted = false;
+    public long lastMovement = 0;
 
     public Preview()
     {
@@ -34,9 +35,12 @@ public partial class Preview : Window
     {
         Dispatcher.UIThread.Invoke(new Action(() =>
         {
+            long currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
+            if(currUnix < lastMovement + 16) { return; }
+            lastMovement = currUnix;
             Vector2 usedPos = Drawing.useLastPos ? Drawing.lastPos : Input.mousePos;
             double x = usedPos.X - (Width/2);
-            double y = usedPos.Y - (Height/2);
+            double y = usedPos.Y - (Height/2)-20;
             Position = new PixelPoint((int)x, (int)y);
         }));
     }

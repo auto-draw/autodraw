@@ -1,9 +1,14 @@
-﻿using Avalonia.Controls.Shapes;
+﻿#define SKVM_JIT_WHEN_POSSIBLE
+#define SK_ENABLE_SKSL_INTERPRETER
+
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using HarfBuzzSharp;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -86,7 +91,6 @@ namespace Autodraw
             if (Process_MemPressure > 0) GC.RemoveMemoryPressure(Process_MemPressure);
             Process_MemPressure = SourceBitmap.BytesPerPixel * SourceBitmap.Width * SourceBitmap.Height;
 
-            // Create an Output Bitmap
             SKBitmap OutputBitmap = new(SourceBitmap.Width, SourceBitmap.Height);
 
             uint* basePtr = (uint*)SourceBitmap.GetPixels().ToPointer();
@@ -106,6 +110,8 @@ namespace Autodraw
             bool diagcross = FilterSettings.DiagCrosshatch;
             decimal horizontals = FilterSettings.HorizontalLines;
             decimal verticals = FilterSettings.VerticalLines;
+
+
 
             for (int y = 0; y < height; y++){
                 for (int x = 0; x < width; x++)
@@ -303,7 +309,6 @@ namespace Autodraw
             }
 
             GC.AddMemoryPressure(Process_MemPressure);
-
             return OutputBitmap;
         }
 

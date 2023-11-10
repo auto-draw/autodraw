@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -61,7 +62,7 @@ namespace Autodraw
             }
             else
             {
-#if WINDOWS 
+#if WINDOWS
                 SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
                 mousePos = new Vector2(x, y);
 #endif
@@ -78,7 +79,7 @@ namespace Autodraw
             {
 #if WINDOWS 
                 SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
-                mousePos = new Vector2(xOffset, yOffset);
+                mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
 #endif
             }
         }
