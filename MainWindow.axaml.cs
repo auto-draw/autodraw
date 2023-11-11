@@ -35,11 +35,12 @@ public partial class MainWindow : Window
     private long lastMem = 0;
     private long Time = DateTime.Now.ToFileTime();
 
-    private int BlackThresh = 127;
+    private int minBlackThreshold = 0;
+    private int maxBlackThreshold = 127;
     private int AlphaThresh = 200;
     private bool MidChange = false;
 
-    private readonly ImageProcessing.Filters currentFilters = new() { Invert = false, Threshold = (byte)127, AlphaThreshold = (byte)200 };
+    private readonly ImageProcessing.Filters currentFilters = new() { Invert = false, maxThreshold = (byte)127, AlphaThreshold = (byte)200 };
 
     public MainWindow()
     {
@@ -71,7 +72,8 @@ public partial class MainWindow : Window
 
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
-        BlackThresholdElement.TextChanging += BlackThreshold_TextChanging;
+        maxBlackThresholdElement.TextChanging += maxBlackThresholdElement_TextChanging;
+        minBlackThresholdElement.TextChanging += minBlackThresholdElement_TextChanging;
 
         HorizontalFilterCheck.TextChanging += HorizontalFilterCheck_TextChanging;
         VerticalFilterCheck.TextChanging += VerticalFilterCheck_TextChanging;
@@ -142,7 +144,8 @@ public partial class MainWindow : Window
     private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
-        currentFilters.Threshold = (byte)BlackThresh;
+        currentFilters.minThreshold = (byte)minBlackThreshold;
+        currentFilters.maxThreshold = (byte)maxBlackThreshold;
         currentFilters.AlphaThreshold = (byte)AlphaThresh;
 
         // Primary Filters
@@ -401,21 +404,38 @@ public partial class MainWindow : Window
             Drawing.clickDelay = 1000;
         }
     }
-    private void BlackThreshold_TextChanging(object? sender, TextChangingEventArgs e)
+    private void minBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (BlackThresholdElement.Text == null) return;
-        BlackThresholdElement.Text = numberRegex.Replace(BlackThresholdElement.Text, "");
+        if (minBlackThresholdElement.Text == null) return;
+        minBlackThresholdElement.Text = numberRegex.Replace(minBlackThresholdElement.Text, "");
         e.Handled = true;
 
-        if (BlackThresholdElement.Text.Length < 1) { return; }
+        if (minBlackThresholdElement.Text.Length < 1) { return; }
 
         try
         {
-            BlackThresh = int.Parse(BlackThresholdElement.Text);
+            minBlackThreshold = int.Parse(minBlackThresholdElement.Text);
         }
         catch
         {
-            BlackThresh = 127;
+            minBlackThreshold = 127;
+        }
+    }
+    private void maxBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        if (maxBlackThresholdElement.Text == null) return;
+        maxBlackThresholdElement.Text = numberRegex.Replace(maxBlackThresholdElement.Text, "");
+        e.Handled = true;
+
+        if (maxBlackThresholdElement.Text.Length < 1) { return; }
+
+        try
+        {
+            maxBlackThreshold = int.Parse(maxBlackThresholdElement.Text);
+        }
+        catch
+        {
+            maxBlackThreshold = 127;
         }
     }
     private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
@@ -506,16 +526,25 @@ public partial class MainWindow : Window
         if (!path.EndsWith(".drawcfg")) { return; }
         string[] lines = File.ReadAllLines(path);
         SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
-        DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
-        ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
-        BlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
+
+        //DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
+
+        //ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
+          // Silly!!
+
+        maxBlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
+
         AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
+
         if (lines.Length <= 4) return;
         if (!bool.TryParse(lines[4], out bool _fd2)) return;
         FreeDrawCheckbox.IsChecked = _fd2;
+
         if (lines.Length <= 5) return;
         if (!int.TryParse(lines[5], out int _path)) return;
         SetPath(_path);
+
+        minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
     }
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -534,10 +563,11 @@ public partial class MainWindow : Window
 
             string[] values = { DrawIntervalElement.Text,
                             ClickDelayElement.Text,
-                            BlackThresholdElement.Text,
+                            maxBlackThresholdElement.Text,
                             AlphaThresholdElement.Text,
                             FreeDrawCheckbox.IsChecked.ToString(),
-                            Drawing.pathValue.ToString()
+                            Drawing.pathValue.ToString(),
+                            minBlackThresholdElement.Text
             };
 
             streamWriter.Write(string.Join("\r\n", values));

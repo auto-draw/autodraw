@@ -38,7 +38,8 @@ namespace Autodraw
         public class Filters
         {
             public byte AlphaThreshold = 127;
-            public byte Threshold = 127;
+            public byte minThreshold = 0;
+            public byte maxThreshold = 127;
             public bool Invert = false;
             public bool Outline = false;
             public bool OutlineSharp = false;
@@ -99,7 +100,8 @@ namespace Autodraw
             int width = OutputBitmap.Width;
             int height = OutputBitmap.Height;
 
-            byte thresh = FilterSettings.Threshold;
+            byte minthresh = FilterSettings.minThreshold;
+            byte maxthresh = FilterSettings.maxThreshold;
             byte athresh = FilterSettings.AlphaThreshold;
 
             bool doinvert = FilterSettings.Invert;
@@ -122,7 +124,7 @@ namespace Autodraw
 
                     float luminosity = (redByte + greenByte + blueByte) / 3;
 
-                    byte threshByte = (byte)(luminosity > thresh || alphaByte < athresh ? 255 : 0); // Thresholds Filter
+                    byte threshByte = (byte)((luminosity > maxthresh || luminosity < minthresh || alphaByte < athresh) ? 255 : 0); // Thresholds Filter
 
                     threshByte = doinvert == false ? threshByte : (byte)(255 - threshByte); // Invert
 
@@ -148,7 +150,7 @@ namespace Autodraw
                                     if (x - 1 < 0 || y - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y - 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -156,7 +158,7 @@ namespace Autodraw
                                     if (y - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -164,7 +166,7 @@ namespace Autodraw
                                     if (x + 1 >= width || y - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y - 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -172,7 +174,7 @@ namespace Autodraw
                                     if (x - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -180,7 +182,7 @@ namespace Autodraw
                                     if (x + 1 >= width) { doOutline = true; break; };
                                     GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -188,7 +190,7 @@ namespace Autodraw
                                     if (x - 1 < 0 || y + 1 >= height) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y + 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -196,7 +198,7 @@ namespace Autodraw
                                     if (y + 1 >= height) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -204,7 +206,7 @@ namespace Autodraw
                                     if (x + 1 >= width || y + 1 >= height) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y + 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -229,7 +231,7 @@ namespace Autodraw
                                     if (y - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -237,7 +239,7 @@ namespace Autodraw
                                     if (x - 1 < 0) { doOutline = true; break; };
                                     GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -245,7 +247,7 @@ namespace Autodraw
                                     if (x + 1 >= width) { doOutline = true; break; };
                                     GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;
@@ -253,7 +255,7 @@ namespace Autodraw
                                     if (y + 1 >= height) { doOutline = true; break; };
                                     GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
                                     lumen = (rByte + gByte + bByte) / 3;
-                                    localThresh = (byte)(lumen > thresh || aByte < athresh ? 255 : 0);
+                                    localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                                     localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
                                     if (localThresh == 255) { doOutline = true; }
                                     break;

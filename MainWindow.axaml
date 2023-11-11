@@ -119,9 +119,9 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="2*"/>
+						<RowDefinition Height="1*"/>
 						<RowDefinition Height="4"/>
-						<RowDefinition Height="2*"/>
+						<RowDefinition Height="1*"/>
 					</Grid.RowDefinitions>
 					<Border Grid.Row="0" Grid.Column="0" Classes="GridBorder"/>
 					<Grid Grid.Row="0" Grid.Column="0">
@@ -241,9 +241,14 @@
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="48"/>
 									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="4"/>
+									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Black:</TextBlock>
-								<TextBox Name="BlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+								<TextBox Name="minBlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
+									0
+								</TextBox>
+								<TextBox Name="maxBlackThresholdElement" Grid.Column="3" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
 									127
 								</TextBox>
 							</Grid>
