@@ -65,6 +65,9 @@ namespace Autodraw
 #if WINDOWS
                 SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
                 mousePos = new Vector2(x, y);
+#else
+                // FALLBACK INCASE I MESS UP BUILD
+                eventSim.SimulateMouseMovement(x, y);
 #endif
             }
         }
@@ -77,9 +80,13 @@ namespace Autodraw
             }
             else
             {
-#if WINDOWS 
+#if WINDOWS
                 SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
                 mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
+#else
+                // FALLBACK INCASE I MESS UP BUILD
+                eventSim.SimulateMouseMovementRelative(xOffset, yOffset);
+
 #endif
             }
         }
@@ -102,6 +109,11 @@ namespace Autodraw
 
                 SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+#else
+                // FALLBACK INCASE I MESS UP BUILD
+                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                eventSim.SimulateMousePress(button);
+                eventSim.SimulateMouseRelease(button);
 #endif
             }
         }
@@ -118,6 +130,10 @@ namespace Autodraw
 #if WINDOWS
                 SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
                 SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+#else
+                // FALLBACK INCASE I MESS UP BUILD
+                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                eventSim.SimulateMousePress(button);
 #endif
             }
         }
@@ -134,6 +150,10 @@ namespace Autodraw
 #if WINDOWS
                 SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
                 SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+#else
+                // FALLBACK INCASE I MESS UP BUILD
+                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                eventSim.SimulateMouseRelease(button);
 #endif
             }
         }

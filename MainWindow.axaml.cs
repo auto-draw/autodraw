@@ -48,7 +48,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         Config.init();
-
+        keybinds.Text = "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
 
         // Taskbar
         CloseAppButton.Click += QuitApp_Click;

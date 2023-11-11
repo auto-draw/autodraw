@@ -41,6 +41,9 @@ namespace Autodraw
         public static int clickDelay  = 1000; // Milliseconds, please multiply by 10000
 
         public static bool isDrawing  = false;
+        public static bool skipRescan = false;
+        public static bool isPaused   = false;
+        public static bool isSkipping = false;
         public static bool freeDraw2  = false;
 
         public static Vector2 lastPos = new(0, 0);
@@ -112,15 +115,31 @@ namespace Autodraw
         public static async Task<bool> Draw(SKBitmap bitmap)
         {
             if (isDrawing) return false;
-
-            static void keybindHalt(object? sender, KeyboardHookEventArgs e)
+            
+            static void keybindPress(object? sender, KeyboardHookEventArgs e)
+            {
+                if (e.Data.KeyCode == KeyCode.VcBackspace)
+                {
+                    skipRescan = true;
+                }
+            }
+            static void keybindRelease(object? sender, KeyboardHookEventArgs e)
             {
                 if (e.Data.KeyCode == KeyCode.VcLeftAlt)
                 {
                     Halt();
                 }
+                if (e.Data.KeyCode == KeyCode.VcBackspace)
+                {
+                    skipRescan = false;
+                }
+                if (e.Data.KeyCode == KeyCode.VcBackslash)
+                {
+                    isPaused = !isPaused;
+                }
             }
-            Input.taskHook.KeyReleased += keybindHalt;
+            Input.taskHook.KeyPressed += keybindPress;
+            Input.taskHook.KeyReleased += keybindRelease;
 
             isDrawing = true;
             Vector2 usedPos = useLastPos ? lastPos : Input.mousePos;
@@ -144,7 +163,7 @@ namespace Autodraw
             await NOP(100000);
 
 
-            if (pixelArray == null) { System.Diagnostics.Debug.WriteLine("pixelArray was never created."); }
+            if (pixelArray == null) { Debug.WriteLine("pixelArray was never created."); }
 
             for (int _y = 0; _y < bitmap.Height; _y++)
             {
@@ -156,6 +175,14 @@ namespace Autodraw
                     if (pixelArray[_x, _y] == 1)
                     {
                         int x = (_x + StartPos.X);
+                        if (isPaused)
+                        {
+                            Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                            while (isPaused) await NOP(500000);
+                            Input.MoveTo((short)x, (short)(y));
+                            await NOP(500000);
+                            Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                        }
 
                         Input.MoveTo((short)x, (short)(y - 1));
                         await NOP(clickDelay * 5000);
@@ -168,7 +195,8 @@ namespace Autodraw
                 }
             }
 
-            Input.taskHook.KeyReleased -= keybindHalt;
+            Input.taskHook.KeyPressed -= keybindPress;
+            Input.taskHook.KeyReleased -= keybindRelease;
 
             isDrawing = false;
             ResetScan(new Pos { X = bitmap.Width, Y = bitmap.Height });
@@ -195,20 +223,51 @@ namespace Autodraw
                     });
                     break;
                 }
-
                 short x = (short)(_x + startPos.X);
                 short y = (short)(_y + startPos.Y);
-                Input.MoveTo((short)x, (short)y);
-                distanceSinceLastClick++;
-                if (distanceSinceLastClick > 4000 && freeDraw2)
+
+                if (isPaused)
                 {
-                    distanceSinceLastClick = 0;
                     Input.SendClickUp(Input.MouseTypes.MouseLeft);
-                    await NOP(interval*3);
+                    while (isPaused) await NOP(500000);
+                    Input.MoveTo((short)x, (short)(y));
+                    await NOP(500000);
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 }
 
-                if (pixelArray[_x,_y] == 1)
+                bool isPixel = pixelArray[_x, _y] == 1;
+
+                if (!isPixel && !isSkipping && skipRescan)
+                {
+                    isSkipping = true;
+                }
+
+                if ((isSkipping && isPixel) || (isSkipping && !skipRescan))
+                {
+                    isSkipping = false;
+                    Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                    await NOP(interval * 3);
+                    Input.MoveTo((short)x, (short)y);
+                    await NOP(interval * 3);
+                    Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                }
+
+                // MOVE MOUSE
+                if (!isSkipping)
+                {
+                    Input.MoveTo((short)x, (short)y);
+
+                    distanceSinceLastClick++;
+                    if ((distanceSinceLastClick > 4000 && freeDraw2))
+                    {
+                        distanceSinceLastClick = 0;
+                        Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                        await NOP(interval * 3);
+                        Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                    }
+                }
+
+                if (isPixel)
                 {
                     completeTotalScan += 1;
                 }
@@ -219,7 +278,10 @@ namespace Autodraw
                     dataDisplay.DataDisplayText.Text = $"Total Image Done: {completeTotalScan}/{totalScanSize}\nCurrent Stack Size: {stack.Count}";
                 });
 
-                await NOP(interval);
+                if (!(isSkipping && !isPixel))
+                {
+                    await NOP(interval);
+                }
 
                 if (!isDrawing) { break; }
 

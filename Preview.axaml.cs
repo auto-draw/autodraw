@@ -29,6 +29,8 @@ public partial class Preview : Window
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         renderedBitmap.Dispose();
+        this.Closing -= OnClosing;
+        Input.MousePosUpdate -= UpdateMousePosition;
     }
 
     private void UpdateMousePosition(object? sender, EventArgs e)
@@ -40,7 +42,7 @@ public partial class Preview : Window
             lastMovement = currUnix;
             Vector2 usedPos = Drawing.useLastPos ? Drawing.lastPos : Input.mousePos;
             double x = usedPos.X - (Width/2);
-            double y = usedPos.Y - (Height/2)-20;
+            double y = usedPos.Y - (Height / 2);
             Position = new PixelPoint((int)x, (int)y);
         }));
     }

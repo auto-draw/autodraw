@@ -12,14 +12,7 @@
 		TransparencyLevelHint="None"
 		
 		Topmost="True">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="20"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-		<Label Padding="0" Background="#1000" Foreground="#1fff" HorizontalAlignment="Center" HorizontalContentAlignment="Center" >Shift to Start, Alt to Stop/Exit, Ctrl to Lock</Label>
-		<Image Name="previewImage" Grid.Row="2">
+	<Image Name="previewImage">
 
-		</Image>
-	</Grid>
+	</Image>
 </Window>

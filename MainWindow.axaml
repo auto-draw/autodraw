@@ -112,7 +112,7 @@
 					<RowDefinition Height="4"/>
 					<RowDefinition Height="36"/>
 				</Grid.RowDefinitions>
-				<Grid >
+				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="4"/>
@@ -125,6 +125,7 @@
 					</Grid.RowDefinitions>
 					<Border Grid.Row="0" Grid.Column="0" Classes="GridBorder"/>
 					<Grid Grid.Row="0" Grid.Column="0">
+						<TextBlock Padding="2" Name="keybinds"/>
 					</Grid>
 					<Border Grid.Row="0" Grid.Column="2" Classes="GridBorder"/>
 					<Grid Grid.Row="0" Grid.Column="2" Margin="4">

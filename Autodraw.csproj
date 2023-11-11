@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectCapability Include="Avalonia" />
-    <TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
-  </ItemGroup>
+	<PropertyGroup>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<Nullable>enable</Nullable>
+	<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup>
+	<ProjectCapability Include="Avalonia" />
+	<TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <StartupObject></StartupObject>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <FileVersion>2.0.0.0</FileVersion>
-    <AssemblyVersion>7.15.2023</AssemblyVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	<StartupObject></StartupObject>
+	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	<PlatformTarget>AnyCPU</PlatformTarget>
+	<FileVersion>2.0.1.0</FileVersion>
+	<AssemblyVersion>7.15.2023</AssemblyVersion>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<DebugType>portable</DebugType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<DebugType>portable</DebugType>
+	</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
