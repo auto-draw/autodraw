@@ -527,14 +527,15 @@ public partial class MainWindow : Window
         string[] lines = File.ReadAllLines(path);
         SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
 
-        //DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
+        DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
 
-        //ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
-          // Silly!!
+        ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
 
         maxBlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
+          // Silly!!
 
         AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
+          // Silly!!
 
         if (lines.Length <= 4) return;
         if (!bool.TryParse(lines[4], out bool _fd2)) return;
