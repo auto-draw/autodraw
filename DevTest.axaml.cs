@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace Autodraw;
 
@@ -22,10 +23,10 @@ public partial class DevTest : Window
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
-        GenerateImage.Click += GenerateImage_ClickAsync;
+        GenerateImage.Click += (object? sender, RoutedEventArgs e) => Task.Run(() => GenerateImage_ClickAsync());
     }
 
-    private async void GenerateImage_ClickAsync(object? sender, RoutedEventArgs e)
+    private async void GenerateImage_ClickAsync()
     {
         var OpenAIKey = Config.getEntry("OpenAIKey");
         var prompt = "A male individual";
@@ -65,8 +66,11 @@ public partial class DevTest : Window
             }
         }
 
-        MainWindow.ImportImage(Config.FolderPath + "/temp.png");
-        File.Delete(Config.FolderPath + "/temp.png");
+        Dispatcher.UIThread.Invoke(new Action(() =>
+        {
+            MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
+            File.Delete(Config.FolderPath + "/temp.png");
+        }));
     }
 
     private void TestPopup_Click(object? sender, RoutedEventArgs e)

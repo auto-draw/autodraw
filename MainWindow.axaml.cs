@@ -26,6 +26,8 @@ namespace Autodraw;
 
 public partial class MainWindow : Window
 {
+    public static MainWindow? CurrentMainWindow;
+
     private Settings? _settings;
     private DevTest? _devwindow;
 
@@ -52,6 +54,8 @@ public partial class MainWindow : Window
         DevToolsExtensions.AttachDevTools(this);
 
         InitializeComponent();
+
+        CurrentMainWindow = this;
 
         Config.init();
         keybinds.Text = "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
