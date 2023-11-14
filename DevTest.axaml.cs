@@ -58,7 +58,11 @@ public partial class DevTest : Window
             var jsonResponse = JObject.Parse(client.Execute(request).Content);
             if(jsonResponse["error"] is not null)
             {
-                Debug.WriteLine("Error with Prompt");
+                Dispatcher.UIThread.Invoke(new Action(() =>
+                {
+                    new MessageBox().ShowMessageBox($"Error! ({jsonResponse["error"]["type"].ToString()})", jsonResponse["error"]["message"].ToString(), "warn");
+                }));
+                Utils.Log("Error with Prompt: " + jsonResponse["error"]);
                 return;
             }
             var URL = jsonResponse["data"][0]["url"].ToString();

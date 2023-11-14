@@ -44,7 +44,7 @@
 		<TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Center">Prompt</TextBlock>
 		<TextBox Name="AIPrompt" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" TextAlignment="Center">A drawing of a logo for a program named AutoDraw</TextBox>
 		<TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Center">Image size and model</TextBlock>
-		<TextBox Name="AISize" Grid.Row="6" Grid.Column="1" TextAlignment="Center">1080x1080</TextBox>
+		<TextBox Name="AISize" Grid.Row="6" Grid.Column="1" TextAlignment="Center">256x256</TextBox>
 		<TextBox Name="AIModel" Grid.Row="7" Grid.Column="1" TextAlignment="Center">dall-e-3</TextBox>
 		<Button Grid.Row="10" Grid.Column="1" Name="GenerateImage" VerticalAlignment="Center" HorizontalAlignment="Center">Generate Image</Button>
 		<TextBlock Grid.Row="11" Grid.Column="1" TextAlignment="Center" TextWrapping="Wrap">(Note: Make sure to set your OpenAI Developer Key in Settings > Dev. Settings!)</TextBlock>
