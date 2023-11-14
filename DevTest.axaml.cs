@@ -35,6 +35,8 @@ public partial class DevTest : Window
             Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(OpenAIKey, "Bearer"),
         };
 
+        GenerateImage.IsEnabled = false;
+
         var client = new RestClient(options);
 
         var request = new RestRequest()
@@ -52,36 +54,46 @@ public partial class DevTest : Window
         };
         Task.Run(async () =>
         {
-            request.AddJsonBody(param);
-            Debug.WriteLine(param);
-
-            var jsonResponse = JObject.Parse(client.Execute(request).Content);
-            if(jsonResponse["error"] is not null)
+            try
             {
+                request.AddJsonBody(param);
+                Debug.WriteLine(param);
+
+                var jsonResponse = JObject.Parse(client.Execute(request).Content);
+                if(jsonResponse["error"] is not null)
+                {
+                    Dispatcher.UIThread.Invoke(new Action(() =>
+                    {
+                        new MessageBox().ShowMessageBox($"Error! ({jsonResponse["error"]["type"].ToString()})", jsonResponse["error"]["message"].ToString(), "warn");
+                    }));
+                    Utils.Log("Error with Prompt: " + jsonResponse["error"]);
+                    GenerateImage.IsEnabled = true;
+                    return;
+                }
+                var URL = jsonResponse["data"][0]["url"].ToString();
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync(URL);
+                    response.EnsureSuccessStatusCode();
+                    using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
+                    {
+                        await response.Content.CopyToAsync(fileStream);
+                    }
+                }
+
                 Dispatcher.UIThread.Invoke(new Action(() =>
                 {
-                    new MessageBox().ShowMessageBox($"Error! ({jsonResponse["error"]["type"].ToString()})", jsonResponse["error"]["message"].ToString(), "warn");
+                    GenerateImage.IsEnabled = true;
+                    MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
+                    File.Delete(Config.FolderPath + "/temp.png");
                 }));
-                Utils.Log("Error with Prompt: " + jsonResponse["error"]);
-                return;
             }
-            var URL = jsonResponse["data"][0]["url"].ToString();
-
-            using (var httpClient = new HttpClient())
+            catch
             {
-                var response = await httpClient.GetAsync(URL);
-                response.EnsureSuccessStatusCode();
-                using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
-                {
-                    await response.Content.CopyToAsync(fileStream);
-                }
+                GenerateImage.IsEnabled = true;
+                Utils.Log("Error occured within the AI Debug");
             }
-
-            Dispatcher.UIThread.Invoke(new Action(() =>
-            {
-                MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
-                File.Delete(Config.FolderPath + "/temp.png");
-            }));
         });
     }
 
