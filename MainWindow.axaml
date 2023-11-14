@@ -11,7 +11,7 @@
 		Width="720"
 		Height="420"
 		CanResize="True"
-		DragDrop.AllowDrop="True"
+		DragDrop.AllowDrop="False"
 		
 		MinWidth="720"
 		MinHeight="420"

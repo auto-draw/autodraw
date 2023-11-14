@@ -200,8 +200,6 @@ public partial class MainWindow : Window
         _devwindow = null;
     }
 
-
-
     // Base UI Handles
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
