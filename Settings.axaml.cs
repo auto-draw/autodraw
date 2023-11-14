@@ -43,6 +43,7 @@ public partial class Settings : Window
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
 
+        // DALL-E API Keys
         SaveOpenAIKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAIKey.Text);
 
         if (Config.getEntry("showPopup") == null)
@@ -131,6 +132,11 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         LoadTheme.Click += LoadTheme_Click;
 
         // Developer
+    }
+
+    private void ManageAPIKeys_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     FilePickerFileType[] filetype = new FilePickerFileType[] {

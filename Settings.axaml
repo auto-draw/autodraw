@@ -213,6 +213,7 @@
 				<TextBlock Grid.Row="1">There is a developer test panel by the way.</TextBlock>
 				<TextBlock Grid.Row="2">Press on the v2 text on the main window. 😗</TextBlock>
 				<TextBlock Grid.Row="4" FontSize="18">OpenAI API Key </TextBlock>
+				<TextBlock Grid.Row="8" FontSize="14" HorizontalAlignment="Right">platform.openai.com/api-keys</TextBlock>
 				<TextBox Grid.Row="6" Name="OpenAIKey"></TextBox>
 				<Button Grid.Row="8" Name="SaveOpenAIKey">Save</Button>
 			</Grid>

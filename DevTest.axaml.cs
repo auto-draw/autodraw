@@ -29,7 +29,6 @@ public partial class DevTest : Window
     private async void GenerateImage_ClickAsync()
     {
         var OpenAIKey = Config.getEntry("OpenAIKey");
-        var prompt = "A male individual";
         if (OpenAIKey == null) { new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error"); return; }
         var options = new RestClientOptions("https://api.openai.com/v1/images/generations")
         {
@@ -46,9 +45,10 @@ public partial class DevTest : Window
 
         var param = new
         {
-            prompt = prompt,
-            n = 1,
-            size = "1024x1024"
+            prompt = AIPrompt.Text,
+            model = AIModel.Text,
+            size = AISize.Text,
+            n = 1
         };
 
         request.AddJsonBody(param);
