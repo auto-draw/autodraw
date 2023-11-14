@@ -17,11 +17,13 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="200"/>
 			<ColumnDefinition Width="200"/>
 			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="300"/>
 			<ColumnDefinition Width="300"/>
 		</Grid.ColumnDefinitions>
 		<TextBox Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Background="#ccc" IsReadOnly="True" CornerRadius="0" Cursor="None">
@@ -33,6 +35,6 @@
 			Results:
 		</TextBlock>
 
-		<Button Grid.Row="1" Grid.Column="1"  Name="ThemeTest" VerticalAlignment="Center" HorizontalAlignment="Center">Test ThemeLoad</Button>
+		<Button Grid.Row="1" Grid.Column="1" Name="GenerateImage" VerticalAlignment="Center" HorizontalAlignment="Center">Generate Image</Button>
 	</Grid>
 </Window>

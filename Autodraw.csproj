@@ -41,6 +41,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
     <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="110.2.0" />
     <PackageReference Include="SharpHook" Version="5.1.1" />
     <PackageReference Include="SimWinMouse" Version="1.0.2">
       <NoWarn>true</NoWarn>

@@ -16,6 +16,11 @@ using System.Threading;
 using System.Diagnostics;
 using Avalonia.Input;
 using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators.OAuth2;
+using RestSharp;
+using System.Net;
+using System.Net.Http;
 
 namespace Autodraw;
 
@@ -58,7 +63,7 @@ public partial class MainWindow : Window
         DevButton.Click += Dev_Click;
 
         // Base
-        this.Closing += (object? sender, WindowClosingEventArgs e) => { Cleanup(); };
+        Closing += (object? sender, WindowClosingEventArgs e) => { Cleanup(); };
         ProcessButton.Click += ProcessButton_Click;
         OpenButton.Click += OpenButton_Click;
         RunButton.Click += RunButton_Click;
@@ -164,8 +169,6 @@ public partial class MainWindow : Window
         return currentFilters;
     }
 
-
-
     // External Window Opening/Closing Handles
 
     private void OpenSettings_Click(object? sender, RoutedEventArgs e)
@@ -207,6 +210,24 @@ public partial class MainWindow : Window
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
         ImagePreview.Source = displayedBitmap;
     }
+    
+    public void ImportImage(string path)
+    {
+        rawBitmap = SKBitmap.Decode(path).NormalizeColor();
+        preFXBitmap = rawBitmap.Copy();
+        displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
+        processedBitmap?.Dispose();
+        processedBitmap = null;
+        ImagePreview.Source = displayedBitmap;
+
+        MidChange = true;
+        SizeSlider.Value = 100;
+
+        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
+        WidthInput.Text = displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = displayedBitmap.Size.Height.ToString();
+        MidChange = false;
+    }
 
     private async void OpenButton_Click(object? sender, RoutedEventArgs e)
     {
@@ -219,20 +240,7 @@ public partial class MainWindow : Window
 
         if (file.Count == 1)
         {
-            rawBitmap = SKBitmap.Decode(file[0].TryGetLocalPath()).NormalizeColor();
-            preFXBitmap = rawBitmap.Copy();
-            displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
-            processedBitmap?.Dispose();
-            processedBitmap = null;
-            ImagePreview.Source = displayedBitmap;
-
-            MidChange = true;
-            SizeSlider.Value = 100;
-
-            PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-            WidthInput.Text = displayedBitmap.Size.Width.ToString();
-            HeightInput.Text = displayedBitmap.Size.Height.ToString();
-            MidChange = false;
+            ImportImage(file[0].TryGetLocalPath());
         }
     }
 
@@ -244,8 +252,6 @@ public partial class MainWindow : Window
         WindowState = WindowState.Minimized;
         new Preview().ReadyDraw(processedBitmap);
     }
-
-
 
     // Inputs Handles
 
@@ -489,8 +495,6 @@ public partial class MainWindow : Window
         Drawing.freeDraw2 = FreeDrawCheckbox.IsChecked ?? false;
     }
 
-
-
     // Toolbar Handles
 
     private void MinimizeApp_Click(object? sender, RoutedEventArgs e)
@@ -505,13 +509,8 @@ public partial class MainWindow : Window
 
     private void Dev_Click(object? sender, RoutedEventArgs e)
     {
-        rawBitmap = DevTest.TestImage(64, 64);
-        Bitmap _tmp = rawBitmap.ConvertToAvaloniaBitmap();
-        ImagePreview.Source = _tmp;
         OpenDevWindow();
     }
-
-
 
     // User Configuration Handles
 

@@ -43,14 +43,20 @@ public partial class Settings : Window
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
 
+        SaveOpenAIKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAIKey.Text);
+
         if (Config.getEntry("showPopup") == null)
         {
             Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
         }
+        if (Config.getEntry("OpenAIKey") != null)
+        {
+            OpenAIKey.Text = Config.getEntry("OpenAIKey");
+        }
 
         // Themes
 
-        //  TextEditor Input
+            //  TextEditor Input
         var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
         _textEditor1.Text = @"<!-- Template Theme -->
 <!--
@@ -126,6 +132,7 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 
         // Developer
     }
+
     FilePickerFileType[] filetype = new FilePickerFileType[] {
         new("All Theme Types") { Patterns = new[] { "*.axaml", "*.daxaml", "*.laxaml" }, MimeTypes = new[] { "*/*" } },
         new("Default Theme") { Patterns = new[] { "*.axaml" }, MimeTypes = new[] { "*/*" } },
@@ -139,6 +146,7 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         string Output = App.LoadThemeFromString(ThemeInput.Text, ThemeIsDark.IsChecked == true, savedLocation);
         ThemeOutput.Text = Output;
     }
+
 
     private async void OpenTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
@@ -239,4 +247,5 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         myControl.Opacity = 1;
         myControl.IsHitTestVisible = true;
     }
+
 }

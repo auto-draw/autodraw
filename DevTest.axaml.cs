@@ -3,9 +3,15 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators.OAuth2;
+using RestSharp;
 using SkiaSharp;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Autodraw;
 
@@ -16,25 +22,51 @@ public partial class DevTest : Window
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
-        ThemeTest.Click += ThemeTest_Click;
+        GenerateImage.Click += GenerateImage_ClickAsync;
     }
 
-    private async void ThemeTest_Click(object? sender, RoutedEventArgs e)
+    private async void GenerateImage_ClickAsync(object? sender, RoutedEventArgs e)
     {
-        var filetype = new FilePickerFileType[] { new("ElementsData") { Patterns = new[] { "*.axaml", "*.darkaxaml", "*.lightaxaml" }, MimeTypes = new[] { "*/*" } }, FilePickerFileTypes.All };
-        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var OpenAIKey = Config.getEntry("OpenAIKey");
+        var prompt = "A male individual";
+        if (OpenAIKey == null) { new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error"); return; }
+        var options = new RestClientOptions("https://api.openai.com/v1/images/generations")
         {
-            Title = "Open Theme",
-            FileTypeFilter = filetype,
-            AllowMultiple = false
-        });
+            Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(OpenAIKey, "Bearer"),
+        };
 
-        if (file.Count == 1)
+        var client = new RestClient(options);
+
+        var request = new RestRequest()
         {
-            string? Error = App.LoadTheme(file[0].TryGetLocalPath(), true);
-            if (Error is null) { return; }
-            Debug.WriteLine(Error);
+            Method = Method.Post,
+            RequestFormat = DataFormat.Json
+        };
+
+        var param = new
+        {
+            prompt = prompt,
+            n = 1,
+            size = "1024x1024"
+        };
+
+        request.AddJsonBody(param);
+
+        dynamic jsonResponse = JObject.Parse(client.Execute(request).Content);
+        var URL = jsonResponse["data"][0]["url"].ToString();
+
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetAsync(URL);
+            response.EnsureSuccessStatusCode();
+            using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
+            {
+                await response.Content.CopyToAsync(fileStream);
+            }
         }
+
+        MainWindow.ImportImage(Config.FolderPath + "/temp.png");
+        File.Delete(Config.FolderPath + "/temp.png");
     }
 
     private void TestPopup_Click(object? sender, RoutedEventArgs e)
