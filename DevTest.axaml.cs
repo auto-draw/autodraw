@@ -23,10 +23,10 @@ public partial class DevTest : Window
         InitializeComponent();
         TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
-        GenerateImage.Click += (object? sender, RoutedEventArgs e) => Task.Run(() => GenerateImage_ClickAsync());
+        GenerateImage.Click += GenerateImage_ClickAsync;
     }
 
-    private async void GenerateImage_ClickAsync()
+    private void GenerateImage_ClickAsync(object? sender, RoutedEventArgs e)
     {
         var OpenAIKey = Config.getEntry("OpenAIKey");
         if (OpenAIKey == null) { new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error"); return; }
@@ -50,27 +50,35 @@ public partial class DevTest : Window
             size = AISize.Text,
             n = 1
         };
-
-        request.AddJsonBody(param);
-
-        dynamic jsonResponse = JObject.Parse(client.Execute(request).Content);
-        var URL = jsonResponse["data"][0]["url"].ToString();
-
-        using (var httpClient = new HttpClient())
+        Task.Run(async () =>
         {
-            var response = await httpClient.GetAsync(URL);
-            response.EnsureSuccessStatusCode();
-            using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
+            request.AddJsonBody(param);
+            Debug.WriteLine(param);
+
+            var jsonResponse = JObject.Parse(client.Execute(request).Content);
+            if(jsonResponse["error"] is not null)
             {
-                await response.Content.CopyToAsync(fileStream);
+                Debug.WriteLine("Error with Prompt");
+                return;
             }
-        }
+            var URL = jsonResponse["data"][0]["url"].ToString();
 
-        Dispatcher.UIThread.Invoke(new Action(() =>
-        {
-            MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
-            File.Delete(Config.FolderPath + "/temp.png");
-        }));
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(URL);
+                response.EnsureSuccessStatusCode();
+                using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
+                {
+                    await response.Content.CopyToAsync(fileStream);
+                }
+            }
+
+            Dispatcher.UIThread.Invoke(new Action(() =>
+            {
+                MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
+                File.Delete(Config.FolderPath + "/temp.png");
+            }));
+        });
     }
 
     private void TestPopup_Click(object? sender, RoutedEventArgs e)
