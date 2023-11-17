@@ -581,7 +581,7 @@ public partial class MainWindow : Window
     {
         var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Save Config",
+            Title = "Load Config",
             FileTypeFilter = new FilePickerFileType[] { ConfigsFileFilter },
             AllowMultiple = false
         });
