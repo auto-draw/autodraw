@@ -7,6 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
 		
 		Name="AutoDraw"
+		x:Name="AutoDraw"
 		
 		Width="720"
 		Height="420"
@@ -23,7 +24,7 @@
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaTitleBarHeightHint="20"
 		>
-	
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="20"></RowDefinition>
@@ -50,6 +51,12 @@
 					<Image Source="avares://Autodraw/Assets/gear.png"></Image>
 				</Button>
 			</StackPanel>
+
+			<Menu>
+				<MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
+					<MenuItem x:Name="PasteImage" Header="_Paste Image" Command="{Binding $parent[Window].PasteControl}" CommandParameter="{Binding ElementName=MainWindow}" HotKey="Ctrl+V"/>
+				</MenuItem>
+			</Menu>
 			
 			<!--Buttons-->
 			<Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">

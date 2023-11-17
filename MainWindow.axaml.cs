@@ -213,9 +213,10 @@ public partial class MainWindow : Window
         ImagePreview.Source = displayedBitmap;
     }
     
-    public void ImportImage(string path)
-    {
-        rawBitmap = SKBitmap.Decode(path).NormalizeColor();
+    public void ImportImage(string path, byte[] img = null)
+    {   
+        if (img == null) rawBitmap = SKBitmap.Decode(path).NormalizeColor();
+        else rawBitmap = SKBitmap.Decode(img).NormalizeColor();
         preFXBitmap = rawBitmap.Copy();
         displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
         processedBitmap?.Dispose();
@@ -617,5 +618,13 @@ public partial class MainWindow : Window
         string SelectedItem = ConfigsListBox.SelectedItem.ToString();
         if (SelectedItem == null) return;
         LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");
+    }
+
+    public async void PasteControl()
+    {
+        var clipboard = Clipboard;
+        string fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
+        object file = await clipboard.GetDataAsync(fileFormat);
+        ImportImage("", (byte[])file);
     }
 }

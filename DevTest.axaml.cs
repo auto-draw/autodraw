@@ -76,18 +76,13 @@ public partial class DevTest : Window
                 {
                     var response = await httpClient.GetAsync(URL);
                     response.EnsureSuccessStatusCode();
-                    using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-                }
 
-                Dispatcher.UIThread.Invoke(new Action(() =>
-                {
-                    GenerateImage.IsEnabled = true;
-                    MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
-                    File.Delete(Config.FolderPath + "/temp.png");
-                }));
+                    Dispatcher.UIThread.Invoke(new Action(async () =>
+                    {
+                        GenerateImage.IsEnabled = true;
+                        MainWindow.CurrentMainWindow.ImportImage("", await response.Content.ReadAsByteArrayAsync());
+                    }));
+                }
             }
             catch
             {
