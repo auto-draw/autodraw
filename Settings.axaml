@@ -112,6 +112,7 @@
 				</Grid.RowDefinitions>
 				<CheckBox Grid.Row="2" Name="AltMouseControl">Alternative Mouse Control (Buggy)</CheckBox>
 				<CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
+				<CheckBox Grid.Row="6" Name="LogFile">Enable Log files</CheckBox>
 				<TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
 			</Grid>
 			<Grid Name="Themes" Grid.Column="3" Grid.Row="3" Opacity="1" IsHitTestVisible="True">

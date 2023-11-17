@@ -39,6 +39,7 @@ public partial class Settings : Window
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
         ShowPopup.IsCheckedChanged += ShowPopup_IsCheckedChanged;
+        LogFile.IsCheckedChanged += LogFile_IsCheckedChanged;
 
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
@@ -134,11 +135,6 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         // Developer
     }
 
-    private void ManageAPIKeys_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
     FilePickerFileType[] filetype = new FilePickerFileType[] {
         new("All Theme Types") { Patterns = new[] { "*.axaml", "*.daxaml", "*.laxaml" }, MimeTypes = new[] { "*/*" } },
         new("Default Theme") { Patterns = new[] { "*.axaml" }, MimeTypes = new[] { "*/*" } },
@@ -215,6 +211,12 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         Input.forceUio = (bool)AltMouseControl.IsChecked;
     }
 
+    private void LogFile_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (LogFile.IsChecked == null) return;
+        Config.setEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
+        Utils.LoggingEnabled = (bool)LogFile.IsChecked;
+    }
 
     private void ToggleTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {

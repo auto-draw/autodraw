@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Runtime.Versioning;
 using Avalonia.Controls;
 using Avalonia.Platform;
+using System.Diagnostics;
 
 namespace Autodraw
 {
@@ -83,7 +84,7 @@ namespace Autodraw
             string json = File.ReadAllText(ConfigPath);
             JObject jsonFile = JObject.Parse(json);
             jsonFile[entry] = data;
-            File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(jsonFile));
+            File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(jsonFile, Formatting.Indented));
             return true;
         }
     }
@@ -91,12 +92,12 @@ namespace Autodraw
     public class Utils
     {
         public static string LogsPath = Path.Combine(Config.FolderPath, "logs");
+        public static bool LoggingEnabled = Config.getEntry("logsEnabled") != "True";
 
         public static void Log(string text)
         {
-            Console.WriteLine(text);
-            if (Config.getEntry("logsEnabled") != "true") return;
-            // ^^ Change code later, prob shouldn't call file reads so much, instead make it a variable like Utils.LoggingEnabled, and update that variable when needed.
+            Debug.WriteLine(text);
+            if (LoggingEnabled) return;
             Directory.CreateDirectory(LogsPath);
             File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
         }

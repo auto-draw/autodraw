@@ -622,9 +622,16 @@ public partial class MainWindow : Window
 
     public async void PasteControl()
     {
-        var clipboard = Clipboard;
-        string fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
-        object file = await clipboard.GetDataAsync(fileFormat);
-        ImportImage("", (byte[])file);
+        try
+        {
+            var clipboard = Clipboard;
+            string fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
+            object file = await clipboard.GetDataAsync(fileFormat);
+            ImportImage("", (byte[])file);
+        }
+        catch (Exception ex)
+        {
+            Utils.Log("Error with PasteControl(): " + ex);
+        }
     }
 }
