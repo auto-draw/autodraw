@@ -43,6 +43,7 @@ public partial class Settings : Window
 
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
+        LogFile.IsChecked = Config.getEntry("logsEnabled") == "True";
 
         // DALL-E API Keys
         SaveOpenAIKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAIKey.Text);
