@@ -1,223 +1,235 @@
-
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		
-		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
-		
+
+        xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+
         mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="375"
         x:Class="Autodraw.Settings"
         Title="Settings"
-		WindowStartupLocation="CenterScreen"
-		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaToDecorationsHint="True"
-		MinWidth="550"
-		MinHeight="325"
-		Width="650"
-		Height="375"
-		>
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="20"></RowDefinition>
-			<RowDefinition Height="1*"></RowDefinition>
-		</Grid.RowDefinitions>
-		<!--Toolbar-->
-		<Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
-			<!--Background-->
-			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+        MinWidth="550"
+        MinHeight="325"
+        Width="650"
+        Height="375">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <!--Toolbar-->
+        <Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+            <!--Background-->
+            <Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20" />
 
-			<Image Classes="SettingsToolbar"/>
-			<Image Classes="SettingsToolbarSecond"/>
-			<Image Classes="SettingsToolbarThird"/>
-			
-			<Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20"/>
+            <Image Classes="SettingsToolbar" />
+            <Image Classes="SettingsToolbarSecond" />
+            <Image Classes="SettingsToolbarThird" />
 
-			<!--Decorations-->
-			<StackPanel Classes="Toolbar" Orientation="Horizontal">
-				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
-					Settings
-				</Label>
-			</StackPanel>
+            <Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20" />
 
-			<!--Buttons-->
-			<Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="20"/>
-					<ColumnDefinition Width="20"/>
-					<ColumnDefinition Width="20"/>
-				</Grid.ColumnDefinitions>
-				<Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
-					<Image Classes="CloseApp ToolbarButton"></Image>
-				</Button>
-			</Grid>
-		</Canvas>
-		<Image Classes="SettingsBody" Grid.Row="1"/>
-		<Image Classes="SettingsBodySecond" Grid.Row="1"/>
-		<Image Classes="SettingsBodyThird" Grid.Row="1"/>
-		<Grid Classes="Body" Grid.Row="1" Name="Body">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="4"/>
-				<ColumnDefinition Width="120"/>
-				<ColumnDefinition Width="4"/>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="4"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="4"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="4"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="4"/>
-			</Grid.RowDefinitions>
-			<Grid Grid.Column="1" Grid.Row="3" Background="#3f000000">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<Button Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,2,5,0" HorizontalContentAlignment="Center" Name="GeneralMenuButton">General</Button>
-				<Button Grid.Row="4" HorizontalAlignment="Stretch" Margin="5,0,5,0" HorizontalContentAlignment="Center" Name="ThemeMenuButton">Themes</Button>
-				<Button Grid.Row="10" HorizontalAlignment="Stretch" Margin="5,0,5,0" HorizontalContentAlignment="Center" Name="MarketplaceButton" VerticalAlignment="Bottom">Marketplace</Button>
-				<Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5" HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom" >Dev. options</Button>
-			</Grid>
+            <!--Decorations-->
+            <StackPanel Classes="Toolbar" Orientation="Horizontal">
+                <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20"
+                       VerticalContentAlignment="Center">
+                    Settings
+                </Label>
+            </StackPanel>
 
-			<Grid Name="General" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
-				<Grid.Transitions>
-					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
-					</Transitions>
-				</Grid.Transitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="0"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="0"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="2"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<CheckBox Grid.Row="2" Name="AltMouseControl">Alternative Mouse Control (Buggy)</CheckBox>
-				<CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
-				<CheckBox Grid.Row="6" Name="LogFile">Enable Log files</CheckBox>
-				<TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
-			</Grid>
-			<Grid Name="Themes" Grid.Column="3" Grid.Row="3" Opacity="1" IsHitTestVisible="True">
-				<Grid.Transitions>
-					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
-					</Transitions>
-				</Grid.Transitions>
-				<Grid Grid.Column="0" Grid.Row="0">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="4"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="2"/>
-						<RowDefinition Height="80"/>
-						<RowDefinition Height="4"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
-					<Grid Grid.Column="0" Grid.Row="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="2"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="4"/>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="4"/>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="4"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<Button Grid.Column="0" Name="DarkLightThemeToggle">Dark/Light</Button>
-						<Button Grid.Column="4" Name="NewTheme">New</Button>
-						<Button Grid.Column="6" Name="OpenTheme">Open</Button>
-						<Button Grid.Column="8" Name="SaveTheme">Save</Button>
-					</Grid>
-					<Grid Grid.Row="2">
-						<AvaloniaEdit:TextEditor
-							Padding="4"
-							Name="ThemeInput"
-							Background="#222"
-							Foreground="#DDD"
-							FontSize="11"
-							FontFamily="Lucida Console, Consolas, Cascadia Code, Menlo, Monospace"
-							ShowLineNumbers="True"/>
-					</Grid>
-					<Grid Grid.Row="4">
-						<AvaloniaEdit:TextEditor
-							Padding="4"
-							Name="ThemeOutput"
-							IsReadOnly="True"
-							Grid.Column="2"
-							Background="#222"
-							Foreground="#DDD"
-							Text="# This is the error handler."
-							ShowLineNumbers="True"
-							WordWrap="True"
-							FontSize="11"
-							FontFamily="Cascadia Code,Consolas,Menlo,Monospace"/>
-					</Grid>
-					<Grid Grid.Row="6">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="4"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<Button Name="LoadTheme">Load Theme</Button>
-						<CheckBox Name="ThemeIsDark" Grid.Column="2" IsChecked="True">Dark Theme?</CheckBox>
-					</Grid>
-				</Grid>
-			</Grid>
+            <!--Buttons-->
+            <Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20"
+                        FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+                    <Image Classes="CloseApp ToolbarButton" />
+                </Button>
+            </Grid>
+        </Canvas>
+        <Image Classes="SettingsBody" Grid.Row="1" />
+        <Image Classes="SettingsBodySecond" Grid.Row="1" />
+        <Image Classes="SettingsBodyThird" Grid.Row="1" />
+        <Grid Classes="Body" Grid.Row="1" Name="Body">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="4" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="4" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="1" Grid.Row="3" Background="#3f000000">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,2,5,0" HorizontalContentAlignment="Center"
+                        Name="GeneralMenuButton">
+                    General
+                </Button>
+                <Button Grid.Row="4" HorizontalAlignment="Stretch" Margin="5,0,5,0" HorizontalContentAlignment="Center"
+                        Name="ThemeMenuButton">
+                    Themes
+                </Button>
+                <Button Grid.Row="10" HorizontalAlignment="Stretch" Margin="5,0,5,0"
+                        HorizontalContentAlignment="Center" Name="MarketplaceButton" VerticalAlignment="Bottom">
+                    Marketplace
+                </Button>
+                <Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5"
+                        HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom">
+                    Dev. options
+                </Button>
+            </Grid>
 
-			<Grid Name="Marketplace" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
-				<Grid.Transitions>
-					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
-					</Transitions>
-				</Grid.Transitions>
-				<TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
-			</Grid>
-			
-			<Grid Name="Developers" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
-				<Grid.Transitions>
-					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut"/>
-					</Transitions>
-				</Grid.Transitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="10"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="10"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0">Developer Zone. (gz9 added this)</TextBlock>
-				<TextBlock Grid.Row="1">There is a developer test panel by the way.</TextBlock>
-				<TextBlock Grid.Row="2">Press on the v2 text on the main window. 😗</TextBlock>
-				<TextBlock Grid.Row="4" FontSize="18">OpenAI API Key </TextBlock>
-				<TextBlock Grid.Row="8" FontSize="14" HorizontalAlignment="Right">platform.openai.com/api-keys</TextBlock>
-				<TextBox Grid.Row="6" Name="OpenAIKey"></TextBox>
-				<Button Grid.Row="8" Name="SaveOpenAIKey">Save</Button>
-			</Grid>
-		</Grid>
-	</Grid>
+            <Grid Name="General" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
+                    </Transitions>
+                </Grid.Transitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <CheckBox Grid.Row="2" Name="AltMouseControl">Alternative Mouse Control (Buggy)</CheckBox>
+                <CheckBox Grid.Row="4" Name="ShowPopup">Show Finished Drawing Popup</CheckBox>
+                <CheckBox Grid.Row="6" Name="LogFile">Enable Log files</CheckBox>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="3">This is incomplete, some functions here may not work.</TextBlock>
+            </Grid>
+            <Grid Name="Themes" Grid.Column="3" Grid.Row="3" Opacity="1" IsHitTestVisible="True">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
+                    </Transitions>
+                </Grid.Transitions>
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2" />
+                        <RowDefinition Height="80" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Name="DarkLightThemeToggle">Dark/Light</Button>
+                        <Button Grid.Column="4" Name="NewTheme">New</Button>
+                        <Button Grid.Column="6" Name="OpenTheme">Open</Button>
+                        <Button Grid.Column="8" Name="SaveTheme">Save</Button>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <AvaloniaEdit:TextEditor
+                            Padding="4"
+                            Name="ThemeInput"
+                            Background="#222"
+                            Foreground="#DDD"
+                            FontSize="11"
+                            FontFamily="Lucida Console, Consolas, Cascadia Code, Menlo, Monospace"
+                            ShowLineNumbers="True" />
+                    </Grid>
+                    <Grid Grid.Row="4">
+                        <AvaloniaEdit:TextEditor
+                            Padding="4"
+                            Name="ThemeOutput"
+                            IsReadOnly="True"
+                            Grid.Column="2"
+                            Background="#222"
+                            Foreground="#DDD"
+                            Text="# This is the error handler."
+                            ShowLineNumbers="True"
+                            WordWrap="True"
+                            FontSize="11"
+                            FontFamily="Cascadia Code,Consolas,Menlo,Monospace" />
+                    </Grid>
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Name="LoadTheme">Load Theme</Button>
+                        <CheckBox Name="ThemeIsDark" Grid.Column="2" IsChecked="True">Dark Theme?</CheckBox>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid Name="Marketplace" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
+                    </Transitions>
+                </Grid.Transitions>
+                <TextBlock Grid.ColumnSpan="3">Marketplace.</TextBlock>
+            </Grid>
+
+            <Grid Name="Developers" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
+                    </Transitions>
+                </Grid.Transitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0">Developer Zone. (gz9 added this)</TextBlock>
+                <TextBlock Grid.Row="1">There is a developer test panel by the way.</TextBlock>
+                <TextBlock Grid.Row="2">Press on the v2 text on the main window. 😗</TextBlock>
+                <TextBlock Grid.Row="4" FontSize="18">OpenAI API Key </TextBlock>
+                <TextBlock Grid.Row="8" FontSize="14" HorizontalAlignment="Right">platform.openai.com/api-keys</TextBlock>
+                <TextBox Grid.Row="6" Name="OpenAIKey" />
+                <Button Grid.Row="8" Name="SaveOpenAIKey">Save</Button>
+            </Grid>
+        </Grid>
+    </Grid>
 </Window>

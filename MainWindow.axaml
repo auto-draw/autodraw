@@ -1,351 +1,399 @@
 <Window x:Class="Autodraw.MainWindow"
-		xmlns="https://github.com/avaloniaui"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
-		
-		Name="AutoDraw"
-		x:Name="AutoDraw"
-		
-		Width="720"
-		Height="420"
-		CanResize="True"
-		DragDrop.AllowDrop="False"
-		
-		MinWidth="720"
-		MinHeight="420"
-		WindowStartupLocation="CenterScreen"
-		
+
+        Name="AutoDraw"
+        x:Name="AutoDraw"
+
+        Width="720"
+        Height="420"
+        CanResize="True"
+        DragDrop.AllowDrop="False"
+
+        MinWidth="720"
+        MinHeight="420"
+        WindowStartupLocation="CenterScreen"
+
         Title="AutoDraw"
-		
-		ExtendClientAreaToDecorationsHint="True"
-		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaTitleBarHeightHint="20"
-		>
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="20"></RowDefinition>
-			<RowDefinition Height="1*"></RowDefinition>
-		</Grid.RowDefinitions>
-		<!--Toolbar-->
-		<Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
-			<!--Background-->
-			<Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20"></Canvas>
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="20">
 
-			<Image Classes="Toolbar"/>
-			<Image Classes="ToolbarSecond"/>
-			<Image Classes="ToolbarThird"/>
-			
-			<!--Decorations-->
-			<StackPanel Classes="Toolbar" Orientation="Horizontal">
-				<Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" VerticalContentAlignment="Center">
-					AutoDraw Open Beta -
-				</Label>
-				<Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center" FontSize="12">
-					v2
-				</Button>
-				<Button Name="SettingsButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18" VerticalContentAlignment="Center">
-					<Image Source="avares://Autodraw/Assets/gear.png"></Image>
-				</Button>
-			</StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <!--Toolbar-->
+        <Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+            <!--Background-->
+            <Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20" />
 
-			<Menu>
-				<MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
-					<MenuItem x:Name="PasteImage" Header="_Paste Image" Command="{Binding $parent[Window].PasteControl}" CommandParameter="{Binding ElementName=MainWindow}" HotKey="Ctrl+V"/>
-				</MenuItem>
-			</Menu>
-			
-			<!--Buttons-->
-			<Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="20"/>
-					<ColumnDefinition Width="20"/>
-					<ColumnDefinition Width="20"/>
-				</Grid.ColumnDefinitions>
-				<Button Classes="MinimizeApp ToolbarButton" Name="MinimizeAppButton" Grid.Column="2" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
-					-
-				</Button>
-				<Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
-					<Image Classes="CloseApp ToolbarButton"></Image>
-				</Button>
-			</Grid>
-		</Canvas>
+            <Image Classes="Toolbar" />
+            <Image Classes="ToolbarSecond" />
+            <Image Classes="ToolbarThird" />
 
-		<!--Body Stuff-->
-		<Image Classes="MainBody" Grid.Row="1"/>
-		<Image Classes="MainBodySecond" Grid.Row="1"/>
-		<Image Classes="MainBodyThird" Grid.Row="1"/>
-		
-		<Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="4*"/>
-				<ColumnDefinition Width="4"/>
-				<ColumnDefinition Width="5*"/>
-			</Grid.ColumnDefinitions>
-			<Grid Grid.Column="0">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="1*"></RowDefinition>
-					<RowDefinition Height="4"></RowDefinition>
-					<RowDefinition Height="24"></RowDefinition>
-					<RowDefinition Height="4"></RowDefinition>
-					<RowDefinition Height="54"></RowDefinition>
-				</Grid.RowDefinitions>
-				<Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
-					<Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}"></Border>
-					<Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}" DragDrop.AllowDrop="True"></Image>
-				</Canvas>
-				<Grid Grid.Row="2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="4"/>
-						<ColumnDefinition Width="48"/>
-						<ColumnDefinition Width="4"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
+            <!--Decorations-->
+            <StackPanel Classes="Toolbar" Orientation="Horizontal">
+                <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20"
+                       VerticalContentAlignment="Center">
+                    AutoDraw Open Beta -
+                </Label>
+                <Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent"
+                        Height="18" VerticalContentAlignment="Center" FontSize="12">
+                    v2
+                </Button>
+                <Button Name="SettingsButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18"
+                        VerticalContentAlignment="Center">
+                    <Image Source="avares://Autodraw/Assets/gear.png" />
+                </Button>
+            </StackPanel>
 
-					<TextBox Grid.Column="0" Name="WidthInput" Text="" Watermark="Width" HorizontalContentAlignment="Right"/>
-					<TextBox Grid.Column="2" Name="PercentageNumber" Text="100%" Watermark="Scale" HorizontalContentAlignment="Center"/>
-					<TextBox Grid.Column="4" Name="HeightInput" Text="" Watermark="Height"/>
-				</Grid>
-				<Slider Grid.Row="4" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100" TickFrequency="1" Padding="8 0 8 0"></Slider>
-			</Grid>
-			<Grid Grid.Column="2">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="4"/>
-					<RowDefinition Height="36"/>
-				</Grid.RowDefinitions>
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="4"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="1*"/>
-						<RowDefinition Height="4"/>
-						<RowDefinition Height="1*"/>
-					</Grid.RowDefinitions>
-					<Border Grid.Row="0" Grid.Column="0" Classes="GridBorder"/>
-					<Grid Grid.Row="0" Grid.Column="0">
-						<TextBlock Padding="2" Name="keybinds"/>
-					</Grid>
-					<Border Grid.Row="0" Grid.Column="2" Classes="GridBorder"/>
-					<Grid Grid.Row="0" Grid.Column="2" Margin="4">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="24"/>
-							<RowDefinition Height="4"/>
-							<RowDefinition Height="32"/>
-							<RowDefinition Height="4"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
+            <Menu>
+                <MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
+                    <MenuItem x:Name="PasteImage" Header="_Paste Image"
+                              Command="{Binding $parent[Window].PasteControl}"
+                              CommandParameter="{Binding ElementName=MainWindow}" HotKey="Ctrl+V" />
+                </MenuItem>
+            </Menu>
 
-						<Label Name="SelectedConfigLabel" VerticalAlignment="Center">Selected Config: None</Label>
-						
-						<Grid Grid.Row="2" Margin="1 0 0 0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="32"/>
-								<ColumnDefinition Width="4"/>
-								<ColumnDefinition Width="32"/>
-								<ColumnDefinition Width="4"/>
-								<ColumnDefinition Width="32"/>
-								<ColumnDefinition Width="4"/>
-								<ColumnDefinition Width="32"/>
-								<ColumnDefinition Width="4"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<Button Name="RefreshConfigsButton" Classes="GeneralButton ReloadConfigs_Button" Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Classes="ButtonIcon ReloadConfigs_Button" Margin="4" Source="avares://Autodraw/Assets/reload.png"></Image>
-							</Button>
-							<Button Name="SelectFolderElement" Classes="GeneralButton OpenConfigsFolder_Button" Grid.Column="2" ToolTip.Tip="Set config folder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Classes="ButtonIcon OpenConfigsFolder_Button" Source="avares://Autodraw/Assets/open-folder.png"></Image>
-							</Button>
-							<Button Name="SaveConfigButton" Classes="GeneralButton SaveConfigFile_Button" Grid.Column="4" ToolTip.Tip="Save Config to File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Classes="ButtonIcon SaveConfigFile_Button" Source="avares://Autodraw/Assets/save.png"></Image>
-							</Button>
-							<Button Name="OpenConfigElement" Classes="GeneralButton OpenConfigFile_Button" Grid.Column="6" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<Image Classes="ButtonIcon OpenConfigFile_Button" Source="avares://Autodraw/Assets/open-doc.png"></Image>
-							</Button>
-							<Button Name="LoadSelectButton" Classes="GeneralButton LoadSelectConfig_Button" Grid.Column="8" ToolTip.Tip="Loads the selected config" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-								<Label Classes="ButtonIcon" VerticalAlignment="Center" HorizontalAlignment="Center">Load</Label>
-							</Button>
-						</Grid>
-						<ListBox Name="ConfigsListBox" Classes="Configs" Grid.Row="4" Margin="1 0 0 0" FontFamily="Calibri" Padding="0" CornerRadius="4" SelectionMode="Single"/>
-					</Grid>
-					<Border Grid.Row="2" Grid.Column="0" Classes="GridBorder"/>
-					<Grid Grid.Row="2" Grid.Column="0" Margin="4">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="20"/>
-							<RowDefinition Height="4"/>
-							<RowDefinition Height="20"/>
-							<RowDefinition Height="8"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="84"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Interval:</TextBlock>
-							<TextBox Name="DrawIntervalElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-								10000
-							</TextBox>
-						</Grid>
-						<Grid Grid.Row="2">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="84"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
-							<TextBox Name="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-								1000
-							</TextBox>
-						</Grid>
-						<Grid Grid.Row="4">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="24"/>
-								<RowDefinition Height="4"/>
-								<RowDefinition Height="32"/>
-								<RowDefinition Height="4"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="4"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Draw Pattern</TextBlock>
-							<ComboBox Name="PatternSelection" Grid.Row="2" HorizontalAlignment="Stretch" BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
-								<ComboBoxItem>Horizontal - 12345678</ComboBoxItem>
-								<ComboBoxItem>Vertical - 14627358</ComboBoxItem>
-								<ComboBoxItem>Diagonal - 26573481</ComboBoxItem>
-								<ComboBoxItem>Custom</ComboBoxItem>
-							</ComboBox>
-							<CheckBox Grid.Row="4" Name="FreeDrawCheckbox">Free Draw Bypass</CheckBox>
-							<TextBox Grid.Row="6" Name="CustomPatternInput" IsVisible="True"  Height="24" MinHeight="24" Padding="2 0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="72" VerticalContentAlignment="Center">
-								12345678
-							</TextBox>
-						</Grid>
-					</Grid>
-					<Border Grid.Row="2" Grid.Column="2" Classes="GridBorder"/>
-					<Grid Grid.Row="2" Grid.Column="2">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="32"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Thresholds</TextBlock>
-						<Grid Grid.Row="1" Margin="4 0">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="20"/>
-								<RowDefinition Height="4"/>
-								<RowDefinition Height="20"/>
-								<RowDefinition Height="8"/>
-								<RowDefinition Height="20"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="48"/>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="4"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Black:</TextBlock>
-								<TextBox Name="minBlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-									0
-								</TextBox>
-								<TextBox Name="maxBlackThresholdElement" Grid.Column="3" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-									127
-								</TextBox>
-							</Grid>
-							<Grid Grid.Row="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="48"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Alpha:</TextBlock>
-								<TextBox Name="AlphaThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch" Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial" VerticalContentAlignment="Center" FontSize="14">
-									200
-								</TextBox>
-							</Grid>
-							<TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
-							<Grid Grid.Row="5">
-								<ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
-									<ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
-										Primary Filters
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="SharpOutlineFilterCheck">Sharp Outline</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="InvertFilterCheck">Invert</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<StackPanel Orientation="Horizontal">
-											<TextBox Name="HorizontalFilterCheck" Text="0"/>
-											<Label>Horizontal Stripes</Label>
-										</StackPanel>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<StackPanel Orientation="Horizontal">
-											<TextBox Name="VerticalFilterCheck" Text="0"/>
-											<Label>Vertical Stripes</Label>
-										</StackPanel>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="CrosshatchFilterCheck">Crosshatch</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2">
-										<CheckBox Name="DiagCrossFilterCheck">Diagonal-Cross</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2" IsEnabled="False">
-										<CheckBox Name="AntiOutlineFilterCheck">Anti Sharp Outline</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
-										Dithering Filters
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2" IsEnabled="False">
-										<CheckBox Name="HorizontalDitherCheck">Horizontal Dither</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2" IsEnabled="False">
-										<CheckBox Name="DiagonalDitherCheck">Diagonal Dither</CheckBox>
-									</ListBoxItem>
-									<ListBoxItem Padding="8 2" IsEnabled="False">
-										<CheckBox Name="VerticalDitherCheck">Vertical Dither</CheckBox>
-									</ListBoxItem>
-								</ListBox>
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-				<Grid Grid.Row="2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="36"/>
-						<ColumnDefinition Width="2"/>
-						<ColumnDefinition Width="36"/>
-						<ColumnDefinition Width="2"/>
-						<ColumnDefinition Width="1*"/>
-						<ColumnDefinition Width="2"/>
-						<ColumnDefinition Width="1*"/>
-					</Grid.ColumnDefinitions>
-					<Button Name="ClearButton" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
-						<Image Source="avares://Autodraw/Assets/remove.png"></Image>
-					</Button>
-					<Button Name="OpenButton" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2" CornerRadius="4">
-						<Image Source="avares://Autodraw/Assets/add-image.png"></Image>
-					</Button>
-					<Button Name="ProcessButton" Grid.Column="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
-						Process Image
-					</Button>
-					<Button Name="RunButton" Grid.Column="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
-						Start Drawing
-					</Button>
-				</Grid>
-			</Grid>
-		</Grid>
-	</Grid>
+            <!--Buttons-->
+            <Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Button Classes="MinimizeApp ToolbarButton" Name="MinimizeAppButton" Grid.Column="2" Width="20"
+                        Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                        Padding="0">
+                    -
+                </Button>
+                <Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20"
+                        FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+                    <Image Classes="CloseApp ToolbarButton" />
+                </Button>
+            </Grid>
+        </Canvas>
+
+        <!--Body Stuff-->
+        <Image Classes="MainBody" Grid.Row="1" />
+        <Image Classes="MainBodySecond" Grid.Row="1" />
+        <Image Classes="MainBodyThird" Grid.Row="1" />
+
+        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="24" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="54" />
+                </Grid.RowDefinitions>
+                <Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
+                    <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}"
+                            Height="{Binding $parent.Bounds.Height}" />
+                    <Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}"
+                           Height="{Binding $parent.Bounds.Height}" DragDrop.AllowDrop="True" />
+                </Canvas>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Name="WidthInput" Text="" Watermark="Width"
+                             HorizontalContentAlignment="Right" />
+                    <TextBox Grid.Column="2" Name="PercentageNumber" Text="100%" Watermark="Scale"
+                             HorizontalContentAlignment="Center" />
+                    <TextBox Grid.Column="4" Name="HeightInput" Text="" Watermark="Height" />
+                </Grid>
+                <Slider Grid.Row="4" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100"
+                        TickFrequency="1" Padding="8 0 8 0" />
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="36" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="4" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Grid.Column="0" Classes="GridBorder" />
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <TextBlock Padding="2" Name="keybinds" />
+                    </Grid>
+                    <Border Grid.Row="0" Grid.Column="2" Classes="GridBorder" />
+                    <Grid Grid.Row="0" Grid.Column="2" Margin="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24" />
+                            <RowDefinition Height="4" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="4" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Label Name="SelectedConfigLabel" VerticalAlignment="Center">Selected Config: None</Label>
+
+                        <Grid Grid.Row="2" Margin="1 0 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button Name="RefreshConfigsButton" Classes="GeneralButton ReloadConfigs_Button"
+                                    Grid.Column="0" ToolTip.Tip="Refresh Folder" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                                <Image Classes="ButtonIcon ReloadConfigs_Button" Margin="4"
+                                       Source="avares://Autodraw/Assets/reload.png" />
+                            </Button>
+                            <Button Name="SelectFolderElement" Classes="GeneralButton OpenConfigsFolder_Button"
+                                    Grid.Column="2" ToolTip.Tip="Set config folder" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                                <Image Classes="ButtonIcon OpenConfigsFolder_Button"
+                                       Source="avares://Autodraw/Assets/open-folder.png" />
+                            </Button>
+                            <Button Name="SaveConfigButton" Classes="GeneralButton SaveConfigFile_Button"
+                                    Grid.Column="4" ToolTip.Tip="Save Config to File" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                                <Image Classes="ButtonIcon SaveConfigFile_Button"
+                                       Source="avares://Autodraw/Assets/save.png" />
+                            </Button>
+                            <Button Name="OpenConfigElement" Classes="GeneralButton OpenConfigFile_Button"
+                                    Grid.Column="6" ToolTip.Tip="Open from File" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                                <Image Classes="ButtonIcon OpenConfigFile_Button"
+                                       Source="avares://Autodraw/Assets/open-doc.png" />
+                            </Button>
+                            <Button Name="LoadSelectButton" Classes="GeneralButton LoadSelectConfig_Button"
+                                    Grid.Column="8" ToolTip.Tip="Loads the selected config"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                                <Label Classes="ButtonIcon" VerticalAlignment="Center" HorizontalAlignment="Center">Load</Label>
+                            </Button>
+                        </Grid>
+                        <ListBox Name="ConfigsListBox" Classes="Configs" Grid.Row="4" Margin="1 0 0 0"
+                                 FontFamily="Calibri" Padding="0" CornerRadius="4" SelectionMode="Single" />
+                    </Grid>
+                    <Border Grid.Row="2" Grid.Column="0" Classes="GridBorder" />
+                    <Grid Grid.Row="2" Grid.Column="0" Margin="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="4" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="84" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Interval:</TextBlock>
+                            <TextBox Name="DrawIntervalElement" Grid.Column="1" HorizontalAlignment="Stretch"
+                                     Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial"
+                                     VerticalContentAlignment="Center" FontSize="14">
+                                10000
+                            </TextBox>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="84" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Click Delay:</TextBlock>
+                            <TextBox Name="ClickDelayElement" Grid.Column="1" HorizontalAlignment="Stretch"
+                                     Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial"
+                                     VerticalContentAlignment="Center" FontSize="14">
+                                1000
+                            </TextBox>
+                        </Grid>
+                        <Grid Grid.Row="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24" />
+                                <RowDefinition Height="4" />
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="4" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="4" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">Draw Pattern</TextBlock>
+                            <ComboBox Name="PatternSelection" Grid.Row="2" HorizontalAlignment="Stretch"
+                                      BorderThickness="0" SelectedIndex="0" FontSize="12" Padding="8 0">
+                                <ComboBoxItem>Horizontal - 12345678</ComboBoxItem>
+                                <ComboBoxItem>Vertical - 14627358</ComboBoxItem>
+                                <ComboBoxItem>Diagonal - 26573481</ComboBoxItem>
+                                <ComboBoxItem>Custom</ComboBoxItem>
+                            </ComboBox>
+                            <CheckBox Grid.Row="4" Name="FreeDrawCheckbox">Free Draw Bypass</CheckBox>
+                            <TextBox Grid.Row="6" Name="CustomPatternInput" IsVisible="True" Height="24" MinHeight="24"
+                                     Padding="2 0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Left"
+                                     VerticalAlignment="Bottom" Width="72" VerticalContentAlignment="Center">
+                                12345678
+                            </TextBox>
+                        </Grid>
+                    </Grid>
+                    <Border Grid.Row="2" Grid.Column="2" Classes="GridBorder" />
+                    <Grid Grid.Row="2" Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Thresholds</TextBlock>
+                        <Grid Grid.Row="1" Margin="4 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="4" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="8" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Black:</TextBlock>
+                                <TextBox Name="minBlackThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch"
+                                         Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial"
+                                         VerticalContentAlignment="Center" FontSize="14">
+                                    0
+                                </TextBox>
+                                <TextBox Name="maxBlackThresholdElement" Grid.Column="3" HorizontalAlignment="Stretch"
+                                         Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial"
+                                         VerticalContentAlignment="Center" FontSize="14">
+                                    127
+                                </TextBox>
+                            </Grid>
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">Alpha:</TextBlock>
+                                <TextBox Name="AlphaThresholdElement" Grid.Column="1" HorizontalAlignment="Stretch"
+                                         Padding="2 0" Height="20" MinHeight="20" FontFamily="Arial"
+                                         VerticalContentAlignment="Center" FontSize="14">
+                                    200
+                                </TextBox>
+                            </Grid>
+                            <TextBlock Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center">Image Filters:</TextBlock>
+                            <Grid Grid.Row="5">
+                                <ListBox Margin="1 0 0 4" FontFamily="Calibri" Padding="0" CornerRadius="4">
+                                    <ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
+                                        Primary Filters
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <CheckBox Name="OutlineFilterCheck">Outline</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <CheckBox Name="SharpOutlineFilterCheck">Sharp Outline</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <CheckBox Name="InvertFilterCheck">Invert</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Name="HorizontalFilterCheck" Text="0" />
+                                            <Label>Horizontal Stripes</Label>
+                                        </StackPanel>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Name="VerticalFilterCheck" Text="0" />
+                                            <Label>Vertical Stripes</Label>
+                                        </StackPanel>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <CheckBox Name="CrosshatchFilterCheck">Crosshatch</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2">
+                                        <CheckBox Name="DiagCrossFilterCheck">Diagonal-Cross</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2" IsEnabled="False">
+                                        <CheckBox Name="AntiOutlineFilterCheck">Anti Sharp Outline</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="2 2" HorizontalAlignment="Center" IsEnabled="False">
+                                        Dithering Filters
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2" IsEnabled="False">
+                                        <CheckBox Name="HorizontalDitherCheck">Horizontal Dither</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2" IsEnabled="False">
+                                        <CheckBox Name="DiagonalDitherCheck">Diagonal Dither</CheckBox>
+                                    </ListBoxItem>
+                                    <ListBoxItem Padding="8 2" IsEnabled="False">
+                                        <CheckBox Name="VerticalDitherCheck">Vertical Dither</CheckBox>
+                                    </ListBoxItem>
+                                </ListBox>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Name="ClearButton" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2"
+                            CornerRadius="4">
+                        <Image Source="avares://Autodraw/Assets/remove.png" />
+                    </Button>
+                    <Button Name="OpenButton" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="2"
+                            CornerRadius="4">
+                        <Image Source="avares://Autodraw/Assets/add-image.png" />
+                    </Button>
+                    <Button Name="ProcessButton" Grid.Column="4" VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center" FontSize="16" Padding="4" CornerRadius="4">
+                        Process Image
+                    </Button>
+                    <Button Name="RunButton" Grid.Column="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16"
+                            Padding="4" CornerRadius="4">
+                        Start Drawing
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
 </Window>
