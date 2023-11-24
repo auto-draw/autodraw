@@ -1,15 +1,18 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
+using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators.OAuth2;
+using RestSharp;
+using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Newtonsoft.Json.Linq;
-using RestSharp;
-using RestSharp.Authenticators.OAuth2;
-using SkiaSharp;
 
 namespace Autodraw;
 
@@ -18,7 +21,7 @@ public partial class DevTest : Window
     public DevTest()
     {
         InitializeComponent();
-        TestBenchmarking.Click += (sender, e) => Benchmark();
+        TestBenchmarking.Click += (object? sender, RoutedEventArgs e) => Benchmark();
         TestPopup.Click += TestPopup_Click;
         GenerateImage.Click += GenerateImage_ClickAsync;
     }
@@ -26,22 +29,17 @@ public partial class DevTest : Window
     private void GenerateImage_ClickAsync(object? sender, RoutedEventArgs e)
     {
         var OpenAIKey = Config.getEntry("OpenAIKey");
-        if (OpenAIKey == null)
-        {
-            new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error");
-            return;
-        }
-
+        if (OpenAIKey == null) { new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error"); return; }
         var options = new RestClientOptions("https://api.openai.com/v1/images/generations")
         {
-            Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(OpenAIKey, "Bearer")
+            Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(OpenAIKey, "Bearer"),
         };
 
         GenerateImage.IsEnabled = false;
 
         var client = new RestClient(options);
 
-        var request = new RestRequest
+        var request = new RestRequest()
         {
             Method = Method.Post,
             RequestFormat = DataFormat.Json
@@ -62,36 +60,29 @@ public partial class DevTest : Window
                 Debug.WriteLine(param);
 
                 var jsonResponse = JObject.Parse(client.Execute(request).Content);
-                if (jsonResponse["error"] is not null)
+                if(jsonResponse["error"] is not null)
                 {
-                    Dispatcher.UIThread.Invoke(() =>
+                    Dispatcher.UIThread.Invoke(new Action(() =>
                     {
-                        new MessageBox().ShowMessageBox($"Error! ({jsonResponse["error"]["type"]})",
-                            jsonResponse["error"]["message"].ToString(), "warn");
-                    });
+                        new MessageBox().ShowMessageBox($"Error! ({jsonResponse["error"]["type"].ToString()})", jsonResponse["error"]["message"].ToString(), "warn");
+                    }));
                     Utils.Log("Error with Prompt: " + jsonResponse["error"]);
                     GenerateImage.IsEnabled = true;
                     return;
                 }
-
                 var URL = jsonResponse["data"][0]["url"].ToString();
 
                 using (var httpClient = new HttpClient())
                 {
                     var response = await httpClient.GetAsync(URL);
                     response.EnsureSuccessStatusCode();
-                    using (var fileStream = new FileStream(Config.FolderPath + "/temp.png", FileMode.Create))
-                    {
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-                }
 
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    GenerateImage.IsEnabled = true;
-                    MainWindow.CurrentMainWindow.ImportImage(Config.FolderPath + "/temp.png");
-                    File.Delete(Config.FolderPath + "/temp.png");
-                });
+                    Dispatcher.UIThread.Invoke(new Action(async () =>
+                    {
+                        GenerateImage.IsEnabled = true;
+                        MainWindow.CurrentMainWindow.ImportImage("", await response.Content.ReadAsByteArrayAsync());
+                    }));
+                }
             }
             catch
             {
@@ -106,21 +97,23 @@ public partial class DevTest : Window
         new MessageBox().ShowMessageBox("Hi", "Loser");
     }
 
-    public static unsafe SKBitmap TestImage(int width, int height)
+    public unsafe static SKBitmap TestImage(int width, int height)
     {
-        SKBitmap returnbtmp = new(width, height);
+        SKBitmap returnbtmp = new(width, height, false);
 
-        var srcPtr = (byte*)returnbtmp.GetPixels().ToPointer();
+        byte* srcPtr = (byte*)returnbtmp.GetPixels().ToPointer();
 
         Random rng = new();
 
-        for (var row = 0; row < height; row++)
-        for (var col = 0; col < width; col++)
+        for (int row = 0; row < height; row++)
         {
-            *srcPtr++ = (byte)rng.Next(0, 255);
-            *srcPtr++ = (byte)rng.Next(0, 255);
-            *srcPtr++ = (byte)rng.Next(0, 255);
-            *srcPtr++ = (byte)rng.Next(0, 255);
+            for (int col = 0; col < width; col++)
+            {
+                *srcPtr++ = (byte)rng.Next(0,255);
+                *srcPtr++ = (byte)rng.Next(0, 255);
+                *srcPtr++ = (byte)rng.Next(0, 255);
+                *srcPtr++ = (byte)rng.Next(0, 255);
+            }
         }
 
         return returnbtmp;
@@ -128,39 +121,37 @@ public partial class DevTest : Window
 
     private void Benchmark()
     {
-        var sw = Stopwatch.StartNew();
+        Stopwatch sw = Stopwatch.StartNew();
 
-        SKBitmap small = new(64, 64);
+        SKBitmap small = new(64, 64, false);
         sw.Restart();
-        ImageProcessing.Process(small, new ImageProcessing.Filters { Invert = true });
-        var TimeTookSmall = sw.ElapsedMilliseconds;
+        ImageProcessing.Process(small, new ImageProcessing.Filters() { Invert = true });
+        long TimeTookSmall = sw.ElapsedMilliseconds;
 
-        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall;
+        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString();
 
-        SKBitmap avg = new(384, 384);
+        SKBitmap avg = new(384, 384, false);
         sw.Restart();
-        ImageProcessing.Process(avg, new ImageProcessing.Filters { Invert = true });
-        var TimeTookAvg = sw.ElapsedMilliseconds;
+        ImageProcessing.Process(avg, new ImageProcessing.Filters() { Invert = true });
+        long TimeTookAvg = sw.ElapsedMilliseconds;
 
-        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall + "\n384x384: " + TimeTookAvg;
+        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString() + "\n384x384: " + TimeTookAvg.ToString();
 
-        SKBitmap med = new(1024, 1024);
+        SKBitmap med = new(1024, 1024, false);
         sw.Restart();
-        ImageProcessing.Process(med, new ImageProcessing.Filters { Invert = true });
-        var TimeTookMed = sw.ElapsedMilliseconds;
+        ImageProcessing.Process(med, new ImageProcessing.Filters() { Invert = true });
+        long TimeTookMed = sw.ElapsedMilliseconds;
 
-        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall + "\n384x384: " + TimeTookAvg + "\n1024x1024: " +
-                                TimeTookMed;
+        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall.ToString() + "\n384x384: " + TimeTookAvg.ToString() + "\n1024x1024: " + TimeTookMed.ToString();
 
-        SKBitmap large = new(3072, 3072);
+        SKBitmap large = new(3072, 3072, false);
         sw.Restart();
-        ImageProcessing.Process(large, new ImageProcessing.Filters { Invert = true });
-        var TimeTookLarge = sw.ElapsedMilliseconds;
+        ImageProcessing.Process(large, new ImageProcessing.Filters() { Invert = true });
+        long TimeTookLarge = sw.ElapsedMilliseconds;
 
         sw.Reset();
 
-        BenchmarkResults.Text = "Results:\n64x64: " + TimeTookSmall + "\n384x384: " + TimeTookAvg + "\n1024x1024: " +
-                                TimeTookMed + "\n4096x4096: " + TimeTookLarge;
+        BenchmarkResults.Text = "Results:\n64x64: "+TimeTookSmall.ToString()+"\n384x384: "+TimeTookAvg.ToString() + "\n1024x1024: " + TimeTookMed.ToString() + "\n4096x4096: " + TimeTookLarge.ToString();
 
         small.Dispose();
         avg.Dispose();

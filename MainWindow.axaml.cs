@@ -1,14 +1,26 @@
+using Avalonia.Controls;
+using Avalonia.Themes.Fluent;
+using SkiaSharp;
 using System;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Newtonsoft.Json;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia;
+using System.ComponentModel;
 using Avalonia.Media.Imaging;
+using System.Linq;
 using Avalonia.Platform.Storage;
-using SkiaSharp;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Diagnostics;
+using Avalonia.Input;
+using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+using RestSharp.Authenticators.OAuth2;
+using RestSharp;
+using System.Net;
+using System.Net.Http;
 
 namespace Autodraw;
 
@@ -16,41 +28,37 @@ public partial class MainWindow : Window
 {
     public static MainWindow? CurrentMainWindow;
 
-    private readonly ImageProcessing.Filters currentFilters = new()
-        { Invert = false, maxThreshold = 127, AlphaThreshold = 200 };
-
-    private readonly Regex numberRegex = new(@"[^0-9]");
+    private Settings? _settings;
     private DevTest? _devwindow;
 
-    private Settings? _settings;
-    private int AlphaThresh = 200;
+    private SKBitmap? rawBitmap   = new(318, 318, true);
+    private SKBitmap? preFXBitmap = new(318, 318, true);
+    private SKBitmap? processedBitmap;
     private Bitmap? displayedBitmap;
-    private long lastMem;
-    private int maxBlackThreshold = 127;
 
 #pragma warning disable IDE0052 // Such lies.
     private long MemPressure;
 #pragma warning restore IDE0052
-    private bool MidChange;
-
-    private int minBlackThreshold;
-    private SKBitmap? preFXBitmap = new(318, 318, true);
-    private SKBitmap? processedBitmap;
-
-    private SKBitmap? rawBitmap = new(318, 318, true);
+    private long lastMem = 0;
     private long Time = DateTime.Now.ToFileTime();
+
+    private int minBlackThreshold = 0;
+    private int maxBlackThreshold = 127;
+    private int AlphaThresh = 200;
+    private bool MidChange = false;
+
+    private readonly ImageProcessing.Filters currentFilters = new() { Invert = false, maxThreshold = (byte)127, AlphaThreshold = (byte)200 };
 
     public MainWindow()
     {
-        this.AttachDevTools();
+        DevToolsExtensions.AttachDevTools(this);
 
         InitializeComponent();
 
         CurrentMainWindow = this;
 
         Config.init();
-        keybinds.Text =
-            "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
+        keybinds.Text = "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
 
         // Taskbar
         CloseAppButton.Click += QuitApp_Click;
@@ -59,7 +67,7 @@ public partial class MainWindow : Window
         DevButton.Click += Dev_Click;
 
         // Base
-        Closing += (sender, e) => { Cleanup(); };
+        Closing += (object? sender, WindowClosingEventArgs e) => { Cleanup(); };
         ProcessButton.Click += ProcessButton_Click;
         OpenButton.Click += OpenButton_Click;
         RunButton.Click += RunButton_Click;
@@ -96,12 +104,6 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
-    // User Configuration Handles
-
-    public static FilePickerFileType ConfigsFileFilter { get; } = new("Autodraw Config Files")
-    {
-        Patterns = new[] { "*.drawcfg" }
-    };
 
 
     // Core Functions
@@ -121,27 +123,30 @@ public partial class MainWindow : Window
             path == 14627358 ? 1 :
             path == 26573481 ? 2 :
             3;
-        if (PatternSelection.SelectedIndex == 3) CustomPatternInput.Text = path.ToString();
+        if (PatternSelection.SelectedIndex == 3)
+        {
+            CustomPatternInput.Text = path.ToString();
+        }
         UpdatePath();
     }
 
     private void UpdatePath()
     {
-        var Path = 12345678;
+        int Path = 12345678;
         try
         {
-            if (CustomPatternInput.Text.Length == 8) Path = int.Parse(CustomPatternInput.Text);
+            if (CustomPatternInput.Text.Length == 8)
+            {
+                Path = int.Parse(CustomPatternInput.Text);
+            }
         }
-        catch
-        {
-            Path = 12345678;
-        }
+        catch { Path = 12345678; }
 
         Drawing.pathValue =
-            PatternSelection.SelectedIndex == 0 ? 12345678
-            : PatternSelection.SelectedIndex == 1 ? 14627358
-            : PatternSelection.SelectedIndex == 2 ? 26573481
-            : PatternSelection.SelectedIndex == 3 ? Path
+            PatternSelection.SelectedIndex == 0 ? 12345678 :
+            PatternSelection.SelectedIndex == 1 ? 14627358 :
+            PatternSelection.SelectedIndex == 2 ? 26573481 :
+            PatternSelection.SelectedIndex == 3 ? Path
             : 12345678;
     }
 
@@ -195,7 +200,6 @@ public partial class MainWindow : Window
         _devwindow = null;
     }
 
-
     // Base UI Handles
 
     private void ProcessButton_Click(object? sender, RoutedEventArgs e)
@@ -208,10 +212,11 @@ public partial class MainWindow : Window
         displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
         ImagePreview.Source = displayedBitmap;
     }
-
-    public void ImportImage(string path)
-    {
-        rawBitmap = SKBitmap.Decode(path).NormalizeColor();
+    
+    public void ImportImage(string path, byte[] img = null)
+    {   
+        if (img == null) rawBitmap = SKBitmap.Decode(path).NormalizeColor();
+        else rawBitmap = SKBitmap.Decode(img).NormalizeColor();
         preFXBitmap = rawBitmap.Copy();
         displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
         processedBitmap?.Dispose();
@@ -229,26 +234,24 @@ public partial class MainWindow : Window
 
     private async void OpenButton_Click(object? sender, RoutedEventArgs e)
     {
-        var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Open Image",
-            FileTypeFilter = new[] { FilePickerFileTypes.ImageAll },
+            FileTypeFilter = new FilePickerFileType[] { FilePickerFileTypes.ImageAll },
             AllowMultiple = false
         });
 
-        if (file.Count == 1) ImportImage(file[0].TryGetLocalPath());
+        if (file.Count == 1)
+        {
+            ImportImage(file[0].TryGetLocalPath());
+        }
     }
 
-    private void RunButton_Click(object? sender, RoutedEventArgs e)
+    private void RunButton_Click(Object? sender, RoutedEventArgs e)
     {
         UpdatePath();
-        if (processedBitmap == null)
-        {
-            new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error");
-            return;
-        }
-
-        if (Drawing.isDrawing) return;
+        if (processedBitmap == null) { new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error"); return; }
+        if (Drawing.isDrawing) { return; }
         WindowState = WindowState.Minimized;
         new Preview().ReadyDraw(processedBitmap);
     }
@@ -259,12 +262,15 @@ public partial class MainWindow : Window
     {
         width = Math.Max(1, width);
         height = Math.Max(1, height);
-        if (GC.GetTotalMemory(false) < lastMem) GC.RemoveMemoryPressure(lastMem);
+        if (GC.GetTotalMemory(false) < lastMem)
+        {
+            GC.RemoveMemoryPressure(lastMem);
+        }
         lastMem = GC.GetTotalMemory(false);
 
         if (processedBitmap == null)
         {
-            var resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
+            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
             displayedBitmap?.Dispose();
@@ -275,10 +281,10 @@ public partial class MainWindow : Window
         }
         else if (processedBitmap != null)
         {
-            var resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
+            SKBitmap resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
             preFXBitmap.Dispose();
             preFXBitmap = resizedBitmap;
-            var postProcessBitmap = ImageProcessing.Process(resizedBitmap, GetSelectFilters());
+            SKBitmap postProcessBitmap = ImageProcessing.Process(resizedBitmap, GetSelectFilters());
             processedBitmap.Dispose();
             processedBitmap = postProcessBitmap;
             displayedBitmap?.Dispose();
@@ -289,10 +295,10 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SizeSlider_ValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    private void SizeSlider_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (MidChange) return;
-        if (DateTime.Now.ToFileTime() - Time < 333_333) return;
+        if (DateTime.Now.ToFileTime()-Time < 333_333) return;
         Time = DateTime.Now.ToFileTime();
 
         ResizeImage(rawBitmap.Width * SizeSlider.Value / 100, rawBitmap.Height * SizeSlider.Value / 100);
@@ -304,22 +310,20 @@ public partial class MainWindow : Window
         MidChange = false;
     }
 
+    readonly Regex numberRegex = new(@"[^0-9]");
+
     private void PercentageNumber_TextChanged(object? sender, TextChangingEventArgs e)
     {
         if (PercentageNumber.Text == null) return;
         if (MidChange) return;
-        var numberText = numberRegex.Replace(PercentageNumber.Text, "");
-        PercentageNumber.Text = numberText + "%";
+        string numberText = numberRegex.Replace(PercentageNumber.Text, "");
+        PercentageNumber.Text = numberText+"%";
         e.Handled = true;
 
-        if (numberText.Length < 1) return;
-        var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 500)
-        {
-            PercentageNumber.Text = "500%";
-            return;
-        }
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 500) { PercentageNumber.Text = "500%"; return; }
 
         ResizeImage(rawBitmap.Width * setNumber / 100, rawBitmap.Height * setNumber / 100);
 
@@ -333,21 +337,17 @@ public partial class MainWindow : Window
     {
         if (HeightInput.Text == null) return;
         if (MidChange) return;
-        var numberText = numberRegex.Replace(HeightInput.Text, "");
+        string numberText = numberRegex.Replace(HeightInput.Text, "");
         HeightInput.Text = numberText;
         e.Handled = true;
 
-        if (numberText.Length < 1) return;
-        var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 8096)
-        {
-            PercentageNumber.Text = "8096";
-            return;
-        }
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 8096) { PercentageNumber.Text = "8096"; return; }
 
         // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
-        ResizeImage(rawBitmap.Width / (float)rawBitmap.Height * setNumber, setNumber);
+        ResizeImage(((float)rawBitmap.Width / (float)rawBitmap.Height)*setNumber, setNumber);
 
         MidChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
@@ -359,21 +359,17 @@ public partial class MainWindow : Window
     {
         if (WidthInput.Text == null) return;
         if (MidChange) return;
-        var numberText = numberRegex.Replace(WidthInput.Text, "");
+        string numberText = numberRegex.Replace(WidthInput.Text, "");
         WidthInput.Text = numberText;
         e.Handled = true;
 
-        if (numberText.Length < 1) return;
-        var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 8096)
-        {
-            PercentageNumber.Text = "8096";
-            return;
-        }
+        if (numberText.Length < 1) { return; }
+        int setNumber = int.Parse(numberText);
+        if (setNumber < 1) { return; }
+        if (setNumber > 8096) { PercentageNumber.Text = "8096"; return; }
 
         // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
-        ResizeImage(setNumber, rawBitmap.Height / (float)rawBitmap.Width * setNumber);
+        ResizeImage(setNumber, ((float)rawBitmap.Height/ (float)rawBitmap.Width)*setNumber);
 
         MidChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
@@ -382,13 +378,14 @@ public partial class MainWindow : Window
     }
 
 
+
     private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (DrawIntervalElement.Text == null) return;
         DrawIntervalElement.Text = numberRegex.Replace(DrawIntervalElement.Text, "");
         e.Handled = true;
 
-        if (DrawIntervalElement.Text.Length < 1) return;
+        if (DrawIntervalElement.Text.Length < 1) { return; }
 
         try
         {
@@ -399,14 +396,13 @@ public partial class MainWindow : Window
             Drawing.interval = 10000;
         }
     }
-
     private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (ClickDelayElement.Text == null) return;
         ClickDelayElement.Text = numberRegex.Replace(ClickDelayElement.Text, "");
         e.Handled = true;
 
-        if (ClickDelayElement.Text.Length < 1) return;
+        if (ClickDelayElement.Text.Length < 1) { return; }
 
         try
         {
@@ -417,14 +413,13 @@ public partial class MainWindow : Window
             Drawing.clickDelay = 1000;
         }
     }
-
     private void minBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (minBlackThresholdElement.Text == null) return;
         minBlackThresholdElement.Text = numberRegex.Replace(minBlackThresholdElement.Text, "");
         e.Handled = true;
 
-        if (minBlackThresholdElement.Text.Length < 1) return;
+        if (minBlackThresholdElement.Text.Length < 1) { return; }
 
         try
         {
@@ -435,14 +430,13 @@ public partial class MainWindow : Window
             minBlackThreshold = 127;
         }
     }
-
     private void maxBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (maxBlackThresholdElement.Text == null) return;
         maxBlackThresholdElement.Text = numberRegex.Replace(maxBlackThresholdElement.Text, "");
         e.Handled = true;
 
-        if (maxBlackThresholdElement.Text.Length < 1) return;
+        if (maxBlackThresholdElement.Text.Length < 1) { return; }
 
         try
         {
@@ -453,14 +447,13 @@ public partial class MainWindow : Window
             maxBlackThreshold = 127;
         }
     }
-
     private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (AlphaThresholdElement.Text == null) return;
         AlphaThresholdElement.Text = numberRegex.Replace(AlphaThresholdElement.Text, "");
         e.Handled = true;
 
-        if (AlphaThresholdElement.Text.Length < 1) return;
+        if (AlphaThresholdElement.Text.Length < 1) { return; }
 
         try
         {
@@ -478,7 +471,7 @@ public partial class MainWindow : Window
         CustomPatternInput.Text = numberRegex.Replace(CustomPatternInput.Text, "");
         e.Handled = true;
 
-        if (CustomPatternInput.Text.Length < 1) return;
+        if (CustomPatternInput.Text.Length < 1) { return; }
     }
 
     private void HorizontalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
@@ -487,7 +480,7 @@ public partial class MainWindow : Window
         HorizontalFilterCheck.Text = numberRegex.Replace(HorizontalFilterCheck.Text, "");
         e.Handled = true;
 
-        if (HorizontalFilterCheck.Text.Length < 1) HorizontalFilterCheck.Text = "0";
+        if (HorizontalFilterCheck.Text.Length < 1) { HorizontalFilterCheck.Text = "0"; return; }
     }
 
     private void VerticalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
@@ -496,7 +489,7 @@ public partial class MainWindow : Window
         VerticalFilterCheck.Text = numberRegex.Replace(VerticalFilterCheck.Text, "");
         e.Handled = true;
 
-        if (VerticalFilterCheck.Text.Length < 1) VerticalFilterCheck.Text = "0";
+        if (VerticalFilterCheck.Text.Length < 1) { VerticalFilterCheck.Text = "0"; return; }
     }
 
 
@@ -522,11 +515,18 @@ public partial class MainWindow : Window
         OpenDevWindow();
     }
 
+    // User Configuration Handles
+
+    public static FilePickerFileType ConfigsFileFilter { get; } = new("Autodraw Config Files")
+    {
+        Patterns = new[] { "*.drawcfg" }
+    };
+
     public void LoadConfig(string path)
     {
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
-        if (!path.EndsWith(".drawcfg")) return;
-        var lines = File.ReadAllLines(path);
+        if (!path.EndsWith(".drawcfg")) { return; }
+        string[] lines = File.ReadAllLines(path);
         SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
 
         DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
@@ -534,17 +534,17 @@ public partial class MainWindow : Window
         ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
 
         maxBlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
-        // Silly!!
+          // Silly!!
 
         AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
-        // Silly!!
+          // Silly!!
 
         if (lines.Length <= 4) return;
-        if (!bool.TryParse(lines[4], out var _fd2)) return;
+        if (!bool.TryParse(lines[4], out bool _fd2)) return;
         FreeDrawCheckbox.IsChecked = _fd2;
 
         if (lines.Length <= 5) return;
-        if (!int.TryParse(lines[5], out var _path)) return;
+        if (!int.TryParse(lines[5], out int _path)) return;
         SetPath(_path);
 
         minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
@@ -555,7 +555,7 @@ public partial class MainWindow : Window
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Config",
-            FileTypeChoices = new[] { ConfigsFileFilter }
+            FileTypeChoices = new FilePickerFileType[] { ConfigsFileFilter }
         });
 
         if (file is not null)
@@ -564,15 +564,13 @@ public partial class MainWindow : Window
             await using var stream = await file.OpenWriteAsync();
             using var streamWriter = new StreamWriter(stream);
 
-            string[] values =
-            {
-                DrawIntervalElement.Text,
-                ClickDelayElement.Text,
-                maxBlackThresholdElement.Text,
-                AlphaThresholdElement.Text,
-                FreeDrawCheckbox.IsChecked.ToString(),
-                Drawing.pathValue.ToString(),
-                minBlackThresholdElement.Text
+            string[] values = { DrawIntervalElement.Text,
+                            ClickDelayElement.Text,
+                            maxBlackThresholdElement.Text,
+                            AlphaThresholdElement.Text,
+                            FreeDrawCheckbox.IsChecked.ToString(),
+                            Drawing.pathValue.ToString(),
+                            minBlackThresholdElement.Text
             };
 
             streamWriter.Write(string.Join("\r\n", values));
@@ -583,21 +581,24 @@ public partial class MainWindow : Window
     {
         var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Save Config",
-            FileTypeFilter = new[] { ConfigsFileFilter },
+            Title = "Load Config",
+            FileTypeFilter = new FilePickerFileType[] { ConfigsFileFilter },
             AllowMultiple = false
         });
 
-        if (file.Count == 1) LoadConfig(file[0].TryGetLocalPath());
+        if (file.Count == 1)
+        {
+            LoadConfig(file[0].TryGetLocalPath());
+        }
     }
 
     public void RefreshConfigList(object? sender, RoutedEventArgs? e)
     {
-        var ConfigFolder = Config.getEntry("ConfigFolder");
+        string ConfigFolder = Config.getEntry("ConfigFolder");
         if (ConfigFolder == null) return;
         if (!Directory.Exists(ConfigFolder)) return;
-        var files = Directory.GetFiles(ConfigFolder, "*.drawcfg");
-        var fileNames = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
+        string[] files = Directory.GetFiles(ConfigFolder, "*.drawcfg");
+        string[] fileNames = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
         ConfigsListBox.ClearValue(ItemsControl.ItemsSourceProperty);
         ConfigsListBox.Items.Clear();
         ConfigsListBox.ItemsSource = fileNames;
@@ -605,7 +606,7 @@ public partial class MainWindow : Window
 
     public async void SetFolderViaDialog(object? sender, RoutedEventArgs e)
     {
-        var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
+        var folder = await this.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions() { AllowMultiple = false });
         if (folder.Count != 1) return;
         Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
         RefreshConfigList(this, null);
@@ -614,8 +615,23 @@ public partial class MainWindow : Window
     public void LoadSelectedConfig(object? sender, RoutedEventArgs e)
     {
         if (ConfigsListBox.SelectedItem == null) return;
-        var SelectedItem = ConfigsListBox.SelectedItem.ToString();
+        string SelectedItem = ConfigsListBox.SelectedItem.ToString();
         if (SelectedItem == null) return;
         LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");
+    }
+
+    public async void PasteControl()
+    {
+        try
+        {
+            var clipboard = Clipboard;
+            string fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
+            object file = await clipboard.GetDataAsync(fileFormat);
+            ImportImage("", (byte[])file);
+        }
+        catch (Exception ex)
+        {
+            Utils.Log("Error with PasteControl(): " + ex);
+        }
     }
 }

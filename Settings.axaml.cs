@@ -1,30 +1,27 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
+using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using SkiaSharp;
+using System.Text.RegularExpressions;
 using AvaloniaEdit;
-using AvaloniaEdit.TextMate;
 using TextMateSharp.Grammars;
+using AvaloniaEdit.TextMate;
 
 namespace Autodraw;
 
 public partial class Settings : Window
 {
-    private readonly FilePickerFileType[] filetype =
-    {
-        new("All Theme Types") { Patterns = new[] { "*.axaml", "*.daxaml", "*.laxaml" }, MimeTypes = new[] { "*/*" } },
-        new("Default Theme") { Patterns = new[] { "*.axaml" }, MimeTypes = new[] { "*/*" } },
-        new("Dark Theme") { Patterns = new[] { "*.daxaml" }, MimeTypes = new[] { "*/*" } },
-        new("Light Theme") { Patterns = new[] { "*.laxaml" }, MimeTypes = new[] { "*/*" } },
-        FilePickerFileTypes.All
-    };
     // AssetLoader.Open(new System.Uri("avares://Autodraw/Styles/dark.xaml"))
 
-    private string savedLocation = "";
+    string savedLocation = "";
 
     public Settings()
     {
@@ -42,19 +39,27 @@ public partial class Settings : Window
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
         ShowPopup.IsCheckedChanged += ShowPopup_IsCheckedChanged;
+        LogFile.IsCheckedChanged += LogFile_IsCheckedChanged;
 
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
+        LogFile.IsChecked = Config.getEntry("logsEnabled") == "True";
 
         // DALL-E API Keys
         SaveOpenAIKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAIKey.Text);
 
-        if (Config.getEntry("showPopup") == null) Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
-        if (Config.getEntry("OpenAIKey") != null) OpenAIKey.Text = Config.getEntry("OpenAIKey");
+        if (Config.getEntry("showPopup") == null)
+        {
+            Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
+        }
+        if (Config.getEntry("OpenAIKey") != null)
+        {
+            OpenAIKey.Text = Config.getEntry("OpenAIKey");
+        }
 
         // Themes
 
-        //  TextEditor Input
+            //  TextEditor Input
         var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
         _textEditor1.Text = @"<!-- Template Theme -->
 <!--
@@ -112,15 +117,13 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 </Styles>";
         var _registryOptions1 = new RegistryOptions(ThemeName.DarkPlus);
         var _textMateInstallation1 = _textEditor1.InstallTextMate(_registryOptions1);
-        _textMateInstallation1.SetGrammar(
-            _registryOptions1.GetScopeByLanguageId(_registryOptions1.GetLanguageByExtension(".xml").Id));
+        _textMateInstallation1.SetGrammar(_registryOptions1.GetScopeByLanguageId(_registryOptions1.GetLanguageByExtension(".xml").Id));
 
         //  TextEditor Output
         var _textEditor2 = this.FindControl<TextEditor>("ThemeOutput");
         var _registryOptions2 = new RegistryOptions(ThemeName.DarkPlus);
         var _textMateInstallation2 = _textEditor2.InstallTextMate(_registryOptions2);
-        _textMateInstallation2.SetGrammar(
-            _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
+        _textMateInstallation2.SetGrammar(_registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
 
         //  Interactions
 
@@ -133,21 +136,24 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         // Developer
     }
 
-    private void ManageAPIKeys_Click(object? sender, RoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
+    FilePickerFileType[] filetype = new FilePickerFileType[] {
+        new("All Theme Types") { Patterns = new[] { "*.axaml", "*.daxaml", "*.laxaml" }, MimeTypes = new[] { "*/*" } },
+        new("Default Theme") { Patterns = new[] { "*.axaml" }, MimeTypes = new[] { "*/*" } },
+        new("Dark Theme") { Patterns = new[] { "*.daxaml" }, MimeTypes = new[] { "*/*" } },
+        new("Light Theme") { Patterns = new[] { "*.laxaml" }, MimeTypes = new[] { "*/*" } },
+        FilePickerFileTypes.All
+    };
 
-    private void LoadTheme_Click(object? sender, RoutedEventArgs e)
+    private void LoadTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var Output = App.LoadThemeFromString(ThemeInput.Text, ThemeIsDark.IsChecked == true, savedLocation);
+        string Output = App.LoadThemeFromString(ThemeInput.Text, ThemeIsDark.IsChecked == true, savedLocation);
         ThemeOutput.Text = Output;
     }
 
 
-    private async void OpenTheme_Click(object? sender, RoutedEventArgs e)
+    private async void OpenTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var file = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Open Theme",
             FileTypeFilter = filetype,
@@ -157,18 +163,17 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 
         if (file.Count == 1)
         {
-            var fileType = Regex.Match(file[0].TryGetLocalPath(), "\\.[^.\\\\/:*?\"<>|\\r\\n]+$").Value;
-            if (fileType == ".daxaml")
-                ThemeIsDark.IsChecked = true;
-            else if (fileType == ".laxaml") ThemeIsDark.IsChecked = false;
-            var stream = await file[0].OpenReadAsync();
+            string fileType = Regex.Match(file[0].TryGetLocalPath(), "\\.[^.\\\\/:*?\"<>|\\r\\n]+$").Value;
+            if(fileType == ".daxaml") { ThemeIsDark.IsChecked = true; } else
+            if(fileType == ".laxaml") { ThemeIsDark.IsChecked = false; }
+            Stream stream = await file[0].OpenReadAsync();
             ThemeInput.Text = new StreamReader(stream).ReadToEnd();
             stream.Close();
             savedLocation = file[0].TryGetLocalPath();
         }
     }
 
-    private async void SaveTheme_Click(object? sender, RoutedEventArgs e)
+    private async void SaveTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
@@ -187,38 +192,47 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         }
     }
 
-    private async void NewTheme_Click(object? sender, RoutedEventArgs e)
+    private async void NewTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var themeText = await new StreamReader(AssetLoader.Open(new Uri("avares://Autodraw/Styles/DefaultTheme.txt")))
-            .ReadToEndAsync();
+        string themeText = await new StreamReader(AssetLoader.Open(new Uri("avares://Autodraw/Styles/DefaultTheme.txt"))).ReadToEndAsync();
         ThemeInput.Text = themeText;
         savedLocation = "";
     }
 
-    private void ShowPopup_IsCheckedChanged(object? sender, RoutedEventArgs e)
+    private void ShowPopup_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (ShowPopup.IsChecked == null) return;
         Drawing.ShowPopup = (bool)ShowPopup.IsChecked;
         Config.setEntry("showPopup", ShowPopup.IsChecked.ToString() ?? "true");
     }
 
-    private void AltMouseControl_IsCheckedChanged(object? sender, RoutedEventArgs e)
+    private void AltMouseControl_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (AltMouseControl.IsChecked == null) return;
         Input.forceUio = (bool)AltMouseControl.IsChecked;
     }
 
+    private void LogFile_IsCheckedChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (LogFile.IsChecked == null) return;
+        Config.setEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
+        Utils.LoggingEnabled = (bool)LogFile.IsChecked;
+    }
 
-    private void ToggleTheme_Click(object? sender, RoutedEventArgs e)
+    private void ToggleTheme_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (App.CurrentTheme == "avares://Autodraw/Styles/dark.axaml")
+        {
             App.LoadTheme("avares://Autodraw/Styles/light.axaml", false);
+        }
         else
-            App.LoadTheme("avares://Autodraw/Styles/dark.axaml");
+        {
+            App.LoadTheme("avares://Autodraw/Styles/dark.axaml", true);
+        }
     }
 
 
-    private void CloseAppButton_Click(object? sender, RoutedEventArgs e)
+    private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         Close();
     }
@@ -237,9 +251,10 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
     private void OpenMenu(string menu)
     {
         var myControl = this.FindControl<Control>(menu);
-        DeactivateItem(new List<string> { "General", "Themes", "Marketplace", "Developers" });
+        DeactivateItem(new List<string>() { "General", "Themes", "Marketplace", "Developers" });
         if (myControl == null) return;
         myControl.Opacity = 1;
         myControl.IsHitTestVisible = true;
     }
+
 }
