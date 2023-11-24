@@ -1,9 +1,9 @@
-﻿using Avalonia;
-using System;
+﻿using System;
+using Avalonia;
 
 namespace Autodraw;
 
-class Program
+internal class Program
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -14,20 +14,22 @@ class Program
         try
         {
             BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
-        } catch (Exception e)
+                .StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception e)
         {
             Utils.Log(e.ToString());
             Utils.Log(e.Message);
             throw;
         }
-
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+    }
 }

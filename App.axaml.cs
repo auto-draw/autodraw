@@ -1,22 +1,21 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
-using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 
 namespace Autodraw;
 
-public partial class App : Application
+public class App : Application
 {
     public static string CurrentTheme = Config.getEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
-    public static bool SavedIsDark = Config.getEntry("isDarkTheme") == null || bool.Parse(Config.getEntry("isDarkTheme") ?? "true");
+
+    public static bool SavedIsDark =
+        Config.getEntry("isDarkTheme") == null || bool.Parse(Config.getEntry("isDarkTheme") ?? "true");
 
     private static void ThemeFailed()
     {
@@ -26,8 +25,8 @@ public partial class App : Application
             // Tries loading back to our original loaded theme.
             var Resource = (IStyle)AvaloniaXamlLoader.Load(
                 new Uri(CurrentTheme)
-                );
-            App.Current.RequestedThemeVariant = SavedIsDark ? ThemeVariant.Dark : ThemeVariant.Light;
+            );
+            Current.RequestedThemeVariant = SavedIsDark ? ThemeVariant.Dark : ThemeVariant.Light;
             if (Current.Styles.Count > 4)
                 Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
@@ -39,8 +38,8 @@ public partial class App : Application
             // Tries loading our default theme. Purpose of this is if a theme somehow vanished.
             var Resource = (IStyle)AvaloniaXamlLoader.Load(
                 new Uri("avares://Autodraw/Styles/dark.axaml")
-                );
-            App.Current.RequestedThemeVariant = ThemeVariant.Dark;
+            );
+            Current.RequestedThemeVariant = ThemeVariant.Dark;
             if (Current.Styles.Count > 4)
                 Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
@@ -53,7 +52,7 @@ public partial class App : Application
 
     public static string? LoadThemeFromString(string themeText, bool isDark = true, string themeUri = "")
     {
-        string OutputMessage = "";
+        var OutputMessage = "";
         try
         {
             // Tries loading as runtime uncompiled.
@@ -62,7 +61,8 @@ public partial class App : Application
             if (themeUri != "")
             {
                 Debug.WriteLine(themeUri);
-                TextInput = Regex.Replace(TextInput, @"style:./", Regex.Replace(themeUri, @"\\(?:.(?!\\))+$", "")+"\\");
+                TextInput = Regex.Replace(TextInput, @"style:./",
+                    Regex.Replace(themeUri, @"\\(?:.(?!\\))+$", "") + "\\");
                 Debug.WriteLine(TextInput);
             }
             else
@@ -73,7 +73,7 @@ public partial class App : Application
             var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
                 TextInput
             );
-            App.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+            Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
             Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
             if (themeUri != "")
@@ -90,6 +90,7 @@ public partial class App : Application
             OutputMessage += "# Theme has failed to load successfully due to an error.\n" + ex.Message;
             return OutputMessage;
         }
+
         OutputMessage += "# Theme loaded successfully!\n";
         return OutputMessage;
     }
@@ -103,7 +104,7 @@ public partial class App : Application
             var Resource = (IStyle)AvaloniaXamlLoader.Load(
                 new Uri(themeUri)
             );
-            App.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+            Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
             Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
             CurrentTheme = themeUri;
@@ -123,7 +124,7 @@ public partial class App : Application
                 var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
                     TextInput
                 );
-                App.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+                Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
                 Current.Styles.Remove(Current.Styles[4]);
                 Current.Styles.Add(Resource);
                 CurrentTheme = themeUri;
@@ -137,6 +138,7 @@ public partial class App : Application
                 return ex.Message;
             }
         }
+
         return null;
     }
 
@@ -156,9 +158,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
             desktop.MainWindow = new MainWindow();
-        }
 
         base.OnFrameworkInitializationCompleted();
     }

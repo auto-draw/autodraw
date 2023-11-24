@@ -1,167 +1,176 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
 using SharpHook;
-#if WINDOWS 
+using SharpHook.Native;
+#if WINDOWS
 using SimWinInput;
 #endif
 
-namespace Autodraw
+namespace Autodraw;
+
+public class Input
 {
-    public class Input
+    //// Variables
+
+    // Private
+    private static readonly EventSimulator eventSim = new();
+
+    // Public
+    public static TaskPoolGlobalHook taskHook = new();
+    public static Vector2 mousePos;
+    public static bool forceUio = false;
+    public static event EventHandler? MousePosUpdate;
+
+    //// Functions
+
+    // Core
+
+    private static bool isUio()
     {
-        //// Variables
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        return !isWindows || forceUio;
+    }
 
-        // Private
-        private static EventSimulator eventSim = new();
+    public static void Start()
+    {
+        if (taskHook.IsRunning) return;
+        if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
 
-        // Public
-        public static TaskPoolGlobalHook taskHook = new();
-        public static Vector2 mousePos = new();
-        public static event EventHandler? MousePosUpdate;
-        public static bool forceUio = false;
-
-        //// Functions
-
-        // Core
-
-        private static bool isUio()
+        taskHook.MouseMoved += (sender, e) =>
         {
-            bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            return !isWindows || forceUio;
+            mousePos = new Vector2(e.Data.X, e.Data.Y);
+            MousePosUpdate?.Invoke(null, EventArgs.Empty);
+        };
+
+        taskHook.RunAsync();
+    }
+
+    public static void Stop()
+    {
+        taskHook.Dispose();
+    }
+
+    // Movement
+
+    public static void MoveTo(short x, short y)
+    {
+        if (isUio())
+        {
+            eventSim.SimulateMouseMovement(x, y);
         }
-
-        public static void Start()
+        else
         {
-            if (taskHook.IsRunning) return;
-            if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
-
-            taskHook.MouseMoved += (object? sender, MouseHookEventArgs e) => { mousePos = new Vector2(e.Data.X, e.Data.Y); MousePosUpdate?.Invoke(null, EventArgs.Empty); };
-
-            taskHook.RunAsync();
-        }
-
-        public static void Stop()
-        {
-            taskHook.Dispose();
-        }
-
-        // Movement
-
-        public static void MoveTo(short x, short y)
-        {
-            if (isUio())
-            {
-                eventSim.SimulateMouseMovement(x, y);
-            }
-            else
-            {
 #if WINDOWS
-                SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
-                mousePos = new Vector2(x, y);
+            SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
+            mousePos = new Vector2(x, y);
 #else
                 // FALLBACK INCASE I MESS UP BUILD
                 eventSim.SimulateMouseMovement(x, y);
 #endif
-            }
         }
+    }
 
-        public static void MoveBy(short xOffset, short yOffset)
+    public static void MoveBy(short xOffset, short yOffset)
+    {
+        if (isUio())
         {
-            if (isUio())
-            {
-                eventSim.SimulateMouseMovementRelative(xOffset, yOffset);
-            }
-            else
-            {
+            eventSim.SimulateMouseMovementRelative(xOffset, yOffset);
+        }
+        else
+        {
 #if WINDOWS
-                SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
-                mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
+            SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
+            mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
 #else
                 // FALLBACK INCASE I MESS UP BUILD
                 eventSim.SimulateMouseMovementRelative(xOffset, yOffset);
 
 #endif
-            }
         }
+    }
 
-        // Click Handling
+    // Click Handling
 
-        public static void SendClick(byte mouseType)
+    public static void SendClick(byte mouseType)
+    {
+        if (isUio())
         {
-            if (isUio())
-            {
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
-                eventSim.SimulateMousePress(button);
-                eventSim.SimulateMouseRelease(button);
-            }
-            else
-            {
+            var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
+            eventSim.SimulateMousePress(button);
+            eventSim.SimulateMouseRelease(button);
+        }
+        else
+        {
 #if WINDOWS
-                SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
-                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
+            var buttonDown = mouseType == MouseTypes.MouseLeft
+                ? SimMouse.Action.LeftButtonDown
+                : SimMouse.Action.RightButtonDown;
+            var buttonUp = mouseType == MouseTypes.MouseLeft
+                ? SimMouse.Action.LeftButtonUp
+                : SimMouse.Action.RightButtonUp;
 
-                SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
-                SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+            SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+            SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
 #else
                 // FALLBACK INCASE I MESS UP BUILD
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                SharpHook.Native.MouseButton button =
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
                 eventSim.SimulateMousePress(button);
                 eventSim.SimulateMouseRelease(button);
 #endif
-            }
         }
+    }
 
-        public static void SendClickDown(byte mouseType)
+    public static void SendClickDown(byte mouseType)
+    {
+        if (isUio())
         {
-            if (isUio())
-            {
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
-                eventSim.SimulateMousePress(button);
-            }
-            else
-            {
+            var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
+            eventSim.SimulateMousePress(button);
+        }
+        else
+        {
 #if WINDOWS
-                SimMouse.Action buttonDown = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonDown : SimMouse.Action.RightButtonDown;
-                SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+            var buttonDown = mouseType == MouseTypes.MouseLeft
+                ? SimMouse.Action.LeftButtonDown
+                : SimMouse.Action.RightButtonDown;
+            SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
 #else
                 // FALLBACK INCASE I MESS UP BUILD
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                SharpHook.Native.MouseButton button =
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
                 eventSim.SimulateMousePress(button);
 #endif
-            }
         }
+    }
 
-        public static void SendClickUp(byte mouseType)
+    public static void SendClickUp(byte mouseType)
+    {
+        if (isUio())
         {
-            if (isUio())
-            {
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
-                eventSim.SimulateMouseRelease(button);
-            }
-            else
-            {
+            var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
+            eventSim.SimulateMouseRelease(button);
+        }
+        else
+        {
 #if WINDOWS
-                SimMouse.Action buttonUp = mouseType == MouseTypes.MouseLeft ? SimMouse.Action.LeftButtonUp : SimMouse.Action.RightButtonUp;
-                SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+            var buttonUp = mouseType == MouseTypes.MouseLeft
+                ? SimMouse.Action.LeftButtonUp
+                : SimMouse.Action.RightButtonUp;
+            SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
 #else
                 // FALLBACK INCASE I MESS UP BUILD
-                SharpHook.Native.MouseButton button = mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
+                SharpHook.Native.MouseButton button =
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           mouseType == MouseTypes.MouseLeft ? SharpHook.Native.MouseButton.Button1 : SharpHook.Native.MouseButton.Button2;
                 eventSim.SimulateMouseRelease(button);
 #endif
-            }
         }
+    }
 
-        public static class MouseTypes
-        {
-            public static byte MouseLeft = 1;
-            public static byte MouseRight = 2;
-        }
+    public static class MouseTypes
+    {
+        public static byte MouseLeft = 1;
+        public static byte MouseRight = 2;
     }
 }

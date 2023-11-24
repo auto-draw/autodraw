@@ -1,164 +1,164 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-	<OutputType>WinExe</OutputType>
-	<TargetFramework>net6.0-windows</TargetFramework>
-	<Nullable>enable</Nullable>
-	<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-	<ApplicationManifest>app.manifest</ApplicationManifest>
-	</PropertyGroup>
-	<ItemGroup>
-	<ProjectCapability Include="Avalonia" />
-	<TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
-	</ItemGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectCapability Include="Avalonia"/>
+        <TrimmerRootAssembly Include="Avalonia.Themes.Fluent"/>
+    </ItemGroup>
 
-	<PropertyGroup>
-	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-	<StartupObject></StartupObject>
-	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	<PlatformTarget>AnyCPU</PlatformTarget>
-	<FileVersion>2.0.1.0</FileVersion>
-	<AssemblyVersion>7.15.2023</AssemblyVersion>
-	</PropertyGroup>
+    <PropertyGroup>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <StartupObject></StartupObject>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <FileVersion>2.0.1.0</FileVersion>
+        <AssemblyVersion>7.15.2023</AssemblyVersion>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	<DebugType>portable</DebugType>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	<DebugType>portable</DebugType>
-	</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
-    <PackageReference Include="Avalonia" Version="11.0.5" />
-    <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.1" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-	<!-- ^^^ yeah yeah whatever, too bad we using it anyways in build :D -->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
-    <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
-    <PackageReference Include="SharpHook" Version="5.1.1" />
-    <PackageReference Include="SimWinMouse" Version="1.0.2">
-      <NoWarn>true</NoWarn>
-    </PackageReference>
-    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1"/>
+        <PackageReference Include="Avalonia" Version="11.0.5"/>
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.5"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <!-- ^^^ yeah yeah whatever, too bad we using it anyways in build :D -->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.5"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5"/>
+        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.1"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="RestSharp" Version="110.2.0"/>
+        <PackageReference Include="SharpHook" Version="5.1.1"/>
+        <PackageReference Include="SimWinMouse" Version="1.0.2">
+            <NoWarn>true</NoWarn>
+        </PackageReference>
+        <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AvaloniaResource Include="Assets\**" />
-	</ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AvaloniaResource Include="Styles\**" />
-	</ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Styles\**"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AvaloniaResource Remove="Styles\Anime\anime.axaml" />
-	  <AvaloniaResource Remove="Styles\Anime\character.png" />
-	  <AvaloniaResource Remove="Styles\blue.axaml" />
-	  <AvaloniaResource Remove="Styles\Landscape\landscape.axaml" />
-	  <AvaloniaResource Remove="Styles\Landscape\landscape.jpg" />
-	</ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Remove="Styles\Anime\anime.axaml"/>
+        <AvaloniaResource Remove="Styles\Anime\character.png"/>
+        <AvaloniaResource Remove="Styles\blue.axaml"/>
+        <AvaloniaResource Remove="Styles\Landscape\landscape.axaml"/>
+        <AvaloniaResource Remove="Styles\Landscape\landscape.jpg"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AvaloniaXaml Remove="Styles\blue.axaml" />
-	  <AvaloniaXaml Remove="Styles\dark.axaml" />
-	  <AvaloniaXaml Remove="Styles\light.axaml" />
-	  <AvaloniaXaml Remove="Styles\universal.axaml" />
-	</ItemGroup>
+    <ItemGroup>
+        <AvaloniaXaml Remove="Styles\blue.axaml"/>
+        <AvaloniaXaml Remove="Styles\dark.axaml"/>
+        <AvaloniaXaml Remove="Styles\light.axaml"/>
+        <AvaloniaXaml Remove="Styles\universal.axaml"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <Compile Remove="Assets\Window1.axaml.cs" />
-	</ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Assets\Window1.axaml.cs"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="Assets\add-image.png" />
-	  <None Remove="Assets\alert.wav" />
-	  <None Remove="Assets\anime.png" />
-	  <None Remove="Assets\ThemeItems\Landscape\background.jpg" />
-	  <None Remove="Assets\close.png" />
-	  <None Remove="Assets\Light\close.png" />
-	  <None Remove="Assets\Message\error.png" />
-	  <None Remove="Assets\Message\info.png" />
-	  <None Remove="Assets\Message\nerd.png" />
-	  <None Remove="Assets\Message\pog.png" />
-	  <None Remove="Assets\Message\privacy-warn.png" />
-	  <None Remove="Assets\Message\warn.png" />
-	  <None Remove="Assets\open-doc.png" />
-	  <None Remove="Assets\open-folder.png" />
-	  <None Remove="Assets\reload.png" />
-	  <None Remove="Assets\remove.png" />
-	  <None Remove="Assets\Save.png" />
-	  <None Remove="Assets\Sounds\Music.mp3" />
-	  <None Remove="Assets\test-pattern.jpg" />
-	  <None Remove="Styles\DefaultTheme.txt" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Remove="Assets\add-image.png"/>
+        <None Remove="Assets\alert.wav"/>
+        <None Remove="Assets\anime.png"/>
+        <None Remove="Assets\ThemeItems\Landscape\background.jpg"/>
+        <None Remove="Assets\close.png"/>
+        <None Remove="Assets\Light\close.png"/>
+        <None Remove="Assets\Message\error.png"/>
+        <None Remove="Assets\Message\info.png"/>
+        <None Remove="Assets\Message\nerd.png"/>
+        <None Remove="Assets\Message\pog.png"/>
+        <None Remove="Assets\Message\privacy-warn.png"/>
+        <None Remove="Assets\Message\warn.png"/>
+        <None Remove="Assets\open-doc.png"/>
+        <None Remove="Assets\open-folder.png"/>
+        <None Remove="Assets\reload.png"/>
+        <None Remove="Assets\remove.png"/>
+        <None Remove="Assets\Save.png"/>
+        <None Remove="Assets\Sounds\Music.mp3"/>
+        <None Remove="Assets\test-pattern.jpg"/>
+        <None Remove="Styles\DefaultTheme.txt"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <Content Include="bin\Debug\net6.0-windows\icons8-pogchamp-96.png" />
-	  <Content Include="bin\Release\net6.0-windows\icons8-pogchamp-96.png" />
-	  <Content Include="bin\Release\net6.0-windows\win-x64\icons8-pogchamp-96.png" />
-	</ItemGroup>
+    <ItemGroup>
+        <Content Include="bin\Debug\net6.0-windows\icons8-pogchamp-96.png"/>
+        <Content Include="bin\Release\net6.0-windows\icons8-pogchamp-96.png"/>
+        <Content Include="bin\Release\net6.0-windows\win-x64\icons8-pogchamp-96.png"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <EmbeddedResource Include="Styles\Anime\anime.axaml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Styles\Anime\character.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Styles\blue.axaml">
-	    <Generator></Generator>
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Styles\Landscape\landscape.axaml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Styles\Landscape\landscape.jpg">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </EmbeddedResource>
-	</ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Styles\Anime\anime.axaml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Styles\Anime\character.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Styles\blue.axaml">
+            <Generator></Generator>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Styles\Landscape\landscape.axaml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Styles\Landscape\landscape.jpg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AvaloniaResource Update="Styles\light.axaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </AvaloniaResource>
-	  <AvaloniaResource Update="Styles\universal.axaml">
-	    <SubType>Designer</SubType>
-	  </AvaloniaResource>
-	  <AvaloniaResource Update="Styles\Overrides\CheckBox.axaml">
-	    <SubType>Designer</SubType>
-	  </AvaloniaResource>
-	</ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Update="Styles\light.axaml">
+            <Generator>MSBuild:Compile</Generator>
+        </AvaloniaResource>
+        <AvaloniaResource Update="Styles\universal.axaml">
+            <SubType>Designer</SubType>
+        </AvaloniaResource>
+        <AvaloniaResource Update="Styles\Overrides\CheckBox.axaml">
+            <SubType>Designer</SubType>
+        </AvaloniaResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Styles\dark.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="Styles\dark.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\ThemeItems\Anime\" />
-    <Folder Include="Assets\ThemeItems\Landscape\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Assets\ThemeItems\Anime\"/>
+        <Folder Include="Assets\ThemeItems\Landscape\"/>
+    </ItemGroup>
 </Project>

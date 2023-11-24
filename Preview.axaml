@@ -5,14 +5,12 @@
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="420"
         x:Class="Autodraw.Preview"
         Title="Preview"
-		Background="#0fff"
-		SystemDecorations="None"
-		Opacity="90"
-		
-		TransparencyLevelHint="None"
-		
-		Topmost="True">
-	<Image Name="previewImage">
+        Background="#0fff"
+        SystemDecorations="None"
+        Opacity="90"
 
-	</Image>
+        TransparencyLevelHint="None"
+
+        Topmost="True">
+    <Image Name="previewImage" />
 </Window>

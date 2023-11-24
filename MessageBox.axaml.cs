@@ -1,16 +1,19 @@
-using Avalonia;
+using System;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using System;
-
-using System.Runtime.InteropServices;
 
 namespace Autodraw;
 
 public partial class MessageBox : Window
 {
+    public MessageBox()
+    {
+        InitializeComponent();
+        CloseAppButton.Click += CloseAppButton_Click;
+    }
+
     public void ShowMessageBox(string title, string description, string icon = "info", string sound = "alert.wav")
     {
         Bitmap bmp = new(AssetLoader.Open(new Uri($"avares://Autodraw/Assets/Message/{icon}.png")));
@@ -21,13 +24,7 @@ public partial class MessageBox : Window
         Show();
     }
 
-    public MessageBox()
-    {
-        InitializeComponent();
-        CloseAppButton.Click += CloseAppButton_Click;
-    }
-
-    private void CloseAppButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void CloseAppButton_Click(object? sender, RoutedEventArgs e)
     {
         Close();
     }

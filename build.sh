@@ -46,7 +46,7 @@ then
 fi
 if [ $choice == "4" ] || [ $choice == "6" ]
 then
-	echo "Building for MacOS"
+	echo "Building for MacOS x64"
 	dotnet publish \autodraw.csproj -r osx-x64 -c Release -p:publishsinglefile=true --self-contained true -p:debugsymbols=false -p:debugtype=none -o Builds/Autodraw-macos-x64-$buildExtension/Autodraw
 	cd Builds/Autodraw-macos-x64-$buildExtension
 	zip -r $OLDPWD/Builds/Autodraw-macos-x64-$buildExtension.zip .
@@ -55,7 +55,7 @@ then
 fi
 if [ $choice == "5" ] || [ $choice == "6" ]
 then
-	echo "Building for Windows Selfcontained-x64"
+	echo "Building for Linux x64"
 	dotnet publish \autodraw.csproj -r linux-x64 -c Release -p:publishsinglefile=true --self-contained true -p:debugsymbols=false -p:debugtype=none -o Builds/Autodraw-linux-x64-$buildExtension/Autodraw
 	cd Builds/Autodraw-linux-x64-$buildExtension
 	zip -r $OLDPWD/Builds/Autodraw-linux-x64-$buildExtension.zip .
