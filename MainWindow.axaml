@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
-
-        Name="AutoDraw"
         x:Name="AutoDraw"
 
         Width="720"
@@ -143,7 +141,7 @@
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0" Grid.Column="0" Classes="GridBorder" />
                     <Grid Grid.Row="0" Grid.Column="0">
-                        <TextBlock Padding="2" Name="keybinds" />
+                        <TextBlock Padding="2" Name="Keybinds" />
                     </Grid>
                     <Border Grid.Row="0" Grid.Column="2" Classes="GridBorder" />
                     <Grid Grid.Row="0" Grid.Column="2" Margin="4">

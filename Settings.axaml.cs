@@ -49,10 +49,10 @@ public partial class Settings : Window
         LogFile.IsChecked = Config.getEntry("logsEnabled") == "True";
 
         // DALL-E API Keys
-        SaveOpenAIKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAIKey.Text);
+        SaveOpenAiKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAiKey.Text);
 
         if (Config.getEntry("showPopup") == null) Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
-        if (Config.getEntry("OpenAIKey") != null) OpenAIKey.Text = Config.getEntry("OpenAIKey");
+        if (Config.getEntry("OpenAIKey") != null) OpenAiKey.Text = Config.getEntry("OpenAIKey");
 
         // Themes
 

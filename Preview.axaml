@@ -12,5 +12,5 @@
         TransparencyLevelHint="None"
 
         Topmost="True">
-    <Image Name="previewImage" />
+    <Image Name="PreviewImage" />
 </Window>

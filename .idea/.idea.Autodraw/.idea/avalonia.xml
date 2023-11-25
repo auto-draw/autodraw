@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="DevTest.axaml" value="Autodraw.csproj" />
+        <entry key="DrawDataDisplay.axaml" value="Autodraw.csproj" />
+        <entry key="MainWindow.axaml" value="Autodraw.csproj" />
+        <entry key="MessageBox.axaml" value="Autodraw.csproj" />
+        <entry key="Preview.axaml" value="Autodraw.csproj" />
+        <entry key="Settings.axaml" value="Autodraw.csproj" />
+        <entry key="Styles/blue.axaml" value="Autodraw.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

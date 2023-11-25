@@ -227,8 +227,8 @@
                 <TextBlock Grid.Row="2">Press on the v2 text on the main window. 😗</TextBlock>
                 <TextBlock Grid.Row="4" FontSize="18">OpenAI API Key </TextBlock>
                 <TextBlock Grid.Row="8" FontSize="14" HorizontalAlignment="Right">platform.openai.com/api-keys</TextBlock>
-                <TextBox Grid.Row="6" Name="OpenAIKey" />
-                <Button Grid.Row="8" Name="SaveOpenAIKey">Save</Button>
+                <TextBox Grid.Row="6" Name="OpenAiKey" />
+                <Button Grid.Row="8" Name="SaveOpenAiKey">Save</Button>
             </Grid>
         </Grid>
     </Grid>

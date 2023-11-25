@@ -48,9 +48,9 @@ public partial class DevTest : Window
 
         var param = new
         {
-            prompt = AIPrompt.Text,
-            model = AIModel.Text,
-            size = AISize.Text,
+            prompt = AiPrompt.Text,
+            model = AiModel.Text,
+            size = AiSize.Text,
             n = 1
         };
         Task.Run(async () =>

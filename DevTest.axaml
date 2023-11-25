@@ -44,10 +44,10 @@
 
         <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Center" FontSize="16">DALL-E Image Generation</TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Center">Prompt</TextBlock>
-        <TextBox Name="AIPrompt" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" TextAlignment="Center">A painting of a beautiful starlit sky, with mountains cascading across the landscape.</TextBox>
+        <TextBox Name="AiPrompt" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" TextAlignment="Center">A painting of a beautiful starlit sky, with mountains cascading across the landscape.</TextBox>
         <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Center">Image size and model</TextBlock>
-        <TextBox Name="AISize" Grid.Row="6" Grid.Column="1" TextAlignment="Center">256x256</TextBox>
-        <TextBox Name="AIModel" Grid.Row="7" Grid.Column="1" TextAlignment="Center">dall-e-2</TextBox>
+        <TextBox Name="AiSize" Grid.Row="6" Grid.Column="1" TextAlignment="Center">256x256</TextBox>
+        <TextBox Name="AiModel" Grid.Row="7" Grid.Column="1" TextAlignment="Center">dall-e-2</TextBox>
         <Button Grid.Row="10" Grid.Column="1" Name="GenerateImage" VerticalAlignment="Center"
                 HorizontalAlignment="Center">
             Generate Image

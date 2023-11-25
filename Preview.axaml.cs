@@ -80,7 +80,7 @@ public partial class Preview : Window
     {
         renderedBitmap?.Dispose();
         renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
-        previewImage.Source = renderedBitmap;
+        PreviewImage.Source = renderedBitmap;
 
         Width = bitmap.Width;
         Height = bitmap.Height;

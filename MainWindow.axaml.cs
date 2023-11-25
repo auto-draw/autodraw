@@ -49,7 +49,7 @@ public partial class MainWindow : Window
         CurrentMainWindow = this;
 
         Config.init();
-        keybinds.Text =
+        Keybinds.Text =
             "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
 
         // Taskbar

@@ -122,7 +122,6 @@ public static class ImageProcessing
                     switch (i)
                     {
                         case 0:
-                            byte rByte, gByte, bByte, aByte;
                             float lumen;
                             byte localThresh;
                             if (x - 1 < 0 || y - 1 < 0)
@@ -132,7 +131,7 @@ public static class ImageProcessing
                             }
 
                             ;
-                            GetPixel(basePtr + width * (y - 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
+                            GetPixel(basePtr + width * (y - 1) + (x - 1), out var rByte, out var gByte, out var bByte, out var aByte);
                             lumen = (rByte + gByte + bByte) / 3;
                             localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
                             localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
