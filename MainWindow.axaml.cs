@@ -542,6 +542,7 @@ public partial class MainWindow : Window
         if (lines.Length <= 4) return;
         if (!bool.TryParse(lines[4], out var _fd2)) return;
         FreeDrawCheckbox.IsChecked = _fd2;
+        Drawing.freeDraw2 = _fd2;
 
         if (lines.Length <= 5) return;
         if (!int.TryParse(lines[5], out var _path)) return;
