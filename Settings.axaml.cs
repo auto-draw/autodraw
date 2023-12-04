@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -55,6 +57,7 @@ public partial class Settings : Window
         if (Config.getEntry("OpenAIKey") != null) OpenAiKey.Text = Config.getEntry("OpenAIKey");
 
         // Themes
+        ListThemes();
 
         //  TextEditor Input
         var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
@@ -141,6 +144,25 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         ThemeOutput.Text = Output;
     }
 
+    private void LoadTheme_Item()
+    {
+        //App.LoadTheme();
+    }
+
+    private void ListThemes()
+    {
+        string[] extensions = { ".axaml", ".laxaml", ".daxaml" };
+        string[] dirFiles = Directory.GetFiles(Config.FolderPath + "/Themes");
+        var files = dirFiles.Where(file =>
+            extensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase));
+
+        foreach (var file in files)
+        {
+            // Make your code to list it, however you do it
+            // Name is 'Path.GetFileNameWithoutExtension(file)'
+            // Path is 'file'
+        }
+    }
 
     private async void OpenTheme_Click(object? sender, RoutedEventArgs e)
     {

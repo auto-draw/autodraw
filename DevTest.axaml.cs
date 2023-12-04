@@ -48,10 +48,11 @@ public partial class DevTest : Window
 
         var param = new
         {
-            prompt = AiPrompt.Text,
-            model = AiModel.Text,
-            size = AiSize.Text,
-            n = 1
+            prompt = AIPrompt.Text,
+            model = AIModel.Text,
+            size = AISize.Text,
+            n = 1,
+            quality = "hd"
         };
         Task.Run(async () =>
         {
