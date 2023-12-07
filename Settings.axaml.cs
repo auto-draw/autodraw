@@ -31,14 +31,13 @@ public partial class Settings : Window
     public Settings()
     {
         InitializeComponent();
-
         // Main Handle
         CloseAppButton.Click += CloseAppButton_Click;
 
         // Sidebar
         GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
         ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
-        MarketplaceButton.Click += (sender, e) => OpenMenu("Marketplace");
+        MarketplaceButton.Click += (sender, e) => OpenMenu("MarketplaceUI");
         DevButton.Click += (sender, e) => OpenMenu("Developers");
 
         // General
@@ -262,7 +261,7 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
     private void OpenMenu(string menu)
     {
         var myControl = this.FindControl<Control>(menu);
-        DeactivateItem(new List<string> { "General", "Themes", "Marketplace", "Developers" });
+        DeactivateItem(new List<string> { "General", "Themes", "MarketplaceUI", "Developers" });
         if (myControl == null) return;
         myControl.Opacity = 1;
         myControl.IsHitTestVisible = true;

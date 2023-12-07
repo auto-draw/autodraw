@@ -196,7 +196,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Name="Marketplace" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+            <Grid Name="MarketplaceUI" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
                 <Grid.Transitions>
                     <Transitions>
                         <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
