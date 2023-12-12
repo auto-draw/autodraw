@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
@@ -51,7 +52,10 @@ public partial class Preview : Window
         if (e.Data.KeyCode == KeyCode.VcLeftShift || e.Data.KeyCode == KeyCode.VcRightShift)
         {
             if (inputBitmap.IsNull) return;
-            Thread drawThread = new(async () => { await Drawing.Draw(inputBitmap); });
+            Thread drawThread = new(async () =>
+            {
+                await Drawing.Draw(inputBitmap);
+            });
             drawThread.Start();
             Dispatcher.UIThread.Invoke(() => Close());
 

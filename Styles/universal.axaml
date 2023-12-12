@@ -6,9 +6,19 @@
         <Setter Property="FontFamily" Value="Arial" />
         <Setter Property="CornerRadius" Value="0" />
     </Style>
+    
+    <Style Selector="Button.NoOutline">
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
 
     <Style Selector="Button.GeneralButton">
         <Setter Property="Padding" Value="0" />
+    </Style>
+    
+    
+    <Style Selector="CheckBox.FilterItem">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="12 0" />
     </Style>
 
 
@@ -39,6 +49,21 @@
 
     <Style Selector="Label.Bold">
         <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    
+    
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="8 0"/>
+        <Setter Property="Height" Value="35"/>
+    </Style>
+    
+    <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
+        <Setter Property="Height" Value="35"/>
+    </Style>
+    
+    <Style Selector="TabItem /template/ Border#PART_LayoutRoot Panel">
+        <Setter Property="Height" Value="35"/>
     </Style>
 
 

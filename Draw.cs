@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -20,6 +21,7 @@ namespace Autodraw;
 
 public static class Drawing
 {
+    
     // Variables
 
     public static int pathValue = 12345678;
@@ -97,6 +99,7 @@ public static class Drawing
 
         static void keybindPress(object? sender, KeyboardHookEventArgs e)
         {
+            throw new NotImplementedException();
             if (e.Data.KeyCode == KeyCode.VcBackspace) skipRescan = true;
         }
 

@@ -10,6 +10,9 @@
         <entry key="Preview.axaml" value="Autodraw.csproj" />
         <entry key="Settings.axaml" value="Autodraw.csproj" />
         <entry key="Styles/blue.axaml" value="Autodraw.csproj" />
+        <entry key="Styles/dark.axaml" value="Autodraw.csproj" />
+        <entry key="Styles/light.axaml" value="Autodraw.csproj" />
+        <entry key="Styles/universal.axaml" value="Autodraw.csproj" />
       </map>
     </option>
   </component>

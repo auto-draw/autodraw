@@ -16,29 +16,27 @@ public partial class MainWindow : Window
 {
     public static MainWindow? CurrentMainWindow;
 
-    private readonly ImageProcessing.Filters currentFilters = new()
+    private readonly ImageProcessing.Filters _currentFilters = new()
         { Invert = false, maxThreshold = 127, AlphaThreshold = 200 };
 
-    private readonly Regex numberRegex = new(@"[^0-9]");
+    private readonly Regex _numberRegex = new(@"[^0-9]");
     private DevTest? _devwindow;
 
     private Settings? _settings;
-    private int AlphaThresh = 200;
-    private Bitmap? displayedBitmap;
-    private long lastMem;
-    private int maxBlackThreshold = 127;
+    private int _alphaThresh = 200;
+    private Bitmap? _displayedBitmap;
+    private int _minBlackThreshold;
+    private int _maxBlackThreshold = 127;
 
-#pragma warning disable IDE0052 // Such lies.
-    private long MemPressure;
-#pragma warning restore IDE0052
-    private bool MidChange;
+    private long _lastMem;
+    // ReSharper disable once NotAccessedField.Local
+    private long _memoryPressure;
+    private bool _inChange;
+    private long _lastTime = DateTime.Now.ToFileTime();
 
-    private int minBlackThreshold;
-    private SKBitmap? preFXBitmap = new(318, 318, true);
-    private SKBitmap? processedBitmap;
-
-    private SKBitmap? rawBitmap = new(318, 318, true);
-    private long Time = DateTime.Now.ToFileTime();
+    private SKBitmap? _rawBitmap = new(318, 318, true);
+    private SKBitmap? _preFxBitmap = new(318, 318, true);
+    private SKBitmap? _processedBitmap;
 
     public MainWindow()
     {
@@ -47,22 +45,22 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         CurrentMainWindow = this;
-
         Config.init();
-        Keybinds.Text =
-            "Keybinds:\nStart: Shift\nStop: Alt\nLock to Last/Current: Ctrl\nSkip Backtrace: Backspace\nPause/Resume: Backslash";
 
         // Taskbar
-        CloseAppButton.Click += QuitApp_Click;
-        MinimizeAppButton.Click += MinimizeApp_Click;
-        SettingsButton.Click += OpenSettings_Click;
-        DevButton.Click += Dev_Click;
+        CloseAppButton.Click += QuitAppOnClick;
+        MinimizeAppButton.Click += MinimizeAppOnClick;
+        SettingsButton.Click += OpenSettingsOnClick;
+        DevButton.Click += DevOnClick;
 
         // Base
         Closing += (sender, e) => { Cleanup(); };
-        ProcessButton.Click += ProcessButton_Click;
-        OpenButton.Click += OpenButton_Click;
-        RunButton.Click += RunButton_Click;
+        OpenButton.Click += OpenButtonOnClick;
+        ProcessButton.Click += ProcessButtonOnClick;
+        RunButton.Click += RunButtonOnClick;
+        
+        ImageSaveImage.Click += ImageSaveImageOnClick;
+        ImageClearImage.Click += ImageClearImageOnClick;
 
         // Inputs
         SizeSlider.ValueChanged += SizeSlider_ValueChanged;
@@ -73,23 +71,21 @@ public partial class MainWindow : Window
 
         DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
         ClickDelayElement.TextChanging += ClickDelay_TextChanging;
-        maxBlackThresholdElement.TextChanging += maxBlackThresholdElement_TextChanging;
         minBlackThresholdElement.TextChanging += minBlackThresholdElement_TextChanging;
-
-        HorizontalFilterCheck.TextChanging += HorizontalFilterCheck_TextChanging;
-        VerticalFilterCheck.TextChanging += VerticalFilterCheck_TextChanging;
-
-        CustomPatternInput.TextChanging += CustomPatternInput_TextChanging;
+        maxBlackThresholdElement.TextChanging += maxBlackThresholdElement_TextChanging;
 
         AlphaThresholdElement.TextChanging += AlphaThreshold_TextChanging;
 
-        FreeDrawCheckbox.Click += FreeDrawCheckbox_Click;
+        FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
+
+        HorizontalFilterText.TextChanging += HorizontalFilterText_TextChanging;
+        VerticalFilterText.TextChanging += VerticalFilterText_TextChanging;
 
         // Config
-        OpenConfigElement.Click += LoadConfigViaDialog;
-        SelectFolderElement.Click += SetFolderViaDialog;
         RefreshConfigsButton.Click += RefreshConfigList;
+        SelectFolderElement.Click += SetConfigFolderViaDialog;
         SaveConfigButton.Click += SaveConfigViaDialog;
+        OpenConfigElement.Click += LoadConfigViaDialog;
         LoadSelectButton.Click += LoadSelectedConfig;
         RefreshConfigList(this, null);
 
@@ -98,9 +94,15 @@ public partial class MainWindow : Window
 
     // User Configuration Handles
 
-    public static FilePickerFileType ConfigsFileFilter { get; } = new("Autodraw Config Files")
+    //*
+    public static FilePickerFileType ConfigsFileFilter { get; } = new("AutoDraw Config Files")
     {
         Patterns = new[] { "*.drawcfg" }
+    };
+    
+    public static FilePickerFileType PngFileFilter { get; } = new("Portable Network Graphics")
+    {
+        Patterns = new[] { "*.png" }
     };
 
 
@@ -120,57 +122,46 @@ public partial class MainWindow : Window
             path == 12345678 ? 0 :
             path == 14627358 ? 1 :
             path == 26573481 ? 2 :
-            3;
-        if (PatternSelection.SelectedIndex == 3) CustomPatternInput.Text = path.ToString();
+            0;
         UpdatePath();
     }
 
     private void UpdatePath()
     {
-        var Path = 12345678;
-        try
-        {
-            if (CustomPatternInput.Text.Length == 8) Path = int.Parse(CustomPatternInput.Text);
-        }
-        catch
-        {
-            Path = 12345678;
-        }
-
         Drawing.pathValue =
             PatternSelection.SelectedIndex == 0 ? 12345678
             : PatternSelection.SelectedIndex == 1 ? 14627358
             : PatternSelection.SelectedIndex == 2 ? 26573481
-            : PatternSelection.SelectedIndex == 3 ? Path
             : 12345678;
     }
 
     private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
-        currentFilters.minThreshold = (byte)minBlackThreshold;
-        currentFilters.maxThreshold = (byte)maxBlackThreshold;
-        currentFilters.AlphaThreshold = (byte)AlphaThresh;
+        _currentFilters.minThreshold = (byte)_minBlackThreshold;
+        _currentFilters.maxThreshold = (byte)_maxBlackThreshold;
+        _currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
-        currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
-        currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
-        currentFilters.OutlineSharp = SharpOutlineFilterCheck.IsChecked ?? false;
-        currentFilters.HorizontalLines = int.Parse(HorizontalFilterCheck.Text ?? "0");
-        currentFilters.VerticalLines = int.Parse(VerticalFilterCheck.Text ?? "0");
-        currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
-        currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
-
+        //*
+        _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
+        _currentFilters.OutlineSharp = OutlineFilterCheck.IsChecked ?? false;
+        
+        _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
+        _currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
+        _currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
+        _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
+        //*/
         // Dither Filters
 
         UpdatePath();
 
-        return currentFilters;
+        return _currentFilters;
     }
 
     // External Window Opening/Closing Handles
 
-    private void OpenSettings_Click(object? sender, RoutedEventArgs e)
+    private void OpenSettingsOnClick(object? sender, RoutedEventArgs e)
     {
         _settings ??= new Settings();
         _settings.Show();
@@ -197,37 +188,36 @@ public partial class MainWindow : Window
 
     // Base UI Handles
 
-    private void ProcessButton_Click(object? sender, RoutedEventArgs e)
+    private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
     {
-        if (preFXBitmap.IsNull) return;
-        processedBitmap?.Dispose();
-        displayedBitmap?.Dispose();
+        if (_preFxBitmap.IsNull) return;
+        _processedBitmap?.Dispose();
+        _displayedBitmap?.Dispose();
 
-        processedBitmap = ImageProcessing.Process(preFXBitmap, GetSelectFilters());
-        displayedBitmap = processedBitmap.ConvertToAvaloniaBitmap();
-        ImagePreview.Source = displayedBitmap;
+        _processedBitmap = ImageProcessing.Process(_preFxBitmap, GetSelectFilters());
+        _displayedBitmap = _processedBitmap.ConvertToAvaloniaBitmap();
+        ImagePreview.Source = _displayedBitmap;
     }
 
-    public void ImportImage(string path, byte[] img = null)
+    public void ImportImage(string path, byte[]? img = null)
     {
-        if (img == null) rawBitmap = SKBitmap.Decode(path).NormalizeColor();
-        else rawBitmap = SKBitmap.Decode(img).NormalizeColor();
-        preFXBitmap = rawBitmap.Copy();
-        displayedBitmap = rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
-        processedBitmap?.Dispose();
-        processedBitmap = null;
-        ImagePreview.Source = displayedBitmap;
+        _rawBitmap = img is null ? SKBitmap.Decode(path).NormalizeColor() : SKBitmap.Decode(img).NormalizeColor();
+        _preFxBitmap = _rawBitmap.Copy();
+        _displayedBitmap = _rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
+        _processedBitmap?.Dispose();
+        _processedBitmap = null;
+        ImagePreview.Source = _displayedBitmap;
 
-        MidChange = true;
+        _inChange = true;
         SizeSlider.Value = 100;
 
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = displayedBitmap.Size.Width.ToString();
-        HeightInput.Text = displayedBitmap.Size.Height.ToString();
-        MidChange = false;
+        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        _inChange = false;
     }
 
-    private async void OpenButton_Click(object? sender, RoutedEventArgs e)
+    private async void OpenButtonOnClick(object? sender, RoutedEventArgs e)
     {
         var file = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -239,18 +229,44 @@ public partial class MainWindow : Window
         if (file.Count == 1) ImportImage(file[0].TryGetLocalPath());
     }
 
-    private void RunButton_Click(object? sender, RoutedEventArgs e)
+    private void RunButtonOnClick(object? sender, RoutedEventArgs e)
     {
         UpdatePath();
-        if (processedBitmap == null)
+        if (_processedBitmap == null)
         {
             new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error");
             return;
         }
 
         if (Drawing.isDrawing) return;
+        new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
-        new Preview().ReadyDraw(processedBitmap);
+    }
+
+    private async void ImageSaveImageOnClick(object? sender, RoutedEventArgs e)
+    {
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Processed Image",
+            FileTypeChoices = new[] { PngFileFilter }
+        });
+        
+        if (file is not null)
+        {
+            var encodedData = _processedBitmap.Encode(SKEncodedImageFormat.Png, 100);
+            await using var stream = await file.OpenWriteAsync();
+
+            encodedData.SaveTo(stream);
+        }
+    }
+    
+    private void ImageClearImageOnClick(object? sender, RoutedEventArgs e)
+    { 
+        _rawBitmap = new(318, 318, true);
+        _preFxBitmap = new(318, 318, true);
+        _processedBitmap = null;
+        _displayedBitmap = null;
+        ImagePreview.Source = null;
     }
 
     // Inputs Handles
@@ -259,56 +275,56 @@ public partial class MainWindow : Window
     {
         width = Math.Max(1, width);
         height = Math.Max(1, height);
-        if (GC.GetTotalMemory(false) < lastMem) GC.RemoveMemoryPressure(lastMem);
-        lastMem = GC.GetTotalMemory(false);
+        if (GC.GetTotalMemory(false) < _lastMem) GC.RemoveMemoryPressure(_lastMem);
+        _lastMem = GC.GetTotalMemory(false);
 
-        if (processedBitmap == null)
+        if (_processedBitmap == null)
         {
-            var resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
-            preFXBitmap.Dispose();
-            preFXBitmap = resizedBitmap;
-            displayedBitmap?.Dispose();
-            displayedBitmap = resizedBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Source = displayedBitmap;
+            var resizedBitmap = _rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
+            _preFxBitmap.Dispose();
+            _preFxBitmap = resizedBitmap;
+            _displayedBitmap?.Dispose();
+            _displayedBitmap = resizedBitmap.ConvertToAvaloniaBitmap();
+            ImagePreview.Source = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
-            MemPressure += resizedBitmap.ByteCount;
+            _memoryPressure += resizedBitmap.ByteCount;
         }
-        else if (processedBitmap != null)
+        else if (_processedBitmap != null)
         {
-            var resizedBitmap = rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
-            preFXBitmap.Dispose();
-            preFXBitmap = resizedBitmap;
+            var resizedBitmap = _rawBitmap.Resize(new SKSizeI((int)width, (int)height), SKFilterQuality.High);
+            _preFxBitmap.Dispose();
+            _preFxBitmap = resizedBitmap;
             var postProcessBitmap = ImageProcessing.Process(resizedBitmap, GetSelectFilters());
-            processedBitmap.Dispose();
-            processedBitmap = postProcessBitmap;
-            displayedBitmap?.Dispose();
-            displayedBitmap = postProcessBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Source = displayedBitmap;
+            _processedBitmap.Dispose();
+            _processedBitmap = postProcessBitmap;
+            _displayedBitmap?.Dispose();
+            _displayedBitmap = postProcessBitmap.ConvertToAvaloniaBitmap();
+            ImagePreview.Source = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
-            MemPressure += resizedBitmap.ByteCount;
+            _memoryPressure += resizedBitmap.ByteCount;
         }
     }
 
     private void SizeSlider_ValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
-        if (MidChange) return;
-        if (DateTime.Now.ToFileTime() - Time < 333_333) return;
-        Time = DateTime.Now.ToFileTime();
+        if (_inChange) return;
+        if (DateTime.Now.ToFileTime() - _lastTime < 333_333) return;
+        _lastTime = DateTime.Now.ToFileTime();
 
-        ResizeImage(rawBitmap.Width * SizeSlider.Value / 100, rawBitmap.Height * SizeSlider.Value / 100);
+        ResizeImage(_rawBitmap.Width * SizeSlider.Value / 100, _rawBitmap.Height * SizeSlider.Value / 100);
 
-        MidChange = true;
+        _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = displayedBitmap.Size.Width.ToString();
-        HeightInput.Text = displayedBitmap.Size.Height.ToString();
-        MidChange = false;
+        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        _inChange = false;
     }
 
     private void PercentageNumber_TextChanged(object? sender, TextChangingEventArgs e)
     {
         if (PercentageNumber.Text == null) return;
-        if (MidChange) return;
-        var numberText = numberRegex.Replace(PercentageNumber.Text, "");
+        if (_inChange) return;
+        var numberText = _numberRegex.Replace(PercentageNumber.Text, "");
         PercentageNumber.Text = numberText + "%";
         e.Handled = true;
 
@@ -321,19 +337,19 @@ public partial class MainWindow : Window
             return;
         }
 
-        ResizeImage(rawBitmap.Width * setNumber / 100, rawBitmap.Height * setNumber / 100);
+        ResizeImage(_rawBitmap.Width * setNumber / 100, _rawBitmap.Height * setNumber / 100);
 
-        MidChange = true;
-        WidthInput.Text = displayedBitmap.Size.Width.ToString();
-        HeightInput.Text = displayedBitmap.Size.Height.ToString();
-        MidChange = false;
+        _inChange = true;
+        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        _inChange = false;
     }
 
     private void HeightInput_TextChanged(object? sender, TextChangingEventArgs e)
     {
         if (HeightInput.Text == null) return;
-        if (MidChange) return;
-        var numberText = numberRegex.Replace(HeightInput.Text, "");
+        if (_inChange) return;
+        var numberText = _numberRegex.Replace(HeightInput.Text, "");
         HeightInput.Text = numberText;
         e.Handled = true;
 
@@ -346,46 +362,47 @@ public partial class MainWindow : Window
             return;
         }
 
-        // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
-        ResizeImage(rawBitmap.Width / (float)rawBitmap.Height * setNumber, setNumber);
+        ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
 
-        MidChange = true;
+        _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = displayedBitmap.Size.Width.ToString();
-        MidChange = false;
+        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        _inChange = false;
     }
 
     private void WidthInput_TextChanged(object? sender, TextChangingEventArgs e)
     {
         if (WidthInput.Text == null) return;
-        if (MidChange) return;
-        var numberText = numberRegex.Replace(WidthInput.Text, "");
+        if (_inChange) return;
+        var numberText = _numberRegex.Replace(WidthInput.Text, "");
         WidthInput.Text = numberText;
         e.Handled = true;
 
         if (numberText.Length < 1) return;
         var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 8096)
+        switch (setNumber)
         {
-            PercentageNumber.Text = "8096";
-            return;
+            case < 1:
+                PercentageNumber.Text = "1";
+                return;
+            case > 4096:
+                PercentageNumber.Text = "4096";
+                return;
         }
 
-        // Cast is redundant is a lie. It rounds it if its not explicitly cast as a float.
-        ResizeImage(setNumber, rawBitmap.Height / (float)rawBitmap.Width * setNumber);
+        ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
 
-        MidChange = true;
+        _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        HeightInput.Text = displayedBitmap.Size.Height.ToString();
-        MidChange = false;
+        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        _inChange = false;
     }
 
 
     private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (DrawIntervalElement.Text == null) return;
-        DrawIntervalElement.Text = numberRegex.Replace(DrawIntervalElement.Text, "");
+        DrawIntervalElement.Text = _numberRegex.Replace(DrawIntervalElement.Text, "");
         e.Handled = true;
 
         if (DrawIntervalElement.Text.Length < 1) return;
@@ -403,7 +420,7 @@ public partial class MainWindow : Window
     private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (ClickDelayElement.Text == null) return;
-        ClickDelayElement.Text = numberRegex.Replace(ClickDelayElement.Text, "");
+        ClickDelayElement.Text = _numberRegex.Replace(ClickDelayElement.Text, "");
         e.Handled = true;
 
         if (ClickDelayElement.Text.Length < 1) return;
@@ -421,108 +438,122 @@ public partial class MainWindow : Window
     private void minBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (minBlackThresholdElement.Text == null) return;
-        minBlackThresholdElement.Text = numberRegex.Replace(minBlackThresholdElement.Text, "");
+        minBlackThresholdElement.Text = _numberRegex.Replace(minBlackThresholdElement.Text, "");
         e.Handled = true;
 
         if (minBlackThresholdElement.Text.Length < 1) return;
 
         try
         {
-            minBlackThreshold = int.Parse(minBlackThresholdElement.Text);
+            _minBlackThreshold = int.Parse(minBlackThresholdElement.Text);
         }
         catch
         {
-            minBlackThreshold = 127;
+            _minBlackThreshold = 127;
         }
     }
 
     private void maxBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (maxBlackThresholdElement.Text == null) return;
-        maxBlackThresholdElement.Text = numberRegex.Replace(maxBlackThresholdElement.Text, "");
+        maxBlackThresholdElement.Text = _numberRegex.Replace(maxBlackThresholdElement.Text, "");
         e.Handled = true;
 
         if (maxBlackThresholdElement.Text.Length < 1) return;
 
         try
         {
-            maxBlackThreshold = int.Parse(maxBlackThresholdElement.Text);
+            _maxBlackThreshold = int.Parse(maxBlackThresholdElement.Text);
         }
         catch
         {
-            maxBlackThreshold = 127;
+            _maxBlackThreshold = 127;
         }
     }
 
     private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
     {
         if (AlphaThresholdElement.Text == null) return;
-        AlphaThresholdElement.Text = numberRegex.Replace(AlphaThresholdElement.Text, "");
+        AlphaThresholdElement.Text = _numberRegex.Replace(AlphaThresholdElement.Text, "");
         e.Handled = true;
 
         if (AlphaThresholdElement.Text.Length < 1) return;
 
         try
         {
-            AlphaThresh = int.Parse(AlphaThresholdElement.Text);
+            _alphaThresh = int.Parse(AlphaThresholdElement.Text);
         }
         catch
         {
-            AlphaThresh = 127;
+            _alphaThresh = 127;
         }
     }
 
-    private void CustomPatternInput_TextChanging(object? sender, TextChangingEventArgs e)
+    private void handleTextChange(TextBox obj, TextChangingEventArgs e)
     {
-        if (CustomPatternInput.Text == null) return;
-        CustomPatternInput.Text = numberRegex.Replace(CustomPatternInput.Text, "");
+        if (obj.Text == null) return;
+        obj.Text = _numberRegex.Replace(obj.Text, "");
         e.Handled = true;
 
-        if (CustomPatternInput.Text.Length < 1) return;
+        if (obj.Text.Length < 1) return;
     }
 
-    private void HorizontalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
-    {
-        if (HorizontalFilterCheck.Text == null) return;
-        HorizontalFilterCheck.Text = numberRegex.Replace(HorizontalFilterCheck.Text, "");
-        e.Handled = true;
-
-        if (HorizontalFilterCheck.Text.Length < 1) HorizontalFilterCheck.Text = "0";
-    }
-
-    private void VerticalFilterCheck_TextChanging(object? sender, TextChangingEventArgs e)
-    {
-        if (VerticalFilterCheck.Text == null) return;
-        VerticalFilterCheck.Text = numberRegex.Replace(VerticalFilterCheck.Text, "");
-        e.Handled = true;
-
-        if (VerticalFilterCheck.Text.Length < 1) VerticalFilterCheck.Text = "0";
-    }
-
-
-    private void FreeDrawCheckbox_Click(object? sender, RoutedEventArgs e)
+    private void FreeDrawCheckboxOnClick(object? sender, RoutedEventArgs e)
     {
         Drawing.freeDraw2 = FreeDrawCheckbox.IsChecked ?? false;
     }
 
     // Toolbar Handles
 
-    private void MinimizeApp_Click(object? sender, RoutedEventArgs e)
+    private void MinimizeAppOnClick(object? sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
     }
 
-    private void QuitApp_Click(object? sender, RoutedEventArgs e)
+    private void QuitAppOnClick(object? sender, RoutedEventArgs e)
     {
         Close();
     }
 
-    private void Dev_Click(object? sender, RoutedEventArgs e)
+    private void DevOnClick(object? sender, RoutedEventArgs e)
     {
         OpenDevWindow();
     }
 
-    public void LoadConfig(string path)
+    public async void PasteControl()
+    {
+        try
+        {
+            var clipboard = Clipboard;
+            var fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
+            var file = await clipboard.GetDataAsync(fileFormat);
+            ImportImage("", (byte[])file);
+        }
+        catch (Exception ex)
+        {
+            Utils.Log("Error with PasteControl(): " + ex);
+        }
+    }
+    
+    private void HorizontalFilterText_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        handleTextChange(HorizontalFilterText,e);
+    }
+
+    private void VerticalFilterText_TextChanging(object? sender, TextChangingEventArgs e)
+    {
+        handleTextChange(VerticalFilterText,e);
+    }
+    
+    public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)
+    {
+        var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
+        if (folder.Count != 1) return;
+        Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
+        RefreshConfigList(this, null);
+    }
+
+    public void LoadConfig(string? path)
     {
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) return;
@@ -533,10 +564,8 @@ public partial class MainWindow : Window
 
         ClickDelayElement.Text = lines.Length > 1 ? lines[1] : "1000";
 
-        maxBlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
-        // Silly!!
-
-        AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
+        //maxBlackThresholdElement.Text = lines.Length > 2 ? lines[2] : "127";
+        //AlphaThresholdElement.Text = lines.Length > 3 ? lines[3] : "200";
         // Silly!!
 
         if (lines.Length <= 4) return;
@@ -563,9 +592,9 @@ public partial class MainWindow : Window
         {
             UpdatePath();
             await using var stream = await file.OpenWriteAsync();
-            using var streamWriter = new StreamWriter(stream);
+            await using var streamWriter = new StreamWriter(stream);
 
-            string[] values =
+            string?[] values =
             {
                 DrawIntervalElement.Text,
                 ClickDelayElement.Text,
@@ -576,7 +605,7 @@ public partial class MainWindow : Window
                 minBlackThresholdElement.Text
             };
 
-            streamWriter.Write(string.Join("\r\n", values));
+            await streamWriter.WriteAsync(string.Join("\r\n", values));
         }
     }
 
@@ -594,44 +623,21 @@ public partial class MainWindow : Window
 
     public void RefreshConfigList(object? sender, RoutedEventArgs? e)
     {
-        var ConfigFolder = Config.getEntry("ConfigFolder");
-        if (ConfigFolder == null) return;
-        if (!Directory.Exists(ConfigFolder)) return;
-        var files = Directory.GetFiles(ConfigFolder, "*.drawcfg");
+        var configFolder = Config.getEntry("ConfigFolder");
+        if (configFolder == null) return;
+        if (!Directory.Exists(configFolder)) return;
+        var files = Directory.GetFiles(configFolder, "*.drawcfg");
         var fileNames = files.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
         ConfigsListBox.ClearValue(ItemsControl.ItemsSourceProperty);
         ConfigsListBox.Items.Clear();
         ConfigsListBox.ItemsSource = fileNames;
     }
 
-    public async void SetFolderViaDialog(object? sender, RoutedEventArgs e)
-    {
-        var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
-        if (folder.Count != 1) return;
-        Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
-        RefreshConfigList(this, null);
-    }
-
     public void LoadSelectedConfig(object? sender, RoutedEventArgs e)
     {
         if (ConfigsListBox.SelectedItem == null) return;
-        var SelectedItem = ConfigsListBox.SelectedItem.ToString();
-        if (SelectedItem == null) return;
-        LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), SelectedItem)}.drawcfg");
-    }
-
-    public async void PasteControl()
-    {
-        try
-        {
-            var clipboard = Clipboard;
-            var fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
-            var file = await clipboard.GetDataAsync(fileFormat);
-            ImportImage("", (byte[])file);
-        }
-        catch (Exception ex)
-        {
-            Utils.Log("Error with PasteControl(): " + ex);
-        }
+        var selectedItem = ConfigsListBox.SelectedItem.ToString();
+        if (selectedItem == null) return;
+        LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), selectedItem)}.drawcfg");
     }
 }
