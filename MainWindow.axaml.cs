@@ -17,7 +17,7 @@ public partial class MainWindow : Window
     public static MainWindow? CurrentMainWindow;
 
     private readonly ImageProcessing.Filters _currentFilters = new()
-        { Invert = false, maxThreshold = 127, AlphaThreshold = 200 };
+        { Invert = false, MaxThreshold = 127, AlphaThreshold = 200 };
 
     private readonly Regex _numberRegex = new(@"[^0-9]");
     private DevTest? _devwindow;
@@ -54,7 +54,7 @@ public partial class MainWindow : Window
         DevButton.Click += DevOnClick;
 
         // Base
-        Closing += (sender, e) => { Cleanup(); };
+        Closing += (_, _) => { Cleanup(); };
         OpenButton.Click += OpenButtonOnClick;
         ProcessButton.Click += ProcessButtonOnClick;
         RunButton.Click += RunButtonOnClick;
@@ -140,15 +140,15 @@ public partial class MainWindow : Window
     private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
-        _currentFilters.minThreshold = (byte)_minBlackThreshold;
-        _currentFilters.maxThreshold = (byte)_maxBlackThreshold;
+        _currentFilters.MinThreshold = (byte)_minBlackThreshold;
+        _currentFilters.MaxThreshold = (byte)_maxBlackThreshold;
         _currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
         
         //// Generic Filters
         _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
-        _currentFilters.OutlineSharp = OutlineFilterCheck.IsChecked ?? false;
+        _currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
         
         //// Pattern Filters
         _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
@@ -157,7 +157,8 @@ public partial class MainWindow : Window
         _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
         
         //// Experimental Filters
-        //_currentFilters
+        _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
+        _currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
         
         // Dither Filters
         // **Yet to be implemented**
@@ -207,7 +208,7 @@ public partial class MainWindow : Window
         ImagePreview.Source = _displayedBitmap;
     }
 
-    public void ImportImage(string path, byte[]? img = null)
+    public void ImportImage(string? path, byte[]? img = null)
     {
         _rawBitmap = img is null ? SKBitmap.Decode(path).NormalizeColor() : SKBitmap.Decode(img).NormalizeColor();
         _preFxBitmap = _rawBitmap.Copy();
@@ -497,7 +498,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void handleTextChange(TextBox obj, TextChangingEventArgs e)
+    private void HandleTextChange(TextBox obj, TextChangingEventArgs e)
     {
         if (obj.Text == null) return;
         obj.Text = _numberRegex.Replace(obj.Text, "");
@@ -545,22 +546,22 @@ public partial class MainWindow : Window
     
     private void HorizontalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        handleTextChange(HorizontalFilterText,e);
+        HandleTextChange(HorizontalFilterText,e);
     }
 
     private void VerticalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        handleTextChange(VerticalFilterText,e);
+        HandleTextChange(VerticalFilterText,e);
     }
     
     private void ErosionAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        handleTextChange(ErosionAdvancedText, e);
+        HandleTextChange(ErosionAdvancedText, e);
     }
 
     private void OutlineAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        handleTextChange(OutlineAdvancedText, e);
+        HandleTextChange(OutlineAdvancedText, e);
     }
     
     public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)
