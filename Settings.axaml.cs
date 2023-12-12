@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -29,14 +31,13 @@ public partial class Settings : Window
     public Settings()
     {
         InitializeComponent();
-
         // Main Handle
         CloseAppButton.Click += CloseAppButton_Click;
 
         // Sidebar
         GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
         ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
-        MarketplaceButton.Click += (sender, e) => OpenMenu("Marketplace");
+        MarketplaceButton.Click += (sender, e) => OpenMenu("MarketplaceUI");
         DevButton.Click += (sender, e) => OpenMenu("Developers");
 
         // General
@@ -55,6 +56,7 @@ public partial class Settings : Window
         if (Config.getEntry("OpenAIKey") != null) OpenAiKey.Text = Config.getEntry("OpenAIKey");
 
         // Themes
+        ListThemes();
 
         //  TextEditor Input
         var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
@@ -141,6 +143,25 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         ThemeOutput.Text = Output;
     }
 
+    private void LoadTheme_Item()
+    {
+        //App.LoadTheme();
+    }
+
+    private void ListThemes()
+    {
+        string[] extensions = { ".axaml", ".laxaml", ".daxaml" };
+        string[] dirFiles = Directory.GetFiles(Config.FolderPath + "/Themes");
+        var files = dirFiles.Where(file =>
+            extensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase));
+
+        foreach (var file in files)
+        {
+            // Make your code to list it, however you do it
+            // Name is 'Path.GetFileNameWithoutExtension(file)'
+            // Path is 'file'
+        }
+    }
 
     private async void OpenTheme_Click(object? sender, RoutedEventArgs e)
     {
@@ -240,7 +261,7 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
     private void OpenMenu(string menu)
     {
         var myControl = this.FindControl<Control>(menu);
-        DeactivateItem(new List<string> { "General", "Themes", "Marketplace", "Developers" });
+        DeactivateItem(new List<string> { "General", "Themes", "MarketplaceUI", "Developers" });
         if (myControl == null) return;
         myControl.Opacity = 1;
         myControl.IsHitTestVisible = true;
