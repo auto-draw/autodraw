@@ -105,7 +105,7 @@
             </Grid>
             
             <Border BorderBrush="#5000" BorderThickness="1" Grid.Row="0" Grid.Column="2" CornerRadius="2"/>
-            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="1">
+            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="0">
                 <TabItem Header="General">
                     <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
                         <Border Background="#4000" CornerRadius="4" Grid.RowSpan="4"  Grid.ColumnSpan="3"/>

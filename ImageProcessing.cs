@@ -80,7 +80,7 @@ public static class ImageProcessing
         return filterSettings.Invert == false ? threshByte : (byte)(255 - threshByte); // Invert
     }
 
-    private static unsafe byte GetOutlineAlpha(int y, int x, uint* basePtr, int width, Filters filterSettings)
+    private static unsafe byte GetOutlineAlpha(int y, int x, uint* basePtr, int width, int height, byte threshByte, Filters filterSettings)
     {
         byte returnByte = 255;
         var doOutline = false;
@@ -92,7 +92,7 @@ public static class ImageProcessing
                 0 => y - 1 < 0,
                 1 => x - 1 < 0,
                 2 => x + 1 >= width,
-                3 => y + 1 >= width,
+                3 => y + 1 >= height,
                 _ => false
             };
             if (outOfBounds)
@@ -186,19 +186,19 @@ public static class ImageProcessing
             GetPixel(srcPtr, out var redByte, out var greenByte, out var blueByte, out var alphaByte);
             var luminosity = (redByte + greenByte + blueByte) / 3;
             byte threshByte = GetThreshold(luminosity, alphaByte, filterSettings);
-            
+        
             if (threshByte == 255)
             {
                 *returnPtr++ = 0xffffffff;
                 continue;
             }
-            
+        
             byte returnByte = 255;
             if (filterSettings.Outline)
             {
-                returnByte = GetOutlineAlpha(y, x, basePtr, width, filterSettings);
+                returnByte = GetOutlineAlpha(y, x, basePtr, width, height, threshByte, filterSettings);
             }
-            
+        
             if (filterSettings.IsAnyPatternSet())
             {
                 returnByte = GetPatternAlpha(y, x, returnByte, filterSettings);
