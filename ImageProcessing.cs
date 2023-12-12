@@ -1,10 +1,8 @@
-﻿#define SKVM_JIT_WHEN_POSSIBLE
-#define SK_ENABLE_SKSL_INTERPRETER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Avalonia.Controls;
 using SkiaSharp;
 
 namespace Autodraw;
@@ -72,157 +70,227 @@ public static class ImageProcessing
         localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
         return localThresh;
     }
+    
+    private static byte GetThreshold(float luminosity, byte alphaByte, Filters filterSettings)
+    {
+        byte threshByte =
+            (byte)(luminosity > filterSettings.MaxThreshold || luminosity < filterSettings.MinThreshold || alphaByte < filterSettings.AlphaThreshold
+                ? 255
+                : 0); // Thresholds Filter
+        return filterSettings.Invert == false ? threshByte : (byte)(255 - threshByte); // Invert
+    }
 
+    private static unsafe byte GetOutlineAlpha(int y, int x, uint* basePtr, int width, Filters filterSettings)
+    {
+        byte returnByte = 255;
+        var doOutline = false;
+        foreach (var i in Enumerable.Range(0, 4))
+        {
+            uint* pixelAddress;
+            var outOfBounds = i switch
+            {
+                0 => y - 1 < 0,
+                1 => x - 1 < 0,
+                2 => x + 1 >= width,
+                3 => y + 1 >= width,
+                _ => false
+            };
+            if (outOfBounds)
+            {
+                doOutline = true;
+            }
+            else
+            {
+                pixelAddress = i switch
+                {
+                    0 => basePtr + width * (y - 1) + x,
+                    1 => basePtr + width * y + (x - 1),
+                    2 => basePtr + width * y + (x + 1),
+                    3 => basePtr + width * (y + 1) + x,
+                    _ => throw new ArgumentException($"Invalid value {i}")
+                };
+                GetPixel(pixelAddress, out var rByte, out var gByte, out var bByte, out var aByte);
+                byte localThresh = AdjustThresh(rByte, gByte, bByte, aByte, filterSettings.Invert, filterSettings.MaxThreshold, filterSettings.MinThreshold, filterSettings.AlphaThreshold);
+                if (localThresh == 255) doOutline = true;
+            }
+        }
+        if (doOutline) returnByte = 0;
+        return returnByte;
+    }
+
+    private static byte GetPatternAlpha(int y, int x, byte returnByte, Filters filterSettings)
+    {
+        if (returnByte != 0 && (filterSettings.Crosshatch || filterSettings.DiagCrosshatch || filterSettings.HorizontalLines > 0 || filterSettings.VerticalLines > 0))
+        {
+            if (filterSettings.DiagCrosshatch) // Diag Crosshatch
+                foreach (var patPoint in listDiagCross)
+                    if (x % patternDiagCross.Width == patPoint[0] && y % patternDiagCross.Height == patPoint[1])
+                        returnByte = 0;
+            if (filterSettings.Crosshatch) // Crosshatch
+                foreach (var patPoint in listCrosshatch)
+                    if (x % patternCrosshatch.Width == patPoint[0] && y % patternCrosshatch.Height == patPoint[1])
+                        returnByte = 0;
+        }
+        return returnByte;
+    }
+
+    private static bool IsAnyPatternSet(this Filters filters)
+    {
+        return filters.Crosshatch || filters.DiagCrosshatch;
+    }
+
+    private static unsafe SKBitmap GeneratePattern(decimal Horizontal, decimal Vertical)
+    {
+        SKBitmap patternBitmap = new SKBitmap(Math.Max((int)Vertical,1), Math.Max((int)Horizontal,1));
+        
+        var srcPtr = (byte*)patternBitmap.GetPixels().ToPointer();
+
+        var width = patternBitmap.Width;
+        var height = patternBitmap.Height;
+
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++)
+        {
+            byte returnByte = 255;
+            if (Horizontal > 0) // Horizontal Stripes
+                if (y % Horizontal == 0)
+                    returnByte = 0;
+            //*/
+            if (Vertical > 0) // Vertical Stripes
+                if (x % Vertical == 0)
+                    returnByte = 0;
+            
+            *srcPtr++ = returnByte;
+            *srcPtr++ = returnByte;
+            *srcPtr++ = returnByte;
+            *srcPtr++ = 255;
+        }
+
+        return patternBitmap;
+    }
+    
     public static unsafe SKBitmap Process(SKBitmap sourceBitmap, Filters filterSettings)
     {
-        if (Process_MemPressure > 0) GC.RemoveMemoryPressure(Process_MemPressure);
         Process_MemPressure = sourceBitmap.BytesPerPixel * sourceBitmap.Width * sourceBitmap.Height;
-
-        SKBitmap outputBitmap = new(sourceBitmap.Width, sourceBitmap.Height);
-
+        var height = sourceBitmap.Height;
+        var width = sourceBitmap.Width;
+        
+        SKBitmap outputBitmap = new(width, height);
         var basePtr = (uint*)sourceBitmap.GetPixels().ToPointer();
         var returnPtr = (uint*)outputBitmap.GetPixels().ToPointer();
-
-        var width = outputBitmap.Width;
-        var height = outputBitmap.Height;
-
-        var minthresh = filterSettings.minThreshold;
-        var maxthresh = filterSettings.maxThreshold;
-        var athresh = filterSettings.AlphaThreshold;
-
-        var doinvert = filterSettings.Invert;
-        var outline = filterSettings.Outline;
-        var sharpoutline = filterSettings.OutlineSharp;
-
-        var crosshatch = filterSettings.Crosshatch;
-        var diagcross = filterSettings.DiagCrosshatch;
-        var horizontals = filterSettings.HorizontalLines;
-        var verticals = filterSettings.VerticalLines;
-
 
         for (var y = 0; y < height; y++)
         for (var x = 0; x < width; x++)
         {
             var srcPtr = basePtr + width * y + x;
-
             GetPixel(srcPtr, out var redByte, out var greenByte, out var blueByte, out var alphaByte);
-
-            float luminosity = (redByte + greenByte + blueByte) / 3;
-
-            var threshByte =
-                (byte)(luminosity > maxthresh || luminosity < minthresh || alphaByte < athresh
-                    ? 255
-                    : 0); // Thresholds Filter
-
-            threshByte = doinvert == false ? threshByte : (byte)(255 - threshByte); // Invert
-
+            var luminosity = (redByte + greenByte + blueByte) / 3;
+            byte threshByte = GetThreshold(luminosity, alphaByte, filterSettings);
+            
             if (threshByte == 255)
             {
                 *returnPtr++ = 0xffffffff;
                 continue;
             }
-
+            
             byte returnByte = 255;
-
-            if (outline)
+            if (filterSettings.Outline)
             {
-                var doOutline = false;
-                foreach (var i in Enumerable.Range(0, 8))
-                {
-                    var offset = i switch
-                    {
-                        0 => (-1, -1),
-                        1 => (0, -1),
-                        2 => (1, -1),
-                        3 => (-1, 0),
-                        4 => (1, 0),
-                        5 => (-1, 1),
-                        6 => (0, 1),
-                        7 => (1, 1),
-                        _ => (0, 0)
-                    };
-
-                    if (x + offset.Item1 < 0 || x + offset.Item1 >= width || y + offset.Item2 < 0 || y + offset.Item2 >= height)
-                    {
-                        doOutline = true;
-                    }
-                    else
-                    {
-                        uint* pixelAddress = basePtr + width * (y + offset.Item2) + (x + offset.Item1);
-                        GetPixel(pixelAddress, out var rByte, out var gByte, out var bByte, out var aByte);
-                        byte localThresh = AdjustThresh(rByte, gByte, bByte, aByte, doinvert, maxthresh, minthresh, athresh);
-                        if (localThresh == 255) doOutline = true;
-                    }    
-                    if (doOutline)
-                    {
-                        returnByte = 0;
-                        break;
-                    }
-                }
+                returnByte = GetOutlineAlpha(y, x, basePtr, width, filterSettings);
             }
-            else if (sharpoutline)
+            
+            if (filterSettings.IsAnyPatternSet())
             {
-                var doOutline = false;
-                foreach (var i in Enumerable.Range(0, 4))
-                {
-                    var outOfBounds = i switch
-                    {
-                        0 => y - 1 < 0,
-                        1 => x - 1 < 0,
-                        2 => x + 1 >= width,
-                        3 => y + 1 >= height,
-                        _ => false
-                    };
-
-                    if (outOfBounds)
-                    {
-                        doOutline = true;
-                    }
-                    else
-                    {
-                        uint* pixelAddress = i switch
-                        {
-                            0 => basePtr + width * (y - 1) + x,
-                            1 => basePtr + width * y + (x - 1),
-                            2 => basePtr + width * y + (x + 1),
-                            3 => basePtr + width * (y + 1) + x,
-                            _ => throw new ArgumentException($"Invalid value {i}")
-                        };
-
-                        GetPixel(pixelAddress, out var rByte, out var gByte, out var bByte, out var aByte);
-                        byte localThresh= AdjustThresh(rByte, gByte, bByte, aByte, doinvert, maxthresh, minthresh, athresh);
-                        if (localThresh == 255) doOutline = true;
-                    }
-                }
-                if (doOutline) returnByte = 0;
+                returnByte = GetPatternAlpha(y, x, returnByte, filterSettings);
             }
-
-            // Pattern Filters
-            if (returnByte != 0 && (crosshatch || diagcross || horizontals > 0 || verticals > 0))
-            {
-                if (horizontals > 0) // Horizontal Stripes
-                    if (y % horizontals == 0)
-                        returnByte = 0;
-                if (verticals > 0) // Vertical Stripes
-                    if (x % verticals == 0)
-                        returnByte = 0;
-                if (diagcross) // Diag Crosshatch
-                    foreach (var patPoint in listDiagCross)
-                        if (x % patternDiagCross.Width == patPoint[0] && y % patternDiagCross.Height == patPoint[1])
-                            returnByte = 0;
-                if (crosshatch) // Crosshatch
-                    foreach (var patPoint in listCrosshatch)
-                        if (x % patternCrosshatch.Width == patPoint[0] && y % patternCrosshatch.Height == patPoint[1])
-                            returnByte = 0;
-            }
-            else if (!outline && !sharpoutline)
+            else if (!filterSettings.Outline)
             {
                 returnByte = threshByte;
             }
-
             *returnPtr++ = MakePixel(returnByte, returnByte, returnByte, 255);
         }
+        
+        var OutImage = SKImage.FromBitmap(outputBitmap);
+        if (filterSettings.ErosionAdvanced > 0)
+        {
+            var OutImageAnti = OutImage.ApplyImageFilter(
+                SKImageFilter.CreateDilate(filterSettings.ErosionAdvanced, filterSettings.ErosionAdvanced),
+                new SKRectI(0, 0, width, height),
+                new SKRectI(filterSettings.ErosionAdvanced, filterSettings.ErosionAdvanced, width - filterSettings.ErosionAdvanced, height - filterSettings.ErosionAdvanced),
+                out _, 
+                out SKPoint _
+            );
+            OutImage = OutImageAnti;
+        }
 
+        if (filterSettings.OutlineAdvanced > 0)
+        {
+            var invert = new float[20] {
+                -1f, 0f,  0f,  0f,  1f,
+                0f,  -1f, 0f,  0f,  1f,
+                0f,  0f,  -1f, 0f,  1f,
+                0f,  0f,  0f,  1f,  0f
+            };
+            
+            SKImage OutImageInvert = OutImage.ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
+
+            
+            SKImageInfo imageInfo = new SKImageInfo(OutImage.Width, OutImage.Height);
+            using SKSurface surface = SKSurface.Create(imageInfo);
+            
+            SKPaint dilatePaint = new SKPaint();
+            dilatePaint.ImageFilter = SKImageFilter.CreateDilate(filterSettings.OutlineAdvanced, filterSettings.OutlineAdvanced);
+            SKPaint lightenPaint = new SKPaint
+            {
+                BlendMode = SKBlendMode.Darken
+            };
+
+            surface.Canvas.DrawImage(OutImage, 0, 0, dilatePaint);
+            surface.Canvas.DrawImage(OutImageInvert, 0, 0, lightenPaint);
+
+            SKImage MergeImage = surface.Snapshot().ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);;
+            OutImage = MergeImage;
+        }
+        if (filterSettings.HorizontalLines > 0 || filterSettings.VerticalLines > 0)
+        {
+            filterSettings.HorizontalLines = Math.Min(4096, filterSettings.HorizontalLines);
+            filterSettings.VerticalLines = Math.Min(4096, filterSettings.VerticalLines);
+            
+            SKBitmap patternBitmap = GeneratePattern(filterSettings.HorizontalLines, filterSettings.VerticalLines);
+            SKImageInfo imageInfo = new SKImageInfo(OutImage.Width, OutImage.Height);
+            
+            using SKSurface surface = SKSurface.Create(imageInfo);
+
+            SKCanvas canvas = surface.Canvas;
+
+            for (int i = 0; i < OutImage.Width; i += patternBitmap.Width)
+            {
+                for (int j = 0; j < OutImage.Height; j += patternBitmap.Height)
+                {
+                    canvas.DrawBitmap(patternBitmap, i, j);
+                }
+            }
+
+            SKImage finalImage = surface.Snapshot();
+            
+            SKBitmap bitmap = new SKBitmap(width, height);
+            SKCanvas mixCanvas = new SKCanvas(bitmap);
+
+            SKPaint lightenPaint = new SKPaint
+            {
+                BlendMode = SKBlendMode.Lighten
+            };
+
+            mixCanvas.DrawImage(finalImage, 0, 0);
+    
+            mixCanvas.DrawImage(OutImage, 0, 0, lightenPaint);
+
+            SKImage MergeImage = SKImage.FromBitmap(bitmap);
+            OutImage = MergeImage;
+        }
+        
+        outputBitmap = SKBitmap.FromImage(OutImage);
+        
         GC.AddMemoryPressure(Process_MemPressure);
         return outputBitmap;
     }
@@ -287,15 +355,19 @@ public static class ImageProcessing
     public class Filters
     {
         public byte AlphaThreshold = 127;
+        public byte MaxThreshold = 127;
+        public byte MinThreshold = 0;
+        
         public bool Crosshatch = false;
         public bool DiagCrosshatch = false;
         public decimal HorizontalLines = 0;
-        public bool Invert = false;
-        public byte maxThreshold = 127;
-        public byte minThreshold = 0;
-        public bool Outline = false;
-        public bool OutlineSharp = false;
         public decimal VerticalLines = 0;
+        
+        public bool Invert = false;
+        public bool Outline = false;
+
+        public int ErosionAdvanced = 0;
+        public int OutlineAdvanced = 0;
     }
 
     public class Pattern
