@@ -40,7 +40,7 @@ public partial class Preview : Window
             var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
             if (currUnix < lastMovement + 16) return;
             lastMovement = currUnix;
-            var usedPos = Drawing.useLastPos ? Drawing.lastPos : Input.mousePos;
+            var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
             var x = usedPos.X - Width / 2;
             var y = usedPos.Y - Height / 2;
             Position = new PixelPoint((int)x, (int)y);
@@ -75,8 +75,8 @@ public partial class Preview : Window
 
         if (e.Data.KeyCode == KeyCode.VcLeftControl || e.Data.KeyCode == KeyCode.VcRightControl)
         {
-            if (Drawing.lastPos.X == 0 && Drawing.lastPos.Y == 0) Drawing.lastPos = Input.mousePos;
-            Drawing.useLastPos = !Drawing.useLastPos;
+            if (Drawing.LastPos.X == 0 && Drawing.LastPos.Y == 0) Drawing.LastPos = Input.mousePos;
+            Drawing.UseLastPos = !Drawing.UseLastPos;
         }
     }
 

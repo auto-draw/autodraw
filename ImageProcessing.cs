@@ -48,6 +48,8 @@ public static class ImageProcessing
 
         return positions;
     }
+    
+    // TODO: Rewrite allat to be image based patterns 🙄
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint MakePixel(byte red, byte green, byte blue, byte alpha)
@@ -62,32 +64,40 @@ public static class ImageProcessing
         blue = (byte)((*input >> 16) & 0xFF);
         alpha = (byte)((*input >> 24) & 0xFF);
     }
+    
+    public static byte AdjustThresh(byte rByte, byte gByte, byte bByte, byte aByte,  bool doinvert, float maxthresh, float minthresh, byte athresh)
+    {
+        float lumen = (rByte + gByte + bByte) / 3;
+        byte localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
+        localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
+        return localThresh;
+    }
 
-    public static unsafe SKBitmap Process(SKBitmap SourceBitmap, Filters FilterSettings)
+    public static unsafe SKBitmap Process(SKBitmap sourceBitmap, Filters filterSettings)
     {
         if (Process_MemPressure > 0) GC.RemoveMemoryPressure(Process_MemPressure);
-        Process_MemPressure = SourceBitmap.BytesPerPixel * SourceBitmap.Width * SourceBitmap.Height;
+        Process_MemPressure = sourceBitmap.BytesPerPixel * sourceBitmap.Width * sourceBitmap.Height;
 
-        SKBitmap OutputBitmap = new(SourceBitmap.Width, SourceBitmap.Height);
+        SKBitmap outputBitmap = new(sourceBitmap.Width, sourceBitmap.Height);
 
-        var basePtr = (uint*)SourceBitmap.GetPixels().ToPointer();
-        var returnPtr = (uint*)OutputBitmap.GetPixels().ToPointer();
+        var basePtr = (uint*)sourceBitmap.GetPixels().ToPointer();
+        var returnPtr = (uint*)outputBitmap.GetPixels().ToPointer();
 
-        var width = OutputBitmap.Width;
-        var height = OutputBitmap.Height;
+        var width = outputBitmap.Width;
+        var height = outputBitmap.Height;
 
-        var minthresh = FilterSettings.minThreshold;
-        var maxthresh = FilterSettings.maxThreshold;
-        var athresh = FilterSettings.AlphaThreshold;
+        var minthresh = filterSettings.minThreshold;
+        var maxthresh = filterSettings.maxThreshold;
+        var athresh = filterSettings.AlphaThreshold;
 
-        var doinvert = FilterSettings.Invert;
-        var outline = FilterSettings.Outline;
-        var sharpoutline = FilterSettings.OutlineSharp;
+        var doinvert = filterSettings.Invert;
+        var outline = filterSettings.Outline;
+        var sharpoutline = filterSettings.OutlineSharp;
 
-        var crosshatch = FilterSettings.Crosshatch;
-        var diagcross = FilterSettings.DiagCrosshatch;
-        var horizontals = FilterSettings.HorizontalLines;
-        var verticals = FilterSettings.VerticalLines;
+        var crosshatch = filterSettings.Crosshatch;
+        var diagcross = filterSettings.DiagCrosshatch;
+        var horizontals = filterSettings.HorizontalLines;
+        var verticals = filterSettings.VerticalLines;
 
 
         for (var y = 0; y < height; y++)
@@ -119,124 +129,30 @@ public static class ImageProcessing
                 var doOutline = false;
                 foreach (var i in Enumerable.Range(0, 8))
                 {
-                    switch (i)
+                    var offset = i switch
                     {
-                        case 0:
-                            float lumen;
-                            byte localThresh;
-                            if (x - 1 < 0 || y - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
+                        0 => (-1, -1),
+                        1 => (0, -1),
+                        2 => (1, -1),
+                        3 => (-1, 0),
+                        4 => (1, 0),
+                        5 => (-1, 1),
+                        6 => (0, 1),
+                        7 => (1, 1),
+                        _ => (0, 0)
+                    };
 
-                            ;
-                            GetPixel(basePtr + width * (y - 1) + (x - 1), out var rByte, out var gByte, out var bByte, out var aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 1:
-                            if (y - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 2:
-                            if (x + 1 >= width || y - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y - 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 3:
-                            if (x - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 4:
-                            if (x + 1 >= width)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 5:
-                            if (x - 1 < 0 || y + 1 >= height)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y + 1) + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 6:
-                            if (y + 1 >= height)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 7:
-                            if (x + 1 >= width || y + 1 >= height)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y + 1) + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
+                    if (x + offset.Item1 < 0 || x + offset.Item1 >= width || y + offset.Item2 < 0 || y + offset.Item2 >= height)
+                    {
+                        doOutline = true;
                     }
-
+                    else
+                    {
+                        uint* pixelAddress = basePtr + width * (y + offset.Item2) + (x + offset.Item1);
+                        GetPixel(pixelAddress, out var rByte, out var gByte, out var bByte, out var aByte);
+                        byte localThresh = AdjustThresh(rByte, gByte, bByte, aByte, doinvert, maxthresh, minthresh, athresh);
+                        if (localThresh == 255) doOutline = true;
+                    }    
                     if (doOutline)
                     {
                         returnByte = 0;
@@ -249,71 +165,36 @@ public static class ImageProcessing
                 var doOutline = false;
                 foreach (var i in Enumerable.Range(0, 4))
                 {
-                    switch (i)
+                    var outOfBounds = i switch
                     {
-                        case 0:
-                            byte rByte, gByte, bByte, aByte;
-                            float lumen;
-                            byte localThresh;
-                            if (y - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
+                        0 => y - 1 < 0,
+                        1 => x - 1 < 0,
+                        2 => x + 1 >= width,
+                        3 => y + 1 >= height,
+                        _ => false
+                    };
 
-                            ;
-                            GetPixel(basePtr + width * (y - 1) + x, out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 1:
-                            if (x - 1 < 0)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * y + (x - 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 2:
-                            if (x + 1 >= width)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * y + (x + 1), out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
-                        case 3:
-                            if (y + 1 >= height)
-                            {
-                                doOutline = true;
-                                break;
-                            }
-
-                            ;
-                            GetPixel(basePtr + width * (y + 1) + x, out rByte, out gByte, out bByte, out aByte);
-                            lumen = (rByte + gByte + bByte) / 3;
-                            localThresh = (byte)(lumen > maxthresh || lumen < minthresh || aByte < athresh ? 255 : 0);
-                            localThresh = doinvert == false ? localThresh : (byte)(255 - localThresh);
-                            if (localThresh == 255) doOutline = true;
-                            break;
+                    if (outOfBounds)
+                    {
+                        doOutline = true;
                     }
+                    else
+                    {
+                        uint* pixelAddress = i switch
+                        {
+                            0 => basePtr + width * (y - 1) + x,
+                            1 => basePtr + width * y + (x - 1),
+                            2 => basePtr + width * y + (x + 1),
+                            3 => basePtr + width * (y + 1) + x,
+                            _ => throw new ArgumentException($"Invalid value {i}")
+                        };
 
-                    if (doOutline) returnByte = 0;
+                        GetPixel(pixelAddress, out var rByte, out var gByte, out var bByte, out var aByte);
+                        byte localThresh= AdjustThresh(rByte, gByte, bByte, aByte, doinvert, maxthresh, minthresh, athresh);
+                        if (localThresh == 255) doOutline = true;
+                    }
                 }
+                if (doOutline) returnByte = 0;
             }
 
             // Pattern Filters
@@ -343,7 +224,7 @@ public static class ImageProcessing
         }
 
         GC.AddMemoryPressure(Process_MemPressure);
-        return OutputBitmap;
+        return outputBitmap;
     }
 
     public static unsafe SKBitmap NormalizeColor(this SKBitmap SourceBitmap)

@@ -63,23 +63,25 @@ public partial class MainWindow : Window
         ImageClearImage.Click += ImageClearImageOnClick;
 
         // Inputs
-        SizeSlider.ValueChanged += SizeSlider_ValueChanged;
+        SizeSlider.ValueChanged += SizeSliderOnValueChanged;
 
-        WidthInput.TextChanging += WidthInput_TextChanged;
-        HeightInput.TextChanging += HeightInput_TextChanged;
-        PercentageNumber.TextChanging += PercentageNumber_TextChanged;
+        WidthInput.TextChanging += WidthInputOnTextChanged;
+        HeightInput.TextChanging += HeightInputOnTextChanged;
+        PercentageNumber.TextChanging += PercentageNumberOnTextChanged;
 
-        DrawIntervalElement.TextChanging += DrawInterval_TextChanging;
-        ClickDelayElement.TextChanging += ClickDelay_TextChanging;
-        minBlackThresholdElement.TextChanging += minBlackThresholdElement_TextChanging;
-        maxBlackThresholdElement.TextChanging += maxBlackThresholdElement_TextChanging;
+        DrawIntervalElement.TextChanging += DrawIntervalOnTextChanging;
+        ClickDelayElement.TextChanging += ClickDelayOnTextChanging;
+        minBlackThresholdElement.TextChanging += minBlackThresholdElementOnTextChanging;
+        maxBlackThresholdElement.TextChanging += maxBlackThresholdElementOnTextChanging;
 
-        AlphaThresholdElement.TextChanging += AlphaThreshold_TextChanging;
+        AlphaThresholdElement.TextChanging += AlphaThresholdOnTextChanging;
 
         FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
 
-        HorizontalFilterText.TextChanging += HorizontalFilterText_TextChanging;
-        VerticalFilterText.TextChanging += VerticalFilterText_TextChanging;
+        HorizontalFilterText.TextChanging += HorizontalFilterTextOnTextChanging;
+        VerticalFilterText.TextChanging += VerticalFilterTextOnTextChanging;
+        OutlineAdvancedText.TextChanging += OutlineAdvancedTextOnTextChanging;
+        ErosionAdvancedText.TextChanging += ErosionAdvancedTextOnTextChanging;
 
         // Config
         RefreshConfigsButton.Click += RefreshConfigList;
@@ -128,7 +130,7 @@ public partial class MainWindow : Window
 
     private void UpdatePath()
     {
-        Drawing.pathValue =
+        Drawing.PathValue =
             PatternSelection.SelectedIndex == 0 ? 12345678
             : PatternSelection.SelectedIndex == 1 ? 14627358
             : PatternSelection.SelectedIndex == 2 ? 26573481
@@ -143,16 +145,22 @@ public partial class MainWindow : Window
         _currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
-        //*
+        
+        //// Generic Filters
         _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         _currentFilters.OutlineSharp = OutlineFilterCheck.IsChecked ?? false;
         
+        //// Pattern Filters
         _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         _currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
         _currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
         _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
-        //*/
+        
+        //// Experimental Filters
+        //_currentFilters
+        
         // Dither Filters
+        // **Yet to be implemented**
 
         UpdatePath();
 
@@ -238,7 +246,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (Drawing.isDrawing) return;
+        if (Drawing.IsDrawing) return;
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
@@ -305,7 +313,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SizeSlider_ValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    private void SizeSliderOnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         if (_inChange) return;
         if (DateTime.Now.ToFileTime() - _lastTime < 333_333) return;
@@ -320,7 +328,7 @@ public partial class MainWindow : Window
         _inChange = false;
     }
 
-    private void PercentageNumber_TextChanged(object? sender, TextChangingEventArgs e)
+    private void PercentageNumberOnTextChanged(object? sender, TextChangingEventArgs e)
     {
         if (PercentageNumber.Text == null) return;
         if (_inChange) return;
@@ -345,7 +353,7 @@ public partial class MainWindow : Window
         _inChange = false;
     }
 
-    private void HeightInput_TextChanged(object? sender, TextChangingEventArgs e)
+    private void HeightInputOnTextChanged(object? sender, TextChangingEventArgs e)
     {
         if (HeightInput.Text == null) return;
         if (_inChange) return;
@@ -370,7 +378,7 @@ public partial class MainWindow : Window
         _inChange = false;
     }
 
-    private void WidthInput_TextChanged(object? sender, TextChangingEventArgs e)
+    private void WidthInputOnTextChanged(object? sender, TextChangingEventArgs e)
     {
         if (WidthInput.Text == null) return;
         if (_inChange) return;
@@ -399,7 +407,7 @@ public partial class MainWindow : Window
     }
 
 
-    private void DrawInterval_TextChanging(object? sender, TextChangingEventArgs e)
+    private void DrawIntervalOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         if (DrawIntervalElement.Text == null) return;
         DrawIntervalElement.Text = _numberRegex.Replace(DrawIntervalElement.Text, "");
@@ -409,15 +417,15 @@ public partial class MainWindow : Window
 
         try
         {
-            Drawing.interval = int.Parse(DrawIntervalElement.Text);
+            Drawing.Interval = int.Parse(DrawIntervalElement.Text);
         }
         catch
         {
-            Drawing.interval = 10000;
+            Drawing.Interval = 10000;
         }
     }
 
-    private void ClickDelay_TextChanging(object? sender, TextChangingEventArgs e)
+    private void ClickDelayOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         if (ClickDelayElement.Text == null) return;
         ClickDelayElement.Text = _numberRegex.Replace(ClickDelayElement.Text, "");
@@ -427,15 +435,15 @@ public partial class MainWindow : Window
 
         try
         {
-            Drawing.clickDelay = int.Parse(ClickDelayElement.Text);
+            Drawing.ClickDelay = int.Parse(ClickDelayElement.Text);
         }
         catch
         {
-            Drawing.clickDelay = 1000;
+            Drawing.ClickDelay = 1000;
         }
     }
 
-    private void minBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
+    private void minBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         if (minBlackThresholdElement.Text == null) return;
         minBlackThresholdElement.Text = _numberRegex.Replace(minBlackThresholdElement.Text, "");
@@ -453,7 +461,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void maxBlackThresholdElement_TextChanging(object? sender, TextChangingEventArgs e)
+    private void maxBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         if (maxBlackThresholdElement.Text == null) return;
         maxBlackThresholdElement.Text = _numberRegex.Replace(maxBlackThresholdElement.Text, "");
@@ -471,7 +479,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void AlphaThreshold_TextChanging(object? sender, TextChangingEventArgs e)
+    private void AlphaThresholdOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         if (AlphaThresholdElement.Text == null) return;
         AlphaThresholdElement.Text = _numberRegex.Replace(AlphaThresholdElement.Text, "");
@@ -500,7 +508,7 @@ public partial class MainWindow : Window
 
     private void FreeDrawCheckboxOnClick(object? sender, RoutedEventArgs e)
     {
-        Drawing.freeDraw2 = FreeDrawCheckbox.IsChecked ?? false;
+        Drawing.FreeDraw2 = FreeDrawCheckbox.IsChecked ?? false;
     }
 
     // Toolbar Handles
@@ -535,14 +543,24 @@ public partial class MainWindow : Window
         }
     }
     
-    private void HorizontalFilterText_TextChanging(object? sender, TextChangingEventArgs e)
+    private void HorizontalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         handleTextChange(HorizontalFilterText,e);
     }
 
-    private void VerticalFilterText_TextChanging(object? sender, TextChangingEventArgs e)
+    private void VerticalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         handleTextChange(VerticalFilterText,e);
+    }
+    
+    private void ErosionAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
+    {
+        handleTextChange(ErosionAdvancedText, e);
+    }
+
+    private void OutlineAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
+    {
+        handleTextChange(OutlineAdvancedText, e);
     }
     
     public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)
@@ -571,7 +589,7 @@ public partial class MainWindow : Window
         if (lines.Length <= 4) return;
         if (!bool.TryParse(lines[4], out var _fd2)) return;
         FreeDrawCheckbox.IsChecked = _fd2;
-        Drawing.freeDraw2 = _fd2;
+        Drawing.FreeDraw2 = _fd2;
 
         if (lines.Length <= 5) return;
         if (!int.TryParse(lines[5], out var _path)) return;
@@ -601,7 +619,7 @@ public partial class MainWindow : Window
                 maxBlackThresholdElement.Text,
                 AlphaThresholdElement.Text,
                 FreeDrawCheckbox.IsChecked.ToString(),
-                Drawing.pathValue.ToString(),
+                Drawing.PathValue.ToString(),
                 minBlackThresholdElement.Text
             };
 

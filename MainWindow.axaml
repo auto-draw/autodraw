@@ -105,7 +105,7 @@
             </Grid>
             
             <Border BorderBrush="#5000" BorderThickness="1" Grid.Row="0" Grid.Column="2" CornerRadius="2"/>
-            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="2">
+            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="1">
                 <TabItem Header="General">
                     <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
                         <Border Background="#4000" CornerRadius="4" Grid.RowSpan="4"  Grid.ColumnSpan="3"/>
@@ -173,25 +173,33 @@
                                 <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Medium">Pattern Filters</Label>
                                 <CheckBox Name="CrosshatchFilterCheck" Classes="FilterItem">Crosshatch</CheckBox>
                                 <CheckBox Name="DiagCrossFilterCheck" Classes="FilterItem">Diagonal Crosshatch</CheckBox>
-                                <Grid Margin="12 4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="72"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="14" Padding="0">
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
                                         Horizontal Stripes:
                                     </Label>
                                     <TextBox Name="HorizontalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
-                                <Grid Margin="12 4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="72"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="14" Padding="0">
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
                                         Vertical Stripes:
                                     </Label>
                                     <TextBox Name="VerticalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
+                                </Grid>
+                                <Separator/>
+                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontWeight="Medium">Experimental Filters</Label>
+                                <Label Padding="8 4 8 0" HorizontalAlignment="Center">Pretty sure these are GPU Accelerated 😋</Label>
+                                <Label Padding="8 0 8 8" HorizontalAlignment="Center">At least for GPU Accelerated Devices</Label>
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
+                                        Outline (Shader):
+                                    </Label>
+                                    <TextBox Name="OutlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
+                                </Grid>
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
+                                        Erosion (Shader):
+                                    </Label>
+                                    <TextBox Name="ErosionAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                             </StackPanel>
                         </ScrollViewer>
