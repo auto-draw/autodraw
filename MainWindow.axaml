@@ -153,6 +153,8 @@
                             <Label FontSize="16">Draw Pattern</Label>
                             <ComboBox Name="PatternSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
                                 <ComboBoxItem>Horizontal</ComboBoxItem>
+                                <ComboBoxItem>Vertical</ComboBoxItem>
+                                <ComboBoxItem>Diagonal</ComboBoxItem>
                             </ComboBox>
                         </StackPanel>
                         <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0">
@@ -187,13 +189,29 @@
                                 </Grid>
                                 <Separator/>
                                 <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontWeight="Medium">Experimental Filters</Label>
-                                <Label Padding="8 4 8 0" HorizontalAlignment="Center">Pretty sure these are GPU Accelerated 😋</Label>
-                                <Label Padding="8 0 8 8" HorizontalAlignment="Center">At least for GPU Accelerated Devices</Label>
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
+                                        Border (Semi-Shader):
+                                    </Label>
+                                    <TextBox Name="BorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
+                                </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
                                     <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
                                         Outline (Shader):
                                     </Label>
                                     <TextBox Name="OutlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
+                                </Grid>
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
+                                        Inline (Shader):
+                                    </Label>
+                                    <TextBox Name="InlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
+                                </Grid>
+                                <Grid Margin="12 2" ColumnDefinitions="*,72">
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
+                                        Inline Border (Semi-Shader):
+                                    </Label>
+                                    <TextBox Name="InlineBorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
                                     <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">

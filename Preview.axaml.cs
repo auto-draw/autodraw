@@ -39,6 +39,7 @@ public partial class Preview : Window
         {
             var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
             if (currUnix < lastMovement + 16) return;
+            Console.WriteLine($"Update at {currUnix}");
             lastMovement = currUnix;
             var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
             var x = usedPos.X - Width / 2;
@@ -65,12 +66,15 @@ public partial class Preview : Window
         if (e.Data.KeyCode == KeyCode.VcLeftAlt || e.Data.KeyCode == KeyCode.VcRightAlt)
         {
             Dispatcher.UIThread.Invoke(() => Close());
-            Input.taskHook.KeyReleased -= Keybind;
             Dispatcher.UIThread.Invoke(() =>
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
                     desktop.MainWindow.WindowState = WindowState.Normal;
+                    desktop.MainWindow.BringIntoView();
+                }
             });
+            Input.taskHook.KeyReleased -= Keybind;
         }
 
         if (e.Data.KeyCode == KeyCode.VcLeftControl || e.Data.KeyCode == KeyCode.VcRightControl)

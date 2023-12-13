@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
@@ -78,10 +80,14 @@ public partial class MainWindow : Window
 
         FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
 
-        HorizontalFilterText.TextChanging += HorizontalFilterTextOnTextChanging;
-        VerticalFilterText.TextChanging += VerticalFilterTextOnTextChanging;
-        OutlineAdvancedText.TextChanging += OutlineAdvancedTextOnTextChanging;
-        ErosionAdvancedText.TextChanging += ErosionAdvancedTextOnTextChanging;
+        // There's prob a better way of doing this 🤷‍♂️
+        HorizontalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        VerticalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        BorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        OutlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        InlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        InlineBorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        ErosionAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
 
         // Config
         RefreshConfigsButton.Click += RefreshConfigList;
@@ -157,8 +163,11 @@ public partial class MainWindow : Window
         _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
         
         //// Experimental Filters
-        _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
+        _currentFilters.BorderAdvanced = int.Parse(BorderAdvancedText.Text ?? "0");
         _currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
+        _currentFilters.InlineAdvanced = int.Parse(InlineAdvancedText.Text ?? "0");
+        _currentFilters.InlineBorderAdvanced = int.Parse(InlineBorderAdvancedText.Text ?? "0");
+        _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
         
         // Dither Filters
         // **Yet to be implemented**
@@ -279,6 +288,15 @@ public partial class MainWindow : Window
     }
 
     // Inputs Handles
+
+    private void HandleTextChange(TextChangingEventArgs e)
+    {
+        TextBox source = (TextBox)e.Source;
+        source.Text = _numberRegex.Replace(source.Text, "");
+        e.Handled = true;
+
+        if (source.Text.Length < 1) source.Text = "0";
+    }
 
     private void ResizeImage(double width, double height)
     {
@@ -410,11 +428,7 @@ public partial class MainWindow : Window
 
     private void DrawIntervalOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (DrawIntervalElement.Text == null) return;
-        DrawIntervalElement.Text = _numberRegex.Replace(DrawIntervalElement.Text, "");
-        e.Handled = true;
-
-        if (DrawIntervalElement.Text.Length < 1) return;
+        HandleTextChange(e);
 
         try
         {
@@ -428,11 +442,7 @@ public partial class MainWindow : Window
 
     private void ClickDelayOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (ClickDelayElement.Text == null) return;
-        ClickDelayElement.Text = _numberRegex.Replace(ClickDelayElement.Text, "");
-        e.Handled = true;
-
-        if (ClickDelayElement.Text.Length < 1) return;
+        HandleTextChange(e);
 
         try
         {
@@ -446,11 +456,7 @@ public partial class MainWindow : Window
 
     private void minBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (minBlackThresholdElement.Text == null) return;
-        minBlackThresholdElement.Text = _numberRegex.Replace(minBlackThresholdElement.Text, "");
-        e.Handled = true;
-
-        if (minBlackThresholdElement.Text.Length < 1) return;
+        HandleTextChange(e);
 
         try
         {
@@ -464,11 +470,7 @@ public partial class MainWindow : Window
 
     private void maxBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (maxBlackThresholdElement.Text == null) return;
-        maxBlackThresholdElement.Text = _numberRegex.Replace(maxBlackThresholdElement.Text, "");
-        e.Handled = true;
-
-        if (maxBlackThresholdElement.Text.Length < 1) return;
+        HandleTextChange(e);
 
         try
         {
@@ -482,11 +484,7 @@ public partial class MainWindow : Window
 
     private void AlphaThresholdOnTextChanging(object? sender, TextChangingEventArgs e)
     {
-        if (AlphaThresholdElement.Text == null) return;
-        AlphaThresholdElement.Text = _numberRegex.Replace(AlphaThresholdElement.Text, "");
-        e.Handled = true;
-
-        if (AlphaThresholdElement.Text.Length < 1) return;
+        HandleTextChange(e);
 
         try
         {
@@ -496,15 +494,6 @@ public partial class MainWindow : Window
         {
             _alphaThresh = 127;
         }
-    }
-
-    private void HandleTextChange(TextBox obj, TextChangingEventArgs e)
-    {
-        if (obj.Text == null) return;
-        obj.Text = _numberRegex.Replace(obj.Text, "");
-        e.Handled = true;
-
-        if (obj.Text.Length < 1) return;
     }
 
     private void FreeDrawCheckboxOnClick(object? sender, RoutedEventArgs e)
@@ -542,26 +531,6 @@ public partial class MainWindow : Window
         {
             Utils.Log("Error with PasteControl(): " + ex);
         }
-    }
-    
-    private void HorizontalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
-    {
-        HandleTextChange(HorizontalFilterText,e);
-    }
-
-    private void VerticalFilterTextOnTextChanging(object? sender, TextChangingEventArgs e)
-    {
-        HandleTextChange(VerticalFilterText,e);
-    }
-    
-    private void ErosionAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
-    {
-        HandleTextChange(ErosionAdvancedText, e);
-    }
-
-    private void OutlineAdvancedTextOnTextChanging(object? sender, TextChangingEventArgs e)
-    {
-        HandleTextChange(OutlineAdvancedText, e);
     }
     
     public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)

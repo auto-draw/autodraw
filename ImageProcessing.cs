@@ -139,25 +139,45 @@ public static class ImageProcessing
         return filters.Crosshatch || filters.DiagCrosshatch;
     }
 
-    private static unsafe SKBitmap GeneratePattern(decimal Horizontal, decimal Vertical)
+    private static unsafe SKBitmap GenerateBorder(int thickness, int width, int height)
     {
-        SKBitmap patternBitmap = new SKBitmap(Math.Max((int)Vertical,1), Math.Max((int)Horizontal,1));
+        // Could move this to SkiaSharp SKPaint stuff but nahhh.
         
-        var srcPtr = (byte*)patternBitmap.GetPixels().ToPointer();
-
-        var width = patternBitmap.Width;
-        var height = patternBitmap.Height;
+        SKBitmap borderBitmap = new SKBitmap(width, height);
+        
+        var srcPtr = (byte*)borderBitmap.GetPixels().ToPointer();
 
         for (var y = 0; y < height; y++)
         for (var x = 0; x < width; x++)
         {
             byte returnByte = 255;
-            if (Horizontal > 0) // Horizontal Stripes
-                if (y % Horizontal == 0)
+            if (x < thickness || x >= width - thickness ||
+                y < thickness || y >= height - thickness) returnByte = 0;
+            
+            *srcPtr++ = returnByte;
+            *srcPtr++ = returnByte;
+            *srcPtr++ = returnByte;
+            *srcPtr++ = 255;
+        }
+
+        return borderBitmap;
+    }
+
+    private static unsafe SKBitmap GeneratePattern(decimal horizontal, decimal vertical, int width, int height)
+    {
+        SKBitmap patternBitmap = new SKBitmap(width, height);
+        
+        var srcPtr = (byte*)patternBitmap.GetPixels().ToPointer();
+
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++)
+        {
+            byte returnByte = 255;
+            if (horizontal > 0)
+                if (y % horizontal == 0)
                     returnByte = 0;
-            //*/
-            if (Vertical > 0) // Vertical Stripes
-                if (x % Vertical == 0)
+            if (vertical > 0)
+                if (x % vertical == 0)
                     returnByte = 0;
             
             *srcPtr++ = returnByte;
@@ -210,6 +230,18 @@ public static class ImageProcessing
             *returnPtr++ = MakePixel(returnByte, returnByte, returnByte, 255);
         }
         
+        var invert = new float[20] {
+            -1f, 0f,  0f,  0f,  1f,
+            0f,  -1f, 0f,  0f,  1f,
+            0f,  0f,  -1f, 0f,  1f,
+            0f,  0f,  0f,  1f,  0f
+        };
+        
+        SKImage InvertImage(SKImage image)
+        {
+            return image.ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
+        }
+
         var OutImage = SKImage.FromBitmap(outputBitmap);
         if (filterSettings.ErosionAdvanced > 0)
         {
@@ -222,70 +254,76 @@ public static class ImageProcessing
             );
             OutImage = OutImageAnti;
         }
-
-        if (filterSettings.OutlineAdvanced > 0)
+        
+        if (filterSettings.InlineAdvanced > 0 || filterSettings.InlineBorderAdvanced > 0 || filterSettings.OutlineAdvanced > 0 ||
+            filterSettings.HorizontalLines > 0 || filterSettings.VerticalLines > 0 || filterSettings.BorderAdvanced > 0)
         {
-            var invert = new float[20] {
-                -1f, 0f,  0f,  0f,  1f,
-                0f,  -1f, 0f,  0f,  1f,
-                0f,  0f,  -1f, 0f,  1f,
-                0f,  0f,  0f,  1f,  0f
-            };
-            
-            SKImage OutImageInvert = OutImage.ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);
-
-            
             SKImageInfo imageInfo = new SKImageInfo(OutImage.Width, OutImage.Height);
-            using SKSurface surface = SKSurface.Create(imageInfo);
+            using SKSurface primarySurface = SKSurface.Create(imageInfo);
             
-            SKPaint dilatePaint = new SKPaint();
-            dilatePaint.ImageFilter = SKImageFilter.CreateDilate(filterSettings.OutlineAdvanced, filterSettings.OutlineAdvanced);
-            SKPaint lightenPaint = new SKPaint
+            SKPaint lightenPaint = new SKPaint();
+            lightenPaint.BlendMode = SKBlendMode.Lighten;
+            SKPaint darkenPaint = new SKPaint();
+            darkenPaint.BlendMode = SKBlendMode.Darken;
+
+            bool hasAppliedAnother = false;
+
+            if (filterSettings.InlineAdvanced > 0)
             {
-                BlendMode = SKBlendMode.Darken
-            };
-
-            surface.Canvas.DrawImage(OutImage, 0, 0, dilatePaint);
-            surface.Canvas.DrawImage(OutImageInvert, 0, 0, lightenPaint);
-
-            SKImage MergeImage = surface.Snapshot().ApplyImageFilter(SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(invert)), new SKRectI(0, 0, width, height), new SKRectI(0, 0, width, height), out _, out SKPoint _);;
-            OutImage = MergeImage;
-        }
-        if (filterSettings.HorizontalLines > 0 || filterSettings.VerticalLines > 0)
-        {
-            filterSettings.HorizontalLines = Math.Min(4096, filterSettings.HorizontalLines);
-            filterSettings.VerticalLines = Math.Min(4096, filterSettings.VerticalLines);
-            
-            SKBitmap patternBitmap = GeneratePattern(filterSettings.HorizontalLines, filterSettings.VerticalLines);
-            SKImageInfo imageInfo = new SKImageInfo(OutImage.Width, OutImage.Height);
-            
-            using SKSurface surface = SKSurface.Create(imageInfo);
-
-            SKCanvas canvas = surface.Canvas;
-
-            for (int i = 0; i < OutImage.Width; i += patternBitmap.Width)
-            {
-                for (int j = 0; j < OutImage.Height; j += patternBitmap.Height)
-                {
-                    canvas.DrawBitmap(patternBitmap, i, j);
-                }
+                using SKPaint inlinePaint = new SKPaint();
+                inlinePaint.ImageFilter = SKImageFilter.CreateDilate(filterSettings.InlineAdvanced, filterSettings.InlineAdvanced);
+                primarySurface.Canvas.DrawImage(OutImage, 0, 0, inlinePaint);
+                primarySurface.Canvas.DrawImage(InvertImage(primarySurface.Snapshot()), 0, 0);
+                primarySurface.Canvas.DrawImage(OutImage, 0, 0, lightenPaint);
+                hasAppliedAnother = true;
             }
 
-            SKImage finalImage = surface.Snapshot();
-            
-            SKBitmap bitmap = new SKBitmap(width, height);
-            SKCanvas mixCanvas = new SKCanvas(bitmap);
-
-            SKPaint lightenPaint = new SKPaint
+            if (filterSettings.OutlineAdvanced > 0)
             {
-                BlendMode = SKBlendMode.Lighten
-            };
+                using SKPaint outlinePaint = new SKPaint();
+                outlinePaint.ImageFilter = SKImageFilter.CreateDilate(filterSettings.OutlineAdvanced, filterSettings.OutlineAdvanced);
+                using SKSurface secondarySurface = SKSurface.Create(imageInfo);
+                secondarySurface.Canvas.DrawImage(InvertImage(OutImage), 0, 0, outlinePaint);
+                secondarySurface.Canvas.DrawImage(InvertImage(secondarySurface.Snapshot()),0,0);
+                secondarySurface.Canvas.DrawImage(InvertImage(OutImage),0,0,lightenPaint);
+                primarySurface.Canvas.DrawImage(secondarySurface.Snapshot(),0,0,darkenPaint);
+                hasAppliedAnother = true;
+            }
 
-            mixCanvas.DrawImage(finalImage, 0, 0);
-    
-            mixCanvas.DrawImage(OutImage, 0, 0, lightenPaint);
+            if (filterSettings.InlineBorderAdvanced > 0)
+            {
+                using SKSurface secondarySurface = SKSurface.Create(imageInfo);
+                secondarySurface.Canvas.DrawImage(OutImage, 0, 0);
+                secondarySurface.Canvas.DrawImage(SKImage.FromBitmap(GenerateBorder(filterSettings.InlineBorderAdvanced, width, height)),0,0,lightenPaint);
+                primarySurface.Canvas.DrawImage(secondarySurface.Snapshot(),0,0,darkenPaint);
+                hasAppliedAnother = true;
+            }
 
-            SKImage MergeImage = SKImage.FromBitmap(bitmap);
+            if (filterSettings.HorizontalLines > 0 || filterSettings.VerticalLines > 0)
+            {
+                filterSettings.HorizontalLines = Math.Min(4096, filterSettings.HorizontalLines);
+                filterSettings.VerticalLines = Math.Min(4096, filterSettings.VerticalLines);
+                
+                SKBitmap patternBitmap = GeneratePattern(filterSettings.HorizontalLines, filterSettings.VerticalLines, width, height);
+                using SKSurface secondarySurface = SKSurface.Create(imageInfo);
+                
+                secondarySurface.Canvas.DrawBitmap(patternBitmap, 0, 0);
+                secondarySurface.Canvas.DrawImage(OutImage, 0, 0, lightenPaint);
+                
+                primarySurface.Canvas.DrawImage(secondarySurface.Snapshot(),0,0,darkenPaint);
+                hasAppliedAnother = true;
+            }
+
+            if (filterSettings.BorderAdvanced > 0)
+            {
+                if(!hasAppliedAnother)
+                {
+                    primarySurface.Canvas.DrawImage(OutImage,0,0);
+                }
+                primarySurface.Canvas.DrawImage(SKImage.FromBitmap(GenerateBorder(filterSettings.BorderAdvanced, width, height)),0,0,darkenPaint);
+            }
+
+            SKImage MergeImage = primarySurface.Snapshot();
             OutImage = MergeImage;
         }
         
@@ -366,8 +404,11 @@ public static class ImageProcessing
         public bool Invert = false;
         public bool Outline = false;
 
-        public int ErosionAdvanced = 0;
+        public int BorderAdvanced = 5;
         public int OutlineAdvanced = 0;
+        public int InlineAdvanced = 0;
+        public int InlineBorderAdvanced = 0;
+        public int ErosionAdvanced = 0;
     }
 
     public class Pattern
