@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -39,6 +42,7 @@ public partial class Settings : Window
         ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
         MarketplaceButton.Click += (sender, e) => OpenMenu("MarketplaceUI");
         DevButton.Click += (sender, e) => OpenMenu("Developers");
+        LicensesButton.Click += (sender, e) => OpenMenu("Licenses");
 
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
@@ -268,8 +272,14 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 
     private void OpenMenu(string menu)
     {
+        if (menu == "Licenses")
+        {
+            using var resource = AssetLoader.Open(new Uri(@"avares://Autodraw/Assets/LICENSES.txt"));
+            using var reader = new StreamReader(resource);
+            LicenseText.Text = reader.ReadToEnd();
+        }
         var myControl = this.FindControl<Control>(menu);
-        DeactivateItem(new List<string> { "General", "Themes", "MarketplaceUI", "Developers" });
+        DeactivateItem(new List<string> { "General", "Themes", "MarketplaceUI", "Developers", "Licenses" });
         if (myControl == null) return;
         myControl.Opacity = 1;
         myControl.IsHitTestVisible = true;

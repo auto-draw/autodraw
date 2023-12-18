@@ -48,6 +48,7 @@
             </StackPanel>
 
             <!-- Dear gz9, why is this in Toolbar Decorations (I'm dumb but it seems wrong :3) -->
+            <!-- Dear Siydge, it's so that I can register the keybind CTRL+C within the app -->
             <Menu>
                 <MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
                     <MenuItem x:Name="PasteImage" Header="_Paste Image"

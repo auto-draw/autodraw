@@ -123,7 +123,7 @@ public class App : Application
 
                 var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
                     TextInput
-                );
+                ); 
                 Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
                 Current.Styles.Remove(Current.Styles[4]);
                 Current.Styles.Add(Resource);

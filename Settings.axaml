@@ -86,6 +86,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="2" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Button Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,2,5,0" HorizontalContentAlignment="Center"
                         Name="GeneralMenuButton">
@@ -96,10 +98,14 @@
                     Themes
                 </Button>
                 <Button Grid.Row="10" HorizontalAlignment="Stretch" Margin="5,0,5,0"
+                        HorizontalContentAlignment="Center" Name="LicensesButton" VerticalAlignment="Bottom">
+                    Licenses
+                </Button>
+                <Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,0"
                         HorizontalContentAlignment="Center" Name="MarketplaceButton" VerticalAlignment="Bottom">
                     Marketplace
                 </Button>
-                <Button Grid.Row="12" HorizontalAlignment="Stretch" Margin="5,0,5,5"
+                <Button Grid.Row="14" HorizontalAlignment="Stretch" Margin="5,0,5,5"
                         HorizontalContentAlignment="Center" Name="DevButton" VerticalAlignment="Bottom">
                     Dev. options
                 </Button>
@@ -230,6 +236,17 @@
                 <TextBlock Grid.Row="8" FontSize="14" HorizontalAlignment="Right">platform.openai.com/api-keys</TextBlock>
                 <TextBox Grid.Row="6" Name="OpenAiKey" />
                 <Button Grid.Row="8" Name="SaveOpenAiKey">Save</Button>
+            </Grid>
+            <Grid Name="Licenses" Grid.Column="3" Grid.Row="3" Opacity="0" IsHitTestVisible="False">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="QuinticEaseInOut" />
+                    </Transitions>
+                </Grid.Transitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBox Name="LicenseText" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" FontSize="14"/>
             </Grid>
         </Grid>
     </Grid>
