@@ -43,10 +43,12 @@ public partial class Settings : Window
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
         ShowPopup.IsCheckedChanged += ShowPopup_IsCheckedChanged;
+        NoRescan.IsCheckedChanged += NoRescanOnIsCheckedChanged;
         LogFile.IsCheckedChanged += LogFile_IsCheckedChanged;
 
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
+        NoRescan.IsChecked = Drawing.NoRescan;
         LogFile.IsChecked = Config.getEntry("logsEnabled") == "True";
 
         // DALL-E API Keys
@@ -224,6 +226,12 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
     {
         if (AltMouseControl.IsChecked == null) return;
         Input.forceUio = (bool)AltMouseControl.IsChecked;
+    }
+
+    private void NoRescanOnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (NoRescan.IsChecked == null) return;
+        Drawing.NoRescan = (bool)NoRescan.IsChecked;
     }
 
     private void LogFile_IsCheckedChanged(object? sender, RoutedEventArgs e)

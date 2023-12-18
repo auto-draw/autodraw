@@ -23,6 +23,8 @@ public static class Drawing
     
     // Variables
 
+    public static bool NoRescan = false;
+    
     public static int PathValue = 12345678;
 
     public static int Interval = 10000;
@@ -98,13 +100,22 @@ public static class Drawing
 
         static void KeybindPress(object? sender, KeyboardHookEventArgs e)
         {
-            if (e.Data.KeyCode == KeyCode.VcBackspace) SkipRescan = true;
+            if (e.Data.KeyCode == KeyCode.VcBackspace)
+            {
+                if (NoRescan) return;
+                SkipRescan = true;
+            }
         }
 
         static void KeybindRelease(object? sender, KeyboardHookEventArgs e)
         {
             if (e.Data.KeyCode == KeyCode.VcLeftAlt) Halt();
-            if (e.Data.KeyCode == KeyCode.VcBackspace) SkipRescan = false;
+            if (e.Data.KeyCode == KeyCode.VcBackspace)
+            {
+                if (NoRescan) return;
+                SkipRescan = false;
+            }
+
             if (e.Data.KeyCode == KeyCode.VcBackslash) IsPaused = !IsPaused;
         }
 
@@ -181,6 +192,7 @@ public static class Drawing
 
     private static async Task<bool> DrawArea(int _x, int _y, Pos startPos, Pos size)
     {
+        SkipRescan = NoRescan;
         ArrayList stack = new();
 
         var distanceSinceLastClick = 0;
@@ -216,9 +228,9 @@ public static class Drawing
             {
                 IsSkipping = false;
                 Input.SendClickUp(Input.MouseTypes.MouseLeft);
-                await NOP(Interval * 3);
+                await NOP(ClickDelay * 5000);
                 Input.MoveTo(x, y);
-                await NOP(Interval * 3);
+                await NOP(ClickDelay * 5000);
                 Input.SendClickDown(Input.MouseTypes.MouseLeft);
             }
 
