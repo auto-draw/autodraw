@@ -127,9 +127,13 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 
         //  TextEditor Output
         var _textEditor2 = this.FindControl<TextEditor>("ThemeOutput");
+        var _textEditor3 = this.FindControl<TextEditor>("LicenseText");
         var _registryOptions2 = new RegistryOptions(ThemeName.DarkPlus);
         var _textMateInstallation2 = _textEditor2.InstallTextMate(_registryOptions2);
         _textMateInstallation2.SetGrammar(
+            _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
+        var _textMateInstallation3 = _textEditor3.InstallTextMate(_registryOptions2);
+        _textMateInstallation3.SetGrammar(
             _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
 
         //  Interactions

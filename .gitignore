@@ -374,3 +374,4 @@ Release/
 **/Release/
 .vs/
 Builds/
+.idea/.idea.Autodraw/.idea/avalonia.xml

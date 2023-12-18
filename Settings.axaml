@@ -244,9 +244,9 @@
                     </Transitions>
                 </Grid.Transitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBox Name="LicenseText" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" FontSize="14"/>
+                <AvaloniaEdit:TextEditor Name="LicenseText" WordWrap="True" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" FontSize="14"/>
             </Grid>
         </Grid>
     </Grid>
