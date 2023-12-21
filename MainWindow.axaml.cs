@@ -120,6 +120,8 @@ public partial class MainWindow : Window
     {
         _devwindow?.Close();
         _settings?.Close();
+        // Object reference not set to an instance of an object.
+        //Utils.LogObject.Close();
         Input.Stop();
         Drawing.Halt();
     }

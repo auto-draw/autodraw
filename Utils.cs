@@ -83,15 +83,20 @@ public class Config
 
 public class Utils
 {
-    public static string LogsPath = Path.Combine(Config.FolderPath, "logs");
-    public static bool LoggingEnabled = Config.getEntry("logsEnabled") != "True";
+    public static string LogsPath = Path.Combine(Config.FolderPath, "logs", $"{DateTime.Now:dd.MM.yyyy}.txt");
+    public static bool LoggingEnabled = Config.getEntry("logsEnabled") == "True";
+    public static StreamWriter LogObject = null;
 
     public static void Log(string text)
     {
         Debug.WriteLine(text);
-        if (LoggingEnabled) return;
-        Directory.CreateDirectory(LogsPath);
-        File.AppendAllText(Path.Combine(LogsPath, $"{DateTime.Now:dd.MM.yyyy}.txt"), $"{text}\r\n");
+        if (!LoggingEnabled) return;
+        if (LogObject == null) LogObject = new StreamWriter(LogsPath);
+        LogObject.WriteLine(text);
+        // The code below writes to the file. 
+        // I know this isn't *effecient*, but I am tired and Siydge isn't responding
+        // - gz9 (21/12/23 11:16)
+        LogObject.Flush();
     }
 
     public static void Copy(string sourceDirectory, string targetDirectory)
