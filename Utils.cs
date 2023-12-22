@@ -93,9 +93,6 @@ public class Utils
         if (!LoggingEnabled) return;
         if (LogObject == null) LogObject = new StreamWriter(LogsPath);
         LogObject.WriteLine(text);
-        // The code below writes to the file. 
-        // I know this isn't *effecient*, but I am tired and Siydge isn't responding
-        // - gz9 (21/12/23 11:16)
         LogObject.Flush();
     }
 
