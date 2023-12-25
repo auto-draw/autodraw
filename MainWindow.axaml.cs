@@ -1,9 +1,11 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -43,6 +45,12 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         this.AttachDevTools();
+        
+        // Set language to user-specified language 
+        var installedLanguage = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage );
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage);
+        Utils.Log(installedLanguage);
 
         InitializeComponent();
 
@@ -194,8 +202,7 @@ public partial class MainWindow : Window
     {
         _settings = null;
     }
-
-
+    
     private void OpenDevWindow()
     {
         _devwindow ??= new DevTest();
@@ -550,7 +557,7 @@ public partial class MainWindow : Window
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) return;
         var lines = File.ReadAllLines(path);
-        SelectedConfigLabel.Content = $"Selected Config: {Path.GetFileNameWithoutExtension(path)}";
+        SelectedConfigLabel.Content = $"{Properties.Resources.ConfigSelected} - {Path.GetFileNameWithoutExtension(path)}";
 
         DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
 

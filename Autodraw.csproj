@@ -122,6 +122,9 @@
         <EmbeddedResource Include="Styles\Landscape\landscape.jpg">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.en-au.resx">
+          <DependentUpon>Resources.resx</DependentUpon>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -146,7 +149,7 @@
 
     <ItemGroup>
         <EmbeddedResource Update="Properties\Resources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
+            <Generator>PublicResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>

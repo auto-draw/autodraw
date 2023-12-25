@@ -100,7 +100,6 @@ public class Utils
     {
         var diSource = new DirectoryInfo(sourceDirectory);
         var diTarget = new DirectoryInfo(targetDirectory);
-
         CopyAll(diSource, diTarget);
     }
 

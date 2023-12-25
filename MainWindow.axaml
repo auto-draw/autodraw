@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:assets="clr-namespace:Autodraw.Properties"
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
         x:Name="AutoDraw"
 
@@ -14,7 +15,7 @@
         MinWidth="720"
         MinHeight="420"
         WindowStartupLocation="CenterScreen"
-
+        
         Title="AutoDraw"
 
         ExtendClientAreaToDecorationsHint="True"
@@ -34,12 +35,9 @@
             <!--Decorations-->
             <StackPanel Classes="Toolbar" Orientation="Horizontal">
                 <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20"
-                       VerticalContentAlignment="Center">
-                    AutoDraw Open Beta -
-                </Label>
+                       VerticalContentAlignment="Center" Content="{x:Static assets:Resources.AutoDrawTitle}"/>
                 <Button Classes="Title" Name="DevButton" Margin="2 0 0 0" Padding="0" Background="Transparent"
-                        Height="18" VerticalContentAlignment="Center" FontSize="12">
-                    v2
+                        Height="18" VerticalContentAlignment="Center" FontSize="12" Content="{x:Static assets:Resources.AutoDrawVersion}">
                 </Button>
                 <Button Name="SettingsButton" Margin="2 0 0 0" Padding="0" Background="Transparent" Height="18"
                         VerticalContentAlignment="Center">
@@ -96,30 +94,30 @@
                         TickFrequency="1" Padding="8 0 8 0" />
                 <Grid Grid.Row="2" Margin="12 0" ColumnDefinitions="2*,*,1.5*,*,2*">
 
-                    <TextBox Grid.Column="0" Name="WidthInput" FontSize="14" CornerRadius="4" Text="318" Watermark="Width"
-                             HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Column="2" Name="PercentageNumber" FontSize="14" CornerRadius="4" Text="100%" Watermark="Scale"
-                             HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Column="4" Name="HeightInput" FontSize="14" CornerRadius="4" Text="318" Watermark="Height" 
-                             HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Column="0" Name="WidthInput" FontSize="14" CornerRadius="4" Text="318" 
+                             Watermark="{x:Static assets:Resources.Width}" HorizontalContentAlignment="Center" />
+                    <TextBox Grid.Column="2" Name="PercentageNumber" FontSize="14" CornerRadius="4" Text="100%" 
+                             Watermark="{x:Static assets:Resources.Scale}" HorizontalContentAlignment="Center" />
+                    <TextBox Grid.Column="4" Name="HeightInput" FontSize="14" CornerRadius="4" Text="318" 
+                             Watermark="{x:Static assets:Resources.Height}" HorizontalContentAlignment="Center"/>
                 </Grid>
             </Grid>
             
             <Border BorderBrush="#5000" BorderThickness="1" Grid.Row="0" Grid.Column="2" CornerRadius="2"/>
             <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="0">
-                <TabItem Header="General">
+                <TabItem Header="{x:Static assets:Resources.MainTab1}">
                     <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
                         <Border Background="#4000" CornerRadius="4" Grid.RowSpan="4"  Grid.ColumnSpan="3"/>
                         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center">
                             <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
-                            <Label FontSize="16">Interval</Label>
+                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralInterval}"/>
                             <TextBox Name="DrawIntervalElement" Margin="4 4" CornerRadius="2">
                                 7500
                             </TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
                             <ToolTip.Tip>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</ToolTip.Tip>
-                            <Label FontSize="16">Click Delay</Label>
+                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralCD}"/>
                             <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2">
                                 600
                             </TextBox>
@@ -128,15 +126,15 @@
                               RowDefinitions="Auto,*"
                               ColumnDefinitions="*,8,*">
                             <ToolTip.Tip>This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16">Luminance Threshold</Label>
+                            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Content="{x:Static assets:Resources.GeneralLT}"/>
                             <StackPanel Grid.Row="1" Grid.Column="0">
-                                <Label FontSize="14" HorizontalAlignment="Center">Minimum</Label>
+                                <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Minimum}"/>
                                 <TextBox Name="minBlackThresholdElement" Margin="4 4" CornerRadius="2">
                                     0
                                 </TextBox>
                             </StackPanel>
                             <StackPanel Grid.Row="1" Grid.Column="2">
-                                <Label FontSize="14" HorizontalAlignment="Center">Maximum</Label>
+                                <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Maximum}"/>
                                 <TextBox Name="maxBlackThresholdElement" Margin="4 4" CornerRadius="2">
                                     127
                                 </TextBox>
@@ -144,80 +142,64 @@
                         </Grid>
                         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center">
                             <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label FontSize="16">Alpha Threshold</Label>
+                            <Label FontSize="16" Content="{x:Static assets:Resources.GeneralAT}"/>
                             <TextBox Name="AlphaThresholdElement" Margin="4 4" CornerRadius="2">
                                 127
                             </TextBox>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center">
                             <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label FontSize="16">Draw Pattern</Label>
+                            <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDP}"/>
                             <ComboBox Name="PatternSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
-                                <ComboBoxItem>Horizontal</ComboBoxItem>
-                                <ComboBoxItem>Vertical</ComboBoxItem>
-                                <ComboBoxItem>Diagonal</ComboBoxItem>
+                                <ComboBoxItem Content="{x:Static assets:Resources.DPH}"/>
+                                <ComboBoxItem Content="{x:Static assets:Resources.DPV}"/>
+                                <ComboBoxItem Content="{x:Static assets:Resources.DPD}"/>
                             </ComboBox>
                         </StackPanel>
-                        <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0">
-                            Free Draw Bypass
-                        </CheckBox>
+                        <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0" Content="{x:Static assets:Resources.FDBypass}" />
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="Filters">
+                <TabItem Header="{x:Static assets:Resources.MainTab2}">
                     <Grid>
                         <Border Background="#4000" CornerRadius="4"/>
                         <ScrollViewer>
                             <StackPanel Orientation="Vertical">
-                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Medium">General Filters</Label>
-                                <CheckBox Name="InvertFilterCheck" Classes="FilterItem">Invert</CheckBox>
-                                <CheckBox Name="OutlineFilterCheck" Classes="FilterItem">Outline</CheckBox>
+                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Medium" Content="{x:Static assets:Resources.FiltersGeneral}"/>
+                                <CheckBox Name="InvertFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Invert}"/>
+                                <CheckBox Name="OutlineFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Outline}"/>
                                 <Separator/>
-                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Medium">Pattern Filters</Label>
-                                <CheckBox Name="CrosshatchFilterCheck" Classes="FilterItem">Crosshatch</CheckBox>
-                                <CheckBox Name="DiagCrossFilterCheck" Classes="FilterItem">Diagonal Crosshatch</CheckBox>
+                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Medium" Content="{x:Static assets:Resources.FiltersPattern}"/>
+                                <CheckBox Name="CrosshatchFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Crosshatch}"/>
+                                <CheckBox Name="DiagCrossFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Dcrosshatch}"/>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Horizontal Stripes:
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.Hstripes}"/>
                                     <TextBox Name="HorizontalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Vertical Stripes:
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.Vstripes}"/>
                                     <TextBox Name="VerticalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Separator/>
-                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontWeight="Medium">Experimental Filters</Label>
+                                <Label HorizontalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontWeight="Medium" Content="{x:Static assets:Resources.FiltersExperimental}"/>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Border (Semi-Shader):
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.BSS}"/>
                                     <TextBox Name="BorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Outline (Shader):
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.OS}"/>
                                     <TextBox Name="OutlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Inline (Shader):
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.IS}"/>
                                     <TextBox Name="InlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Inline Border (Semi-Shader):
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.IBSS}"/>
                                     <TextBox Name="InlineBorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0">
-                                        Erosion (Shader):
-                                    </Label>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.ES}"/>
                                     <TextBox Name="ErosionAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                             </StackPanel>
@@ -225,7 +207,7 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="Configs">
+                <TabItem Header="{x:Static assets:Resources.MainTab3}">
                     <Panel>
                         <Border Background="#4000" CornerRadius="4"/>
                         <Grid Margin="4">
@@ -258,11 +240,9 @@
                                 <Button Name="OpenConfigElement" Classes="NoOutline" Grid.Column="6" CornerRadius="2" Padding="2">
                                     <Image Source="avares://Autodraw/Assets/open-doc.png"/>
                                 </Button>
-                                <Button Name="LoadSelectButton" Classes="NoOutline" Grid.Column="8" CornerRadius="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                                    Load Config
-                                </Button>
+                                <Button Name="LoadSelectButton" Classes="NoOutline" Grid.Column="8" CornerRadius="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="{x:Static assets:Resources.ConfigLoad}"/>
                             </Grid>
-                            <Label Grid.Row="1" Name="SelectedConfigLabel" Padding="0 8" HorizontalContentAlignment="Center">Selected Config: None</Label>
+                            <Label Grid.Row="1" Name="SelectedConfigLabel" Padding="0 8" HorizontalContentAlignment="Center" Content="{x:Static assets:Resources.ConfigSelected}"/>
                             <ListBox Name="ConfigsListBox" Grid.Row="2" CornerRadius="4">
                                 
                             </ListBox>
@@ -270,7 +250,7 @@
                     </Panel>
                 </TabItem>
                 
-                <TabItem Header="Images">
+                <TabItem Header="{x:Static assets:Resources.MainTab4}">
                     
                 </TabItem>
             </TabControl>
@@ -286,12 +266,8 @@
                 <Button Name="OpenButton" Grid.Column="0" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Padding="0">
                     <Image Source="avares://Autodraw/Assets/add-image.png"/>
                 </Button>
-                <Button Name="ProcessButton" Grid.Column="2" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4">
-                    Process Image
-                </Button>
-                <Button Name="RunButton" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4">
-                    Begin Drawing
-                </Button>
+                <Button Name="ProcessButton" Grid.Column="2" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Content="{x:Static assets:Resources.ProcessIMG}"/>
+                <Button Name="RunButton" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Content="{x:Static assets:Resources.BeginDraw}"/>
             </Grid>
         </Grid>
     </Grid>

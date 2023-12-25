@@ -21,7 +21,7 @@ namespace Autodraw.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace Autodraw.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autodraw.Properties.Resources", typeof(Resources).Assembly);
@@ -50,12 +50,579 @@ namespace Autodraw.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AutoDraw Open Beta.
+        /// </summary>
+        public static string AutoDrawTitle {
+            get {
+                return ResourceManager.GetString("AutoDrawTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to v2.0.1.
+        /// </summary>
+        public static string AutoDrawVersion {
+            get {
+                return ResourceManager.GetString("AutoDrawVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begin Drawing.
+        /// </summary>
+        public static string BeginDraw {
+            get {
+                return ResourceManager.GetString("BeginDraw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Border (Semi-Shader).
+        /// </summary>
+        public static string BSS {
+            get {
+                return ResourceManager.GetString("BSS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Config.
+        /// </summary>
+        public static string ConfigLoad {
+            get {
+                return ResourceManager.GetString("ConfigLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Config.
+        /// </summary>
+        public static string ConfigSelected {
+            get {
+                return ResourceManager.GetString("ConfigSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crosshatch.
+        /// </summary>
+        public static string Crosshatch {
+            get {
+                return ResourceManager.GetString("Crosshatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diagonal Crosshatch.
+        /// </summary>
+        public static string Dcrosshatch {
+            get {
+                return ResourceManager.GetString("Dcrosshatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diagonal.
+        /// </summary>
+        public static string DPD {
+            get {
+                return ResourceManager.GetString("DPD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal.
+        /// </summary>
+        public static string DPH {
+            get {
+                return ResourceManager.GetString("DPH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical.
+        /// </summary>
+        public static string DPV {
+            get {
+                return ResourceManager.GetString("DPV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Erosion (Shader).
+        /// </summary>
+        public static string ES {
+            get {
+                return ResourceManager.GetString("ES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Draw Bypass.
+        /// </summary>
+        public static string FDBypass {
+            get {
+                return ResourceManager.GetString("FDBypass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string Files1 {
+            get {
+                return ResourceManager.GetString("Files1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string Files2 {
+            get {
+                return ResourceManager.GetString("Files2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Files3 {
+            get {
+                return ResourceManager.GetString("Files3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental Filters.
+        /// </summary>
+        public static string FiltersExperimental {
+            get {
+                return ResourceManager.GetString("FiltersExperimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General Filters.
+        /// </summary>
+        public static string FiltersGeneral {
+            get {
+                return ResourceManager.GetString("FiltersGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pattern Filters.
+        /// </summary>
+        public static string FiltersPattern {
+            get {
+                return ResourceManager.GetString("FiltersPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alpha Threshold.
+        /// </summary>
+        public static string GeneralAT {
+            get {
+                return ResourceManager.GetString("GeneralAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click Delay.
+        /// </summary>
+        public static string GeneralCD {
+            get {
+                return ResourceManager.GetString("GeneralCD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Draw Pattern.
+        /// </summary>
+        public static string GeneralDP {
+            get {
+                return ResourceManager.GetString("GeneralDP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is incomplete, some functions here may not work..
+        /// </summary>
+        public static string GeneralInfo1 {
+            get {
+                return ResourceManager.GetString("GeneralInfo1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interval.
+        /// </summary>
+        public static string GeneralInterval {
+            get {
+                return ResourceManager.GetString("GeneralInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Luminance Threshold.
+        /// </summary>
+        public static string GeneralLT {
+            get {
+                return ResourceManager.GetString("GeneralLT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alternate Mouse Control (Buggy).
+        /// </summary>
+        public static string GeneralSwitch1 {
+            get {
+                return ResourceManager.GetString("GeneralSwitch1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Finished Drawing Popup.
+        /// </summary>
+        public static string GeneralSwitch2 {
+            get {
+                return ResourceManager.GetString("GeneralSwitch2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Log files.
+        /// </summary>
+        public static string GeneralSwitch3 {
+            get {
+                return ResourceManager.GetString("GeneralSwitch3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-Skip Rescan.
+        /// </summary>
+        public static string GeneralSwitch4 {
+            get {
+                return ResourceManager.GetString("GeneralSwitch4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height.
+        /// </summary>
+        public static string Height {
+            get {
+                return ResourceManager.GetString("Height", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal Stripes.
+        /// </summary>
+        public static string Hstripes {
+            get {
+                return ResourceManager.GetString("Hstripes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inline Border (Semi-Shader).
+        /// </summary>
+        public static string IBSS {
+            get {
+                return ResourceManager.GetString("IBSS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invert.
+        /// </summary>
+        public static string Invert {
+            get {
+                return ResourceManager.GetString("Invert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inline (Shader).
+        /// </summary>
+        public static string IS {
+            get {
+                return ResourceManager.GetString("IS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string MainTab1 {
+            get {
+                return ResourceManager.GetString("MainTab1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filters.
+        /// </summary>
+        public static string MainTab2 {
+            get {
+                return ResourceManager.GetString("MainTab2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configs.
+        /// </summary>
+        public static string MainTab3 {
+            get {
+                return ResourceManager.GetString("MainTab3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Images.
+        /// </summary>
+        public static string MainTab4 {
+            get {
+                return ResourceManager.GetString("MainTab4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum.
+        /// </summary>
+        public static string Maximum {
+            get {
+                return ResourceManager.GetString("Maximum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum.
+        /// </summary>
+        public static string Minimum {
+            get {
+                return ResourceManager.GetString("Minimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OpenAI API Key.
+        /// </summary>
+        public static string OpenAPIKey {
+            get {
+                return ResourceManager.GetString("OpenAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outline (Shader).
+        /// </summary>
+        public static string OS {
+            get {
+                return ResourceManager.GetString("OS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outline.
+        /// </summary>
+        public static string Outline {
+            get {
+                return ResourceManager.GetString("Outline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Process Image.
+        /// </summary>
+        public static string ProcessIMG {
+            get {
+                return ResourceManager.GetString("ProcessIMG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You may want to report this to the developers..
+        /// </summary>
+        public static string ReportDev {
+            get {
+                return ResourceManager.GetString("ReportDev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale.
+        /// </summary>
+        public static string Scale {
+            get {
+                return ResourceManager.GetString("Scale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select your language.
+        /// </summary>
+        public static string SelectLanguage {
+            get {
+                return ResourceManager.GetString("SelectLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string SettingsTab1 {
+            get {
+                return ResourceManager.GetString("SettingsTab1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Themes.
+        /// </summary>
+        public static string SettingsTab2 {
+            get {
+                return ResourceManager.GetString("SettingsTab2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licenses.
+        /// </summary>
+        public static string SettingsTab3 {
+            get {
+                return ResourceManager.GetString("SettingsTab3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Marketplace.
+        /// </summary>
+        public static string SettingsTab4 {
+            get {
+                return ResourceManager.GetString("SettingsTab4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev. Options.
+        /// </summary>
+        public static string SettingsTab5 {
+            get {
+                return ResourceManager.GetString("SettingsTab5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string SettingsTitle {
+            get {
+                return ResourceManager.GetString("SettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dark theme?.
+        /// </summary>
+        public static string ThemeDark {
+            get {
+                return ResourceManager.GetString("ThemeDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load Theme.
+        /// </summary>
+        public static string ThemeLoad {
+            get {
+                return ResourceManager.GetString("ThemeLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dark/Light.
+        /// </summary>
+        public static string ThemeToggle {
+            get {
+                return ResourceManager.GetString("ThemeToggle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds.
+        /// </summary>
+        public static string TT1 {
+            get {
+                return ResourceManager.GetString("TT1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the delay (in ms) which AutoDraw will wait in-between each image chunk..
+        /// </summary>
+        public static string TT2 {
+            get {
+                return ResourceManager.GetString("TT2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255.
+        /// </summary>
+        public static string TT3 {
+            get {
+                return ResourceManager.GetString("TT3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Stripes.
+        /// </summary>
+        public static string Vstripes {
+            get {
+                return ResourceManager.GetString("Vstripes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width.
+        /// </summary>
+        public static string Width {
+            get {
+                return ResourceManager.GetString("Width", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string WordLanguage {
+            get {
+                return ResourceManager.GetString("WordLanguage", resourceCulture);
             }
         }
     }
