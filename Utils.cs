@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia;
@@ -83,7 +84,8 @@ public class Config
 
 public class Utils
 {
-    public static string LogsPath = Path.Combine(Config.FolderPath, "logs", $"{DateTime.Now:dd.MM.yyyy}.txt");
+    public static string LogFolder = Path.Combine(Config.FolderPath, "logs");
+    public static string LogsPath = Path.Combine(LogFolder, $"{DateTime.Now:dd.MM.yyyy}.txt");
     public static bool LoggingEnabled = Config.getEntry("logsEnabled") == "True";
     public static StreamWriter LogObject = null;
 
@@ -91,6 +93,7 @@ public class Utils
     {
         Debug.WriteLine(text);
         if (!LoggingEnabled) return;
+        if (!Directory.Exists(LogFolder)) Directory.CreateDirectory(LogFolder);
         if (LogObject == null) LogObject = new StreamWriter(LogsPath);
         LogObject.WriteLine(text);
         LogObject.Flush();

@@ -18,6 +18,12 @@ public partial class Preview : Window
     public SKBitmap? inputBitmap;
     public long lastMovement;
     public Bitmap? renderedBitmap;
+#if WINDOWS
+    public int MultiplyRate = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop\\WindowMetrics",
+        "AppliedDPI", 96) / 96;
+#else
+    public int MultiplyRate = 1;
+#endif
 
     public Preview()
     {
@@ -42,8 +48,8 @@ public partial class Preview : Window
             Console.WriteLine($"Update at {currUnix}");
             lastMovement = currUnix;
             var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
-            var x = usedPos.X - Width / 2;
-            var y = usedPos.Y - Height / 2;
+            var x = usedPos.X - ((Width / 2) * MultiplyRate);
+            var y = usedPos.Y - ((Height / 2) * MultiplyRate);
             Position = new PixelPoint((int)x, (int)y);
         });
     }
@@ -90,8 +96,8 @@ public partial class Preview : Window
         renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
         PreviewImage.Source = renderedBitmap;
 
-        Width = bitmap.Width;
-        Height = bitmap.Height;
+        Width = (bitmap.Width) / MultiplyRate;
+        Height = (bitmap.Height) / MultiplyRate;
 
         Show();
 
