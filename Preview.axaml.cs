@@ -51,7 +51,7 @@ public partial class Preview : Window
 
     private void Keybind(object? sender, KeyboardHookEventArgs e)
     {
-        if (e.Data.KeyCode == KeyCode.VcLeftShift || e.Data.KeyCode == KeyCode.VcRightShift)
+        if (e.Data.KeyCode == Config.Keybind_StartDrawing)
         {
             if (inputBitmap.IsNull) return;
             Thread drawThread = new(async () =>
@@ -64,7 +64,7 @@ public partial class Preview : Window
             Input.taskHook.KeyReleased -= Keybind;
         }
 
-        if (e.Data.KeyCode == KeyCode.VcLeftAlt || e.Data.KeyCode == KeyCode.VcRightAlt)
+        if (e.Data.KeyCode == Config.Keybind_StopDrawing)
         {
             Dispatcher.UIThread.Invoke(Close);
             Dispatcher.UIThread.Invoke(() =>
@@ -78,7 +78,7 @@ public partial class Preview : Window
             Input.taskHook.KeyReleased -= Keybind;
         }
 
-        if (e.Data.KeyCode == KeyCode.VcLeftControl || e.Data.KeyCode == KeyCode.VcRightControl)
+        if (e.Data.KeyCode == Config.Keybind_LockPreview)
         {
             if (Drawing.LastPos.X == 0 && Drawing.LastPos.Y == 0) Drawing.LastPos = Input.mousePos;
             Drawing.UseLastPos = !Drawing.UseLastPos;

@@ -9,6 +9,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpHook.Native;
 using SkiaSharp;
 
 namespace Autodraw;
@@ -32,8 +33,15 @@ public class Config
     public static string FolderPath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AutoDraw");
 
+    public static KeyCode Keybind_StartDrawing = KeyCode.VcLeftShift;
+    public static KeyCode Keybind_StopDrawing = KeyCode.VcLeftAlt;
+    public static KeyCode Keybind_PauseDrawing = KeyCode.VcBackslash;
+    public static KeyCode Keybind_SkipRescan = KeyCode.VcBackspace;
+    public static KeyCode Keybind_LockPreview = KeyCode.VcLeftControl;
+
     public static string ConfigPath = Path.Combine(FolderPath, "config.json");
     public static string ThemesPath = Path.Combine(FolderPath, "Themes");
+    public static string CachePath = Path.Combine(FolderPath, "Cache");
 
     public static void init()
     {
@@ -52,15 +60,59 @@ public class Config
         }
 
         Utils.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Styles"), ThemesPath);
-        if (getEntry("SavedPath") is null || !Directory.Exists(getEntry("SavedPath")))
+        
+        // Start of Compatability Code, please remove 1 month after release of v2.1, aka during 1st of February.
+        if (getEntry("SavedPath") is not null)
+        {
+            setEntry("SavedThemesPath", getEntry("SavedPath"));
+            setEntry("SavedPath", "");
+        }
+        // End of Compatability Code
+        
+        // Check Configuration Path for Themes.
+        if (getEntry("SavedThemesPath") is null || !Directory.Exists(getEntry("SavedPath")))
         {
             Directory.CreateDirectory(ThemesPath);
-            setEntry("SavedPath", ThemesPath);
+            setEntry("SavedThemesPath", ThemesPath);
         }
         else
         {
-            ThemesPath = getEntry("SavedPath");
+            ThemesPath = getEntry("SavedThemesPath");
         }
+        
+        // Check Configuration Path for Cache.
+        if (getEntry("SavedCachePath") is null || !Directory.Exists(getEntry("SavedPath")))
+        {
+            Directory.CreateDirectory(CachePath);
+            setEntry("SavedCachePath", CachePath);
+        }
+        else
+        {
+            CachePath = getEntry("SavedCachePath");
+        }
+        
+        // Get the Keybinds :P
+        if (getEntry("Keybind_StartDrawing") is not null)
+        {
+            Keybind_StartDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_StartDrawing"));
+        }
+        if (getEntry("Keybind_StopDrawing") is not null)
+        {
+            Keybind_StopDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_StopDrawing"));
+        }
+        if (getEntry("Keybind_PauseDrawing") is not null)
+        {
+            Keybind_PauseDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_PauseDrawing"));
+        }
+        if (getEntry("Keybind_SkipRescan") is not null)
+        {
+            Keybind_SkipRescan = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_SkipRescan"));
+        }
+        if (getEntry("Keybind_LockPreview") is not null)
+        {
+            Keybind_LockPreview = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_LockPreview"));
+        }
+        
     }
 
     public static string? getEntry(string entry)
@@ -87,7 +139,7 @@ public class Utils
     public static string LogFolder = Path.Combine(Config.FolderPath, "logs");
     public static string LogsPath = Path.Combine(LogFolder, $"{DateTime.Now:dd.MM.yyyy}.txt");
     public static bool LoggingEnabled = Config.getEntry("logsEnabled") == "True";
-    public static StreamWriter LogObject = null;
+    public static StreamWriter? LogObject;
 
     public static void Log(string text)
     {
@@ -133,7 +185,7 @@ public class Marketplace
     public static string API = "https://auto-draw.com/api/";
     private static readonly HttpClient client = new HttpClient();
     
-    public async static Task<JObject> List(string type) // 'type' can be either "theme" or "config"
+    public async static Task<JArray> List(string type) // 'type' can be either "theme" or "config"
     {
         HttpResponseMessage response = await client.GetAsync($"{API}list?page=1&filter={type}");
         if (!response.IsSuccessStatusCode) return null;

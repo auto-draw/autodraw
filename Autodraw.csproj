@@ -32,20 +32,21 @@
 
     <ItemGroup>
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1"/>
-        <PackageReference Include="Avalonia" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.1"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.5"/>
+        <PackageReference Include="Avalonia" Version="11.0.6" />
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <!-- ^^^ yeah yeah whatever, too bad we using it anyways in build :D -->
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5"/>
-        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.1"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.6" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
+        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.5" />
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="RestSharp" Version="110.2.0"/>
-        <PackageReference Include="SharpHook" Version="5.1.1"/>
+        <PackageReference Include="SharpHook" Version="5.2.0" />
         <PackageReference Include="SimWinMouse" Version="1.0.2">
             <NoWarn>true</NoWarn>
         </PackageReference>
@@ -113,10 +114,6 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
         <EmbeddedResource Include="Styles\Anime\character.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </EmbeddedResource>
-        <EmbeddedResource Include="Styles\blue.axaml">
-            <Generator></Generator>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
         <EmbeddedResource Include="Styles\Landscape\landscape.axaml">

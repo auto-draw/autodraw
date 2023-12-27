@@ -96,17 +96,17 @@ public partial class OpenAIPrompt : Window
         };
 
         var rawModel = ((ComboBoxItem)this.Model.SelectedItem).Content.ToString();
-        var Model = rawModel == "DALL-E 2" ? "dall-e-2" : "dall-e-3";
-        var Size = Resolution.SelectedItem.ToString();
-        var Quality = rawModel.EndsWith(" HD") ? "hd" : "standard";
+        var model = rawModel == "DALL-E 2" ? "dall-e-2" : "dall-e-3";
+        var size = Resolution.SelectedItem.ToString();
+        var quality = rawModel.EndsWith(" HD") ? "hd" : "standard";
         
         var param = new
         {
             prompt = Prompt.Text,
-            model = Model,
-            size = Size,
+            model = model,
+            size = size,
             n = 1,
-            quality = Quality
+            quality = quality
         };
         Task.Run(async () =>
         {

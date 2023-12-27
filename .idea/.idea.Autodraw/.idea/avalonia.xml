@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="App.axaml" value="Autodraw.csproj" />
         <entry key="DevTest.axaml" value="Autodraw.csproj" />
         <entry key="DrawDataDisplay.axaml" value="Autodraw.csproj" />
         <entry key="MainWindow.axaml" value="Autodraw.csproj" />

@@ -100,7 +100,7 @@ public static class Drawing
 
         static void KeybindPress(object? sender, KeyboardHookEventArgs e)
         {
-            if (e.Data.KeyCode == KeyCode.VcBackspace)
+            if (e.Data.KeyCode == Config.Keybind_SkipRescan)
             {
                 if (NoRescan) return;
                 SkipRescan = true;
@@ -109,14 +109,14 @@ public static class Drawing
 
         static void KeybindRelease(object? sender, KeyboardHookEventArgs e)
         {
-            if (e.Data.KeyCode == KeyCode.VcLeftAlt) Halt();
-            if (e.Data.KeyCode == KeyCode.VcBackspace)
+            if (e.Data.KeyCode == Config.Keybind_StopDrawing) Halt();
+            if (e.Data.KeyCode == Config.Keybind_SkipRescan)
             {
                 if (NoRescan) return;
                 SkipRescan = false;
             }
 
-            if (e.Data.KeyCode == KeyCode.VcBackslash) IsPaused = !IsPaused;
+            if (e.Data.KeyCode == Config.Keybind_PauseDrawing) IsPaused = !IsPaused;
         }
 
         Input.taskHook.KeyPressed += KeybindPress;
