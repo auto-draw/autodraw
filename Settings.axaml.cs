@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -27,22 +22,16 @@ public partial class Settings : Window
         new("Light Theme") { Patterns = new[] { "*.laxaml" }, MimeTypes = new[] { "*/*" } },
         FilePickerFileTypes.All
     };
-    // AssetLoader.Open(new System.Uri("avares://Autodraw/Styles/dark.xaml"))
-
-    private string savedLocation = "";
+    
+    private string savedLocation = ""; 
 
     public Settings()
     {
         InitializeComponent();
         // Main Handle
         CloseAppButton.Click += CloseAppButton_Click;
-
         // Sidebar
-        GeneralMenuButton.Click += (sender, e) => OpenMenu("General");
-        ThemeMenuButton.Click += (sender, e) => OpenMenu("Themes");
-        MarketplaceButton.Click += (sender, e) => OpenMenu("MarketplaceUI");
-        DevButton.Click += (sender, e) => OpenMenu("Developers");
-        LicensesButton.Click += (sender, e) => OpenMenu("Licenses");
+        SettingsTabs.SelectionChanged += SettingsTabs_OnSelectionChanged;
 
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
@@ -57,6 +46,7 @@ public partial class Settings : Window
 
         // DALL-E API Keys
         SaveOpenAiKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAiKey.Text);
+        RevealAiKey.Click += (sender, e) => OpenAiKey.RevealPassword = !OpenAiKey.RevealPassword;
 
         if (Config.getEntry("showPopup") == null) Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
         if (Config.getEntry("OpenAIKey") != null) OpenAiKey.Text = Config.getEntry("OpenAIKey");
@@ -66,60 +56,6 @@ public partial class Settings : Window
 
         //  TextEditor Input
         var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
-        _textEditor1.Text = @"<!-- Template Theme -->
-<!--
-Useful Information:
-Style Selectors: https://docs.avaloniaui.net/docs/next/guides/styles-and-resources/selectors
-Property Setters: https://docs.avaloniaui.net/docs/next/guides/styles-and-resources/property-setters
-
-Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/styles-and-resources/troubleshooting
--->
-
-<Styles xmlns=""https://github.com/avaloniaui""
-        xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-	xmlns:asyncImageLoader=""clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"">
-		
-    <!-- CLASS : Window -->
-    <Style Selector=""Window"">
-        <Setter Property=""Background"" Value=""#97af""/>
-        <Setter Property=""TransparencyLevelHint"" Value=""AcrylicBlur""/>
-    </Style>
-
-    <!-- CLASS : Button -->
-	<Style Selector=""Button"">
-		<Setter Property=""Background"" Value=""#3fff""></Setter>
-		<Setter Property=""Foreground"" Value=""#fff""></Setter>
-	</Style>
-	
-    <!-- CLASS : Label -->
-    <Style Selector=""Label"">
-        <Setter Property=""Foreground"" Value=""#7cf""></Setter>
-        <Setter Property=""FontSize"" Value=""12""/>
-    </Style>
-
-    <!-- CLASS : ListBox -->
-    <Style Selector=""ListBox"">
-        <Setter Property=""Background"" Value=""#c357""/>
-    </Style>
-
-    <!-- Toolbar -->
-    <Style Selector=""Canvas.Toolbar"">
-        <Setter Property=""Background"" Value=""#357""/>
-    </Style>
-    
-    <!-- Image Preview -->
-	<Style Selector=""Canvas.ImagePreview"">
-		<Setter Property=""Background"" Value=""#6000""/>
-	</Style>
-	<Style Selector=""Border.ImagePreview"">
-		<Setter Property=""BoxShadow"" Value=""0 0 64 -4 #caf""/>
-	</Style>
-	
-    <!-- ComboBox Popup Background -->
-    <Style Selector=""ComboBox /template/ Border#PopupBorder"">
-        <Setter Property=""Background"" Value=""#357""/>
-    </Style>
-</Styles>";
         var _registryOptions1 = new RegistryOptions(ThemeName.DarkPlus);
         var _textMateInstallation1 = _textEditor1.InstallTextMate(_registryOptions1);
         _textMateInstallation1.SetGrammar(
@@ -127,13 +63,9 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
 
         //  TextEditor Output
         var _textEditor2 = this.FindControl<TextEditor>("ThemeOutput");
-        var _textEditor3 = this.FindControl<TextEditor>("LicenseText");
         var _registryOptions2 = new RegistryOptions(ThemeName.DarkPlus);
         var _textMateInstallation2 = _textEditor2.InstallTextMate(_registryOptions2);
         _textMateInstallation2.SetGrammar(
-            _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
-        var _textMateInstallation3 = _textEditor3.InstallTextMate(_registryOptions2);
-        _textMateInstallation3.SetGrammar(
             _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
 
         //  Interactions
@@ -143,19 +75,40 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         SaveTheme.Click += SaveTheme_Click;
         OpenTheme.Click += OpenTheme_Click;
         LoadTheme.Click += LoadTheme_Click;
-
         // Developer
+    }
+
+
+    private void CloseAppButton_Click(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private Grid? currentlyViewing;
+    private void SettingsTabs_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        
+        TreeViewItem select = (TreeViewItem)SettingsTabs.SelectedItem;
+        string? selectionName = select.Name;
+        if (selectionName == "" || selectionName is null || selectionName == " ") return;
+        string selectionTabName = Regex.Replace(selectionName, "Selector$","")+"Tab";
+        var selectionTab = this.FindControl<Grid>(selectionTabName);
+        if (selectionTab is null) return;
+        selectionTab.Opacity = 1;
+        selectionTab.IsHitTestVisible = true;
+        if (currentlyViewing is not null && currentlyViewing != selectionTab)
+        {
+            currentlyViewing.Opacity = 0;
+            currentlyViewing.IsHitTestVisible = false;
+        }
+
+        currentlyViewing = selectionTab;
     }
 
     private void LoadTheme_Click(object? sender, RoutedEventArgs e)
     {
-        var Output = App.LoadThemeFromString(ThemeInput.Text, ThemeIsDark.IsChecked == true, savedLocation);
+        var Output = App.LoadThemeFromString(ThemeInput.Text, true, savedLocation);
         ThemeOutput.Text = Output;
-    }
-
-    private void LoadTheme_Item()
-    {
-        //App.LoadTheme();
     }
 
     private void ListThemes()
@@ -186,9 +139,6 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         if (file.Count == 1)
         {
             var fileType = Regex.Match(file[0].TryGetLocalPath(), "\\.[^.\\\\/:*?\"<>|\\r\\n]+$").Value;
-            if (fileType == ".daxaml")
-                ThemeIsDark.IsChecked = true;
-            else if (fileType == ".laxaml") ThemeIsDark.IsChecked = false;
             var stream = await file[0].OpenReadAsync();
             ThemeInput.Text = new StreamReader(stream).ReadToEnd();
             stream.Close();
@@ -223,6 +173,14 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         savedLocation = "";
     }
 
+    private void ToggleTheme_Click(object? sender, RoutedEventArgs e)
+    {
+        if (App.CurrentTheme == "avares://Autodraw/Styles/dark.axaml")
+            App.LoadTheme("avares://Autodraw/Styles/light.axaml", false);
+        else
+            App.LoadTheme("avares://Autodraw/Styles/dark.axaml");
+    }
+    
     private void ShowPopup_IsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         if (ShowPopup.IsChecked == null) return;
@@ -247,45 +205,5 @@ Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/style
         if (LogFile.IsChecked == null) return;
         Config.setEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
         Utils.LoggingEnabled = (bool)LogFile.IsChecked;
-    }
-
-    private void ToggleTheme_Click(object? sender, RoutedEventArgs e)
-    {
-        if (App.CurrentTheme == "avares://Autodraw/Styles/dark.axaml")
-            App.LoadTheme("avares://Autodraw/Styles/light.axaml", false);
-        else
-            App.LoadTheme("avares://Autodraw/Styles/dark.axaml");
-    }
-
-
-    private void CloseAppButton_Click(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
-    private void DeactivateItem(List<string> menus)
-    {
-        foreach (var menu in menus)
-        {
-            var myControl = this.FindControl<Control>(menu);
-            if (myControl == null) continue;
-            myControl.Opacity = 0;
-            myControl.IsHitTestVisible = false;
-        }
-    }
-
-    private void OpenMenu(string menu)
-    {
-        if (menu == "Licenses")
-        {
-            using var resource = AssetLoader.Open(new Uri(@"avares://Autodraw/Assets/LICENSES.txt"));
-            using var reader = new StreamReader(resource);
-            LicenseText.Text = reader.ReadToEnd();
-        }
-        var myControl = this.FindControl<Control>(menu);
-        DeactivateItem(new List<string> { "General", "Themes", "MarketplaceUI", "Developers", "Licenses" });
-        if (myControl == null) return;
-        myControl.Opacity = 1;
-        myControl.IsHitTestVisible = true;
     }
 }

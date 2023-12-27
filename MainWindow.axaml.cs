@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia;
@@ -27,6 +25,7 @@ public partial class MainWindow : Window
     private DevTest? _devwindow;
 
     private Settings? _settings;
+    private OpenAIPrompt? _aiPrompt;
     private int _alphaThresh = 200;
     private Bitmap? _displayedBitmap;
     private int _minBlackThreshold;
@@ -37,6 +36,7 @@ public partial class MainWindow : Window
     private long _memoryPressure;
     private bool _inChange;
     private long _lastTime = DateTime.Now.ToFileTime();
+    public long sessionTime = DateTime.Now.ToFileTime();
 
     private SKBitmap? _rawBitmap = new(318, 318, true);
     private SKBitmap? _preFxBitmap = new(318, 318, true);
@@ -69,6 +69,7 @@ public partial class MainWindow : Window
         ProcessButton.Click += ProcessButtonOnClick;
         RunButton.Click += RunButtonOnClick;
         
+        ImageAIGeneration.Click += ImageAIGenerationOnClick;
         ImageSaveImage.Click += ImageSaveImageOnClick;
         ImageClearImage.Click += ImageClearImageOnClick;
 
@@ -108,6 +109,19 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
+    private void ImageAIGenerationOnClick(object? sender, RoutedEventArgs e)
+    {
+        if(_aiPrompt is not null) return; 
+        _aiPrompt = new OpenAIPrompt();
+        _aiPrompt.Show();
+        _aiPrompt.Closed += AiPromptOnClosed;
+    }
+
+    private void AiPromptOnClosed(object? sender, EventArgs e)
+    {
+        _aiPrompt = null;
+    }
+
     // User Configuration Handles
 
     //*
@@ -128,6 +142,7 @@ public partial class MainWindow : Window
     {
         _devwindow?.Close();
         _settings?.Close();
+        _aiPrompt?.Close();
         if (Utils.LogObject != null)
         {
             Utils.LogObject.Close();
@@ -193,7 +208,8 @@ public partial class MainWindow : Window
 
     private void OpenSettingsOnClick(object? sender, RoutedEventArgs e)
     {
-        _settings ??= new Settings();
+        if (_settings is not null) return;
+        _settings = new Settings();
         _settings.Show();
         _settings.Closed += Settings_Closed;
     }
@@ -274,6 +290,7 @@ public partial class MainWindow : Window
 
     private async void ImageSaveImageOnClick(object? sender, RoutedEventArgs e)
     {
+        if (_processedBitmap is null) return;
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Processed Image",

@@ -60,6 +60,24 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language Version: C# 10.0.
+        /// </summary>
+        public static string AutoDrawLanguageVersion {
+            get {
+                return ResourceManager.GetString("AutoDrawLanguageVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET Framework Version: net6.0.
+        /// </summary>
+        public static string AutoDrawNetFramework {
+            get {
+                return ResourceManager.GetString("AutoDrawNetFramework", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AutoDraw Open Beta.
         /// </summary>
         public static string AutoDrawTitle {
@@ -69,11 +87,20 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to v2.0.1.
+        ///   Looks up a localized string similar to v2.1.
         /// </summary>
         public static string AutoDrawVersion {
             get {
                 return ResourceManager.GetString("AutoDrawVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Version: v2.1.0.
+        /// </summary>
+        public static string AutoDrawVersionDetailed {
+            get {
+                return ResourceManager.GetString("AutoDrawVersionDetailed", resourceCulture);
             }
         }
         

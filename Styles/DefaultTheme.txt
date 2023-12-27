@@ -7,6 +7,11 @@ Property Setters: https://docs.avaloniaui.net/docs/next/guides/styles-and-resour
 Troubleshooting, very useful: https://docs.avaloniaui.net/docs/next/guides/styles-and-resources/troubleshooting
 -->
 
+<!-- To specify if a theme is dark or bright, put a comment down and have it contain either "#DarkTheme" or "#LightTheme", like so:-->
+<!--#DarkTheme-->
+<!--That specifies that it is a dark theme to the code, and so FluentTheme, the core theme, switches to using light theme.-->
+<!--If you don't specify anything, it will automatically choose Dark Theme. -->
+
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia">

@@ -14,9 +14,6 @@
     <data name="AutoDrawTitle" xml:space="preserve"> 
 <value>自动画画  (体验测试)</value> 
 </data>
-    <data name="AutoDrawVersion" xml:space="preserve"> 
-<value>2.0版</value> 
-</data>
     <data name="MainTab1" xml:space="preserve"> 
 <value>常规</value> 
 </data>
@@ -199,5 +196,14 @@
     </data>
     <data name="Scale" xml:space="preserve">
         <value>比例尺</value>
+    </data>
+    <data name="AutoDrawVersionDetailed" xml:space="preserve">
+        <value>当前软件版本：v2.1.0</value>
+    </data>
+    <data name="AutoDrawLanguageVersion" xml:space="preserve">
+        <value>语言版本： C# 10.0</value>
+    </data>
+    <data name="AutoDrawNetFramework" xml:space="preserve">
+        <value>.NET Framework 版本：net6.0</value>
     </data>
 </root>

@@ -1,15 +1,15 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="328" d:DesignHeight="150"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="220"
+        x:Class="Autodraw.OpenAIPrompt"
 
-        x:Class="Autodraw.MessageBox"
+        Name="PromptWindow"
+         
 
-        Name="Message"
-
-        Width="320"
-        Height="150"
+        Width="400"
+        Height="220"
         CanResize="False"
 
         WindowStartupLocation="CenterScreen"
@@ -19,7 +19,6 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="20">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
@@ -36,7 +35,7 @@
             <StackPanel Classes="Toolbar" Orientation="Horizontal">
                 <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20"
                        VerticalContentAlignment="Center">
-                    Message
+                    OpenAI Prompt
                 </Label>
             </StackPanel>
 
@@ -58,22 +57,39 @@
         <!--Body-->
         <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="48" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="48" />
-                <RowDefinition Height="4" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <Image Name="MessageIcon" Grid.Row="0" Grid.Column="0" Source="/Assets/Message/info.png" />
-            <TextBlock Name="MessageTitle" Grid.Row="0" Grid.Column="2" FontSize="16">Info!</TextBlock>
-            <TextBox Name="MessageContent" Grid.Row="2" Grid.ColumnSpan="3" IsReadOnly="True" FontSize="12"
-                     TextWrapping="Wrap">
-                Info Content!
+            <ComboBox Name="Model" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" SelectedIndex="0">
+                <ComboBoxItem>
+                    DALL-E 2
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    DALL-E 3 SD
+                </ComboBoxItem>
+                <ComboBoxItem>
+                    DALL-E 3 HD
+                </ComboBoxItem>
+            </ComboBox>
+            <ComboBox  Name="Resolution" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" SelectedIndex="0"></ComboBox>
+            <!---->
+            <TextBox Name="Prompt" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="Wrap" CornerRadius="2">
+                A large landscape with mountains towering across, with a large reflective lake.
             </TextBox>
+            <!---->
+            <Label Name="Warning1" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">NO API KEY FOUND</Label>
+            <Label Name="Warning2" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">CHECK SETTINGS</Label>
+            <Button Name="Generate" Classes="NoOutline" CornerRadius="2" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                Generate
+            </Button>
         </Grid>
     </Grid>
 </Window>

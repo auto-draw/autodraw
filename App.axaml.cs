@@ -60,15 +60,18 @@ public class App : Application
             TextInput = Regex.Replace(TextInput, @"file:./", AppDomain.CurrentDomain.BaseDirectory);
             if (themeUri != "")
             {
-                Debug.WriteLine(themeUri);
                 TextInput = Regex.Replace(TextInput, @"style:./",
                     Regex.Replace(themeUri, @"\\(?:.(?!\\))+$", "") + "\\");
-                Debug.WriteLine(TextInput);
             }
             else
             {
                 OutputMessage += "- You have not saved this theme, so it won't parse style:./.\n\n";
             }
+            Match isCodeDark = Regex.Match(TextInput, @"<!--#DarkTheme-->");
+            Match isCodeLight = Regex.Match(TextInput, @"<!--#LightTheme-->");
+            if (isCodeDark.Success && isCodeLight.Success) throw new Exception("My brother in christ, you cannot have both DarkTheme and LightTheme.");
+            if (isCodeDark.Success) isDark = true;
+            if (isCodeLight.Success) isDark = false;
 
             var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
                 TextInput
@@ -100,6 +103,7 @@ public class App : Application
         // Behold, terrible bruteforce-ey code! Performance be damned!
         try
         {
+            Console.WriteLine("Loading Compiled Code");
             // Tries loading as Compiled.
             var Resource = (IStyle)AvaloniaXamlLoader.Load(
                 new Uri(themeUri)
@@ -117,20 +121,9 @@ public class App : Application
             try
             {
                 // Tries loading as runtime uncompiled.
+                Console.WriteLine("Loading Uncompiled Runtime Code");
                 var TextInput = File.ReadAllText(themeUri);
-                TextInput = Regex.Replace(TextInput, @"file:./", AppDomain.CurrentDomain.BaseDirectory);
-                TextInput = Regex.Replace(TextInput, @"style:./", Regex.Replace(themeUri, @"\\(?:.(?!\\))+$", ""));
-
-                var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
-                    TextInput
-                ); 
-                Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-                Current.Styles.Remove(Current.Styles[4]);
-                Current.Styles.Add(Resource);
-                CurrentTheme = themeUri;
-                SavedIsDark = isDark;
-                Config.setEntry("theme", themeUri);
-                Config.setEntry("isDarkTheme", isDark.ToString());
+                return LoadThemeFromString(TextInput, isDark, themeUri);
             }
             catch (Exception ex)
             {

@@ -18,16 +18,12 @@ public partial class Preview : Window
     public SKBitmap? inputBitmap;
     public long lastMovement;
     public Bitmap? renderedBitmap;
-#if WINDOWS
-    public int MultiplyRate = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop\\WindowMetrics",
-        "AppliedDPI", 96) / 96;
-#else
-    public int MultiplyRate = 1;
-#endif
+    private double scale = 1;
 
     public Preview()
     {
         InitializeComponent();
+        scale = Screens.ScreenFromWindow(this).Scaling;
         Closing += OnClosing;
         Input.MousePosUpdate += UpdateMousePosition;
     }
@@ -45,11 +41,10 @@ public partial class Preview : Window
         {
             var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
             if (currUnix < lastMovement + 16) return;
-            Console.WriteLine($"Update at {currUnix}");
             lastMovement = currUnix;
             var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
-            var x = usedPos.X - ((Width / 2) * MultiplyRate);
-            var y = usedPos.Y - ((Height / 2) * MultiplyRate);
+            var x = usedPos.X - ((Width / 2) * scale);
+            var y = usedPos.Y - ((Height / 2) * scale);
             Position = new PixelPoint((int)x, (int)y);
         });
     }
@@ -64,14 +59,14 @@ public partial class Preview : Window
                 await Drawing.Draw(inputBitmap);
             });
             drawThread.Start();
-            Dispatcher.UIThread.Invoke(() => Close());
+            Dispatcher.UIThread.Invoke(Close);
 
             Input.taskHook.KeyReleased -= Keybind;
         }
 
         if (e.Data.KeyCode == KeyCode.VcLeftAlt || e.Data.KeyCode == KeyCode.VcRightAlt)
         {
-            Dispatcher.UIThread.Invoke(() => Close());
+            Dispatcher.UIThread.Invoke(Close);
             Dispatcher.UIThread.Invoke(() =>
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -96,8 +91,8 @@ public partial class Preview : Window
         renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
         PreviewImage.Source = renderedBitmap;
 
-        Width = (bitmap.Width) / MultiplyRate;
-        Height = (bitmap.Height) / MultiplyRate;
+        Width = (bitmap.Width) / scale;
+        Height = (bitmap.Height) / scale;
 
         Show();
 

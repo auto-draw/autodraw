@@ -7,6 +7,7 @@
         <entry key="DrawDataDisplay.axaml" value="Autodraw.csproj" />
         <entry key="MainWindow.axaml" value="Autodraw.csproj" />
         <entry key="MessageBox.axaml" value="Autodraw.csproj" />
+        <entry key="OpenAIPrompt.axaml" value="Autodraw.csproj" />
         <entry key="Preview.axaml" value="Autodraw.csproj" />
         <entry key="Settings.axaml" value="Autodraw.csproj" />
         <entry key="Styles/blue.axaml" value="Autodraw.csproj" />

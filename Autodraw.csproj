@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <NeutralLanguage>en</NeutralLanguage>
+        <ApplicationIcon>Assets\autodraw.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
         <ProjectCapability Include="Avalonia"/>
@@ -16,7 +18,7 @@
         <StartupObject></StartupObject>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <FileVersion>2.0.1.0</FileVersion>
+        <FileVersion>2.1.0.0</FileVersion>
         <AssemblyVersion>7.15.2023</AssemblyVersion>
     </PropertyGroup>
 
@@ -40,6 +42,7 @@
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5"/>
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.1"/>
+        <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="RestSharp" Version="110.2.0"/>
         <PackageReference Include="SharpHook" Version="5.1.1"/>
