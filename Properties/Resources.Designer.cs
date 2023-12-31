@@ -285,15 +285,6 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is incomplete, some functions here may not work..
-        /// </summary>
-        public static string GeneralInfo1 {
-            get {
-                return ResourceManager.GetString("GeneralInfo1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Interval.
         /// </summary>
         public static string GeneralInterval {
@@ -371,6 +362,15 @@ namespace Autodraw.Properties {
         public static string IBSS {
             get {
                 return ResourceManager.GetString("IBSS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image Load.
+        /// </summary>
+        public static string ImageLoad {
+            get {
+                return ResourceManager.GetString("ImageLoad", resourceCulture);
             }
         }
         
@@ -519,65 +519,11 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to General.
-        /// </summary>
-        public static string SettingsTab1 {
-            get {
-                return ResourceManager.GetString("SettingsTab1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Themes.
-        /// </summary>
-        public static string SettingsTab2 {
-            get {
-                return ResourceManager.GetString("SettingsTab2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Licenses.
-        /// </summary>
-        public static string SettingsTab3 {
-            get {
-                return ResourceManager.GetString("SettingsTab3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Marketplace.
-        /// </summary>
-        public static string SettingsTab4 {
-            get {
-                return ResourceManager.GetString("SettingsTab4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dev. Options.
-        /// </summary>
-        public static string SettingsTab5 {
-            get {
-                return ResourceManager.GetString("SettingsTab5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string SettingsTitle {
             get {
                 return ResourceManager.GetString("SettingsTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dark theme?.
-        /// </summary>
-        public static string ThemeDark {
-            get {
-                return ResourceManager.GetString("ThemeDark", resourceCulture);
             }
         }
         

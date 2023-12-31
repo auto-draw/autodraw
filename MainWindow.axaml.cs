@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -41,6 +42,12 @@ public partial class MainWindow : Window
     private SKBitmap? _rawBitmap = new(318, 318, true);
     private SKBitmap? _preFxBitmap = new(318, 318, true);
     private SKBitmap? _processedBitmap;
+    
+    public class listedImage
+    {
+        public string Title { get; set; }
+        public string Image { get; set; }
+    }
 
     public MainWindow()
     {
@@ -72,6 +79,8 @@ public partial class MainWindow : Window
         ImageAIGeneration.Click += ImageAIGenerationOnClick;
         ImageSaveImage.Click += ImageSaveImageOnClick;
         ImageClearImage.Click += ImageClearImageOnClick;
+        
+        MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
 
         // Inputs
         SizeSlider.ValueChanged += SizeSliderOnValueChanged;
@@ -107,6 +116,53 @@ public partial class MainWindow : Window
         RefreshConfigList(this, null);
 
         Input.Start();
+    }
+
+    private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (MainTabControl.SelectedIndex == 3)
+        {
+            ImagesListBox.Items.Clear();
+            string[] extensions = { ".png", ".jpeg", ".jpg", ".bmp" };
+            string[] dirFiles = Directory.GetFiles(@"D:\catsi\Documents\World Creator\Export","*",SearchOption.TopDirectoryOnly);
+            var images = dirFiles.Where(file =>
+                extensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase));
+            foreach (string image in images)
+            {
+                string fileNameExtension = Path.GetFileName(image);
+                string fileName = Path.GetFileNameWithoutExtension(image);
+                
+                var parent1 = Directory.GetParent(image);
+                var parent2 = parent1?.Parent;
+                var parent3 = parent2?.Parent;
+    
+                var parent1Name = parent1?.Name.Length >= 2 ? parent1.Name.Substring(0, 3) : string.Empty;
+                var parent2Name = parent2?.Name.Length >= 2 ? parent2.Name.Substring(0, 3) : string.Empty;
+                var parent3Name = parent3?.Name.Length >= 2 ? parent3.Name.Substring(0, 3) : string.Empty;
+
+                var regex = new Regex("[^a-zA-Z0-9]");
+                
+                string cacheName = regex.Replace($"{parent3Name}{parent2Name}{parent1Name}{fileName}","");
+                string cachePath = Path.Combine(Config.CachePath, cacheName + ".jpeg");
+
+                Task.Run(() =>
+                {
+                    if (!File.Exists(cachePath))
+                    {
+                        SKBitmap bitmap = SKBitmap.Decode(image);
+                        bitmap = bitmap.Resize(new SKSizeI(115, 72), SKFilterQuality.None);
+                        SKData encoded = bitmap.Encode(SKEncodedImageFormat.Jpeg, 75);
+                        using FileStream stream = new FileStream(cachePath, FileMode.Create, FileAccess.Write);
+                        encoded.SaveTo(stream);
+                    }
+                });
+
+                listedImage listData = new listedImage();
+                listData.Title = fileNameExtension;
+                listData.Image = cachePath;
+                ImagesListBox.Items.Add(listData);
+            }
+        }
     }
 
     private void ImageAIGenerationOnClick(object? sender, RoutedEventArgs e)

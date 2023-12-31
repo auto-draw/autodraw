@@ -131,24 +131,6 @@
     <data name="SettingsTitle" xml:space="preserve"> 
 <value>设置</value> 
 </data>
-    <data name="SettingsTab1" xml:space="preserve"> 
-<value>常规</value> 
-</data>
-    <data name="SettingsTab2" xml:space="preserve"> 
-<value>主题</value> 
-</data>
-    <data name="SettingsTab3" xml:space="preserve"> 
-<value>许可</value> 
-</data>
-    <data name="SettingsTab4" xml:space="preserve"> 
-<value>市场</value> 
-</data>
-    <data name="SettingsTab5" xml:space="preserve"> 
-<value>开发人员选项 </value> 
-</data>
-    <data name="GeneralInfo1" xml:space="preserve"> 
-<value>这不完整的，几个功能就可能不行</value> 
-</data>
     <data name="GeneralSwitch1" xml:space="preserve"> 
 <value>替代鼠标控制 (坏了)</value> 
 </data>
@@ -176,9 +158,6 @@
     <data name="ThemeLoad" xml:space="preserve"> 
 <value>加载主题</value> 
 </data>
-    <data name="ThemeDark" xml:space="preserve"> 
-<value>暗主题</value> 
-</data>
     <data name="OpenAPIKey" xml:space="preserve"> 
 <value>OpenAI开源人工智能 API匙</value> 
 </data>
@@ -205,5 +184,8 @@
     </data>
     <data name="AutoDrawNetFramework" xml:space="preserve">
         <value>.NET Framework 版本：net6.0</value>
+    </data>
+    <data name="ImageLoad" xml:space="preserve">
+        <value>图像载入</value>
     </data>
 </root>

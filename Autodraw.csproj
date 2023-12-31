@@ -40,7 +40,6 @@
         <PackageReference Include="Avalonia.Diagnostics" Version="11.0.6" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.6" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.5" />
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />

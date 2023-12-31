@@ -77,10 +77,6 @@
     <data name="GeneralDP" xml:space="preserve">
         <value>Make rock design!</value>
     </data>
-    <data name="GeneralInfo1" xml:space="preserve">
-        <value>
-Rock not finished, some things not doable.</value>
-    </data>
     <data name="GeneralInterval" xml:space="preserve">
         <value>Time between pokes!</value>
     </data>
@@ -138,9 +134,6 @@ Rock not finished, some things not doable.</value>
     <data name="MainTab4" xml:space="preserve">
         <value>Rock drawing</value>
     </data>
-    <data name="SettingsTab1" xml:space="preserve">
-        <value>All-around rock magic!</value>
-    </data>
     <data name="OpenAPIKey" xml:space="preserve">
         <value>Magic key to OpenAI cave!</value>
     </data>
@@ -153,23 +146,8 @@ Rock not finished, some things not doable.</value>
     <data name="ProcessIMG" xml:space="preserve">
         <value>Work on picture rock!</value>
     </data>
-    <data name="SettingsTab2" xml:space="preserve">
-        <value>Rock styles!</value>
-    </data>
-    <data name="SettingsTab5" xml:space="preserve">
-        <value>Cave-maker choices!</value>
-    </data>
-    <data name="SettingsTab3" xml:space="preserve">
-        <value>Rock permissions!</value>
-    </data>
-    <data name="SettingsTab4" xml:space="preserve">
-        <value>Rock trading place!</value>
-    </data>
     <data name="ThemeToggle" xml:space="preserve">
         <value>Shadow/Bright rock!</value>
-    </data>
-    <data name="ThemeDark" xml:space="preserve">
-        <value>Cave in the shadows?</value>
     </data>
     <data name="SettingsTitle" xml:space="preserve">
         <value>Rock adjustments!</value>

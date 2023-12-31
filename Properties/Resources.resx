@@ -246,24 +246,6 @@
     <data name="SettingsTitle" xml:space="preserve"> 
 <value>Settings</value> 
 </data>
-    <data name="SettingsTab1" xml:space="preserve"> 
-        <value>General</value> 
-    </data>
-    <data name="SettingsTab2" xml:space="preserve"> 
-        <value>Themes</value> 
-    </data>
-    <data name="SettingsTab3" xml:space="preserve"> 
-        <value>Licenses</value> 
-    </data>
-    <data name="SettingsTab4" xml:space="preserve"> 
-        <value>Marketplace</value> 
-    </data>
-    <data name="SettingsTab5" xml:space="preserve"> 
-<value>Dev. Options</value> 
-</data>
-    <data name="GeneralInfo1" xml:space="preserve"> 
-<value>This is incomplete, some functions here may not work.</value> 
-</data>
     <data name="GeneralSwitch1" xml:space="preserve"> 
 <value>Alternate Mouse Control (Buggy)</value> 
 </data>
@@ -291,9 +273,6 @@
     <data name="ThemeLoad" xml:space="preserve"> 
 <value>Load Theme</value> 
 </data>
-    <data name="ThemeDark" xml:space="preserve"> 
-<value>Dark theme?</value> 
-</data>
     <data name="OpenAPIKey" xml:space="preserve"> 
 <value>OpenAI API Key</value> 
 </data>
@@ -320,5 +299,8 @@
     </data>
     <data name="AutoDrawNetFramework" xml:space="preserve">
         <value>.NET Framework Version: net6.0</value>
+    </data>
+    <data name="ImageLoad" xml:space="preserve">
+        <value>Image Load</value>
     </data>
 </root>
