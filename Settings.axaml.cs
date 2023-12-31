@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -40,7 +41,7 @@ public partial class Settings : Window
         // Main Handle
         CloseAppButton.Click += CloseAppButton_Click;
         // Sidebar
-        SettingsTabs.SelectionChanged += SettingsTabs_OnSelectionChanged;
+        SettingsTabs.PropertyChanged += SettingsTabsOnPropertyChanged;
 
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
@@ -110,7 +111,7 @@ public partial class Settings : Window
         };
         
         // Marketplace
-        MarketplaceTabs.SelectionChanged += MarketplaceTabsOnSelectionChanged;
+        MarketplaceTabs.PropertyChanged += MarketplaceTabsOnPropertyChanged;
 
         // DALL-E API Keys
         SaveOpenAiKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAiKey.Text);
@@ -137,7 +138,80 @@ public partial class Settings : Window
         ImageCacheLocationSaveButton.Click += ImageCacheLocationSaveButtonOnClick;
         ImageCacheLocationClearButton.Click += ImageCacheLocationClearButtonOnClick;
     }
+
+    private void MarketplaceTabsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property.ToString() != "SelectedIndex") return;
+        if (MarketplaceTabs.SelectedIndex == 0)
+        {
+            LoadLocalThemeItems();
+        }
+
+        if (MarketplaceTabs.SelectedIndex == 1)
+        {
+            LoadOnlineThemeItems();
+        }
+    }
     
+    private void SettingsTabsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property.ToString() != "SelectedItem") return;
+        TreeViewItem select = (TreeViewItem)SettingsTabs.SelectedItem;
+        string? selectionName = select.Name;
+        if (selectionName == "" || selectionName is null || selectionName == " ") return;
+        string selectionTabName = Regex.Replace(selectionName, "Selector$","")+"Tab";
+        var selectionTab = this.FindControl<Grid>(selectionTabName);
+        if (selectionTab is null) return;
+        selectionTab.Opacity = 1;
+        selectionTab.IsHitTestVisible = true;
+        if (currentlyViewing is not null && currentlyViewing != selectionTab)
+        {
+            currentlyViewing.Opacity = 0;
+            currentlyViewing.IsHitTestVisible = false;
+        }
+        
+        // Marketplace Loading Stuff:
+        if (selectionName == "MarketplaceSelector")
+        {
+            if (MarketplaceTabs.SelectedIndex == 0)
+            {
+                LoadLocalThemeItems();
+            }
+
+            if (MarketplaceTabs.SelectedIndex == 1)
+            {
+                LoadOnlineThemeItems();
+            }
+        }
+        
+        // Theme Editor Loading Stuff:
+        if (selectionName == "ThemeEditorSelector")
+        {
+            // Moved this here for performance reasons :P
+
+            if (!_textmateLoaded)
+            {
+                //  TextEditor Input
+                var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
+                var _registryOptions1 = new RegistryOptions(ThemeName.DarkPlus);
+                var _textMateInstallation1 = _textEditor1.InstallTextMate(_registryOptions1);
+                _textMateInstallation1.SetGrammar(
+                    _registryOptions1.GetScopeByLanguageId(_registryOptions1.GetLanguageByExtension(".xml").Id));
+
+                //  TextEditor Output
+                var _textEditor2 = this.FindControl<TextEditor>("ThemeOutput");
+                var _registryOptions2 = new RegistryOptions(ThemeName.DarkPlus);
+                var _textMateInstallation2 = _textEditor2.InstallTextMate(_registryOptions2);
+                _textMateInstallation2.SetGrammar(
+                    _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
+            
+                _textmateLoaded = true;
+            }
+        }
+
+        currentlyViewing = selectionTab;
+    }
+
     private Task<KeyCode> ChangeKeybind_OnClick()
     {
         _currentlyAwaitingKeypress = true;
@@ -146,7 +220,6 @@ public partial class Settings : Window
 
         void handler(object? sender, KeyboardHookEventArgs e)
         {
-            Console.WriteLine(e.Data.KeyCode);
             Input.taskHook.KeyPressed -= handler;
             _currentlyAwaitingKeypress = false;
             tcs.SetResult(e.Data.KeyCode);
@@ -299,7 +372,6 @@ public partial class Settings : Window
     {
         // This is such a stupid way of doing this but I really am out of ideas :P
         string location = (string)((Button)data).CommandParameter;
-        Console.WriteLine(location);
         App.LoadTheme(location);
         
     }
@@ -324,7 +396,6 @@ public partial class Settings : Window
             if (File.Exists(Path.Combine(parent, Path.GetFileNameWithoutExtension(theme) + "-Image.jpeg")))
             {
                 image = Path.Combine(parent, Path.GetFileNameWithoutExtension(theme) + "-Image.jpeg");
-                Console.WriteLine(image);
             }
             if (File.Exists(Path.Combine(parent, Path.GetFileNameWithoutExtension(theme) + "-Data.json")))
             {
@@ -346,7 +417,6 @@ public partial class Settings : Window
                 {
                     image = (string)JsonData.GetValue("image");
                 }
-                Console.WriteLine(JsonData);
             }
                     
             listedTheme listData = new listedTheme();
@@ -357,78 +427,6 @@ public partial class Settings : Window
             listData.ButtonParameter = Path.GetFullPath(theme);
             InstalledThemes.Items.Add(listData);
         }
-    }
-
-    private void MarketplaceTabsOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (MarketplaceTabs.SelectedIndex == 0)
-        {
-            LoadLocalThemeItems();
-        }
-
-        if (MarketplaceTabs.SelectedIndex == 1)
-        {
-            LoadOnlineThemeItems();
-        }
-    }
-    
-    private void SettingsTabs_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        
-        TreeViewItem select = (TreeViewItem)SettingsTabs.SelectedItem;
-        string? selectionName = select.Name;
-        if (selectionName == "" || selectionName is null || selectionName == " ") return;
-        string selectionTabName = Regex.Replace(selectionName, "Selector$","")+"Tab";
-        var selectionTab = this.FindControl<Grid>(selectionTabName);
-        if (selectionTab is null) return;
-        selectionTab.Opacity = 1;
-        selectionTab.IsHitTestVisible = true;
-        if (currentlyViewing is not null && currentlyViewing != selectionTab)
-        {
-            currentlyViewing.Opacity = 0;
-            currentlyViewing.IsHitTestVisible = false;
-        }
-        
-        // Marketplace Loading Stuff:
-        if (selectionName == "MarketplaceSelector")
-        {
-            if (MarketplaceTabs.SelectedIndex == 0)
-            {
-                LoadLocalThemeItems();
-            }
-
-            if (MarketplaceTabs.SelectedIndex == 1)
-            {
-                LoadOnlineThemeItems();
-            }
-        }
-        
-        // Theme Editor Loading Stuff:
-        if (selectionName == "ThemeEditorSelector")
-        {
-            // Moved this here for performance reasons :P
-
-            if (!_textmateLoaded)
-            {
-                //  TextEditor Input
-                var _textEditor1 = this.FindControl<TextEditor>("ThemeInput");
-                var _registryOptions1 = new RegistryOptions(ThemeName.DarkPlus);
-                var _textMateInstallation1 = _textEditor1.InstallTextMate(_registryOptions1);
-                _textMateInstallation1.SetGrammar(
-                    _registryOptions1.GetScopeByLanguageId(_registryOptions1.GetLanguageByExtension(".xml").Id));
-
-                //  TextEditor Output
-                var _textEditor2 = this.FindControl<TextEditor>("ThemeOutput");
-                var _registryOptions2 = new RegistryOptions(ThemeName.DarkPlus);
-                var _textMateInstallation2 = _textEditor2.InstallTextMate(_registryOptions2);
-                _textMateInstallation2.SetGrammar(
-                    _registryOptions2.GetScopeByLanguageId(_registryOptions2.GetLanguageByExtension(".md").Id));
-            
-                _textmateLoaded = true;
-            }
-        }
-
-        currentlyViewing = selectionTab;
     }
 
     private void LoadTheme_Click(object? sender, RoutedEventArgs e)
