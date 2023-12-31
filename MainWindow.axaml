@@ -300,7 +300,6 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Panel Height="80" Background="#1fff">
-                                            <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="0" Margin="0"/>
                                             <Grid Margin="4">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="115"/>

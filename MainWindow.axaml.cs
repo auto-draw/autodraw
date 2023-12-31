@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,6 +50,7 @@ public partial class MainWindow : Window
         public string Title { get; set; }
         public string Image { get; set; }
     }
+    
 
     public MainWindow()
     {
@@ -80,7 +83,9 @@ public partial class MainWindow : Window
         ImageSaveImage.Click += ImageSaveImageOnClick;
         ImageClearImage.Click += ImageClearImageOnClick;
         
-        MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
+        MainTabControl.PropertyChanged += MainTabControlOnPropertyChanged;
+        
+        LoadSelectImageButton.Click += LoadSelectImageButtonOnClick;
 
         // Inputs
         SizeSlider.ValueChanged += SizeSliderOnValueChanged;
@@ -118,8 +123,14 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
-    private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void LoadSelectImageButtonOnClick(object? sender, RoutedEventArgs e)
     {
+        // Do something here.
+    }
+
+    private void MainTabControlOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property.ToString() != "SelectedIndex") return;
         if (MainTabControl.SelectedIndex == 3)
         {
             ImagesListBox.Items.Clear();

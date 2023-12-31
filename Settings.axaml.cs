@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -110,7 +111,7 @@ public partial class Settings : Window
         };
         
         // Marketplace
-        MarketplaceTabs.SelectionChanged += MarketplaceTabsOnSelectionChanged;
+        MarketplaceTabs.PropertyChanged += MarketplaceTabsOnPropertyChanged;
 
         // DALL-E API Keys
         SaveOpenAiKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAiKey.Text);
@@ -138,6 +139,22 @@ public partial class Settings : Window
         ImageCacheLocationClearButton.Click += ImageCacheLocationClearButtonOnClick;
     }
     
+    
+
+    private void MarketplaceTabsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property.ToString() != "SelectedIndex") return;
+        if (MarketplaceTabs.SelectedIndex == 0)
+        {
+            LoadLocalThemeItems();
+        }
+
+        if (MarketplaceTabs.SelectedIndex == 1)
+        {
+            LoadOnlineThemeItems();
+        }
+    }
+
     private Task<KeyCode> ChangeKeybind_OnClick()
     {
         _currentlyAwaitingKeypress = true;
@@ -356,19 +373,6 @@ public partial class Settings : Window
             listData.Author = author;
             listData.ButtonParameter = Path.GetFullPath(theme);
             InstalledThemes.Items.Add(listData);
-        }
-    }
-
-    private void MarketplaceTabsOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (MarketplaceTabs.SelectedIndex == 0)
-        {
-            LoadLocalThemeItems();
-        }
-
-        if (MarketplaceTabs.SelectedIndex == 1)
-        {
-            LoadOnlineThemeItems();
         }
     }
     
