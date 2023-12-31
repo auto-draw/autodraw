@@ -256,10 +256,6 @@
                         </Grid>
                     </Panel>
                 </TabItem>
-                
-                <TabItem Header="{x:Static assets:Resources.MainTab4}">
-                    
-                </TabItem>
             </TabControl>
             
             <Grid Grid.Row="2" Grid.Column="2">
