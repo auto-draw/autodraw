@@ -269,8 +269,8 @@
                 <Button Name="OpenButton" Grid.Column="0" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Padding="0">
                     <Image Source="avares://Autodraw/Assets/add-image.png"/>
                 </Button>
-                <Button Name="ProcessButton" Grid.Column="2" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Content="{x:Static assets:Resources.ProcessIMG}"/>
-                <Button Name="RunButton" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" Content="{x:Static assets:Resources.BeginDraw}"/>
+                <Button Name="ProcessButton" Grid.Column="2" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" FontSize="13" Content="{x:Static assets:Resources.ProcessIMG}"/>
+                <Button Name="RunButton" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" FontSize="13" Content="{x:Static assets:Resources.BeginDraw}"/>
             </Grid>
         </Grid>
     </Grid>
