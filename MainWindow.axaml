@@ -51,6 +51,8 @@
             <!-- Dear gz9, why is this in Toolbar Decorations (I'm dumb but it seems wrong :3) -->
             <!-- Dear Siydge, it's so that I can register the keybind CTRL+C within the app -->
             <!-- Dear gz9, but why needed in the toolbar? -->
+            <!-- Dear Siydge, in this case, to register a keybind within the app, you need to register a MenuItem, and 
+            then you can assign the click of that menu item to a keybind, for example, CTRL+S to save would be a menu item-->
             
             <Menu>
                 <MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
