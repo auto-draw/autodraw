@@ -55,16 +55,19 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         CurrentMainWindow = this;
+        // Onboarding
+        //if (!File.Exists(Config.ConfigPath)) 
+        //new Onboarding(CurrentMainWindow);
         Config.init();
 
         // Taskbar
-        CloseAppButton.Click += QuitAppOnClick;
+        CloseAppButton.Click += (_, _) => Close();
         MinimizeAppButton.Click += MinimizeAppOnClick;
         SettingsButton.Click += OpenSettingsOnClick;
-        DevButton.Click += DevOnClick;
+        DevButton.Click += (_, _) => OpenDevWindow();
 
         // Base
-        Closing += (_, _) => { Cleanup(); };
+        Closing += (_, _) => Cleanup();
         OpenButton.Click += OpenButtonOnClick;
         ProcessButton.Click += ProcessButtonOnClick;
         RunButton.Click += RunButtonOnClick;
@@ -75,7 +78,6 @@ public partial class MainWindow : Window
 
         // Inputs
         SizeSlider.ValueChanged += SizeSliderOnValueChanged;
-
         WidthInput.TextChanging += WidthInputOnTextChanged;
         HeightInput.TextChanging += HeightInputOnTextChanged;
         PercentageNumber.TextChanging += PercentageNumberOnTextChanged;
@@ -84,19 +86,18 @@ public partial class MainWindow : Window
         ClickDelayElement.TextChanging += ClickDelayOnTextChanging;
         minBlackThresholdElement.TextChanging += minBlackThresholdElementOnTextChanging;
         maxBlackThresholdElement.TextChanging += maxBlackThresholdElementOnTextChanging;
-
         AlphaThresholdElement.TextChanging += AlphaThresholdOnTextChanging;
 
         FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
 
-        // There's prob a better way of doing this 🤷‍♂️
-        HorizontalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        VerticalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        BorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        OutlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        InlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        InlineBorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
-        ErosionAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        EventHandler<TextChangingEventArgs> textChangeEvent = (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        HorizontalFilterText.TextChanging += textChangeEvent;
+        VerticalFilterText.TextChanging += textChangeEvent;
+        BorderAdvancedText.TextChanging += textChangeEvent;
+        OutlineAdvancedText.TextChanging += textChangeEvent;
+        InlineAdvancedText.TextChanging += textChangeEvent;
+        InlineBorderAdvancedText.TextChanging += textChangeEvent;
+        ErosionAdvancedText.TextChanging += textChangeEvent;
 
         // Config
         RefreshConfigsButton.Click += RefreshConfigList;
@@ -143,10 +144,7 @@ public partial class MainWindow : Window
         _devwindow?.Close();
         _settings?.Close();
         _aiPrompt?.Close();
-        if (Utils.LogObject != null)
-        {
-            Utils.LogObject.Close();
-        }
+        if (Utils.LogObject != null) Utils.LogObject.Close();
         Input.Stop();
         Drawing.Halt();
     }
@@ -457,71 +455,31 @@ public partial class MainWindow : Window
     private void DrawIntervalOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-
-        try
-        {
-            Drawing.Interval = int.Parse(DrawIntervalElement.Text);
-        }
-        catch
-        {
-            Drawing.Interval = 10000;
-        }
+        Drawing.Interval = int.TryParse(DrawIntervalElement.Text, out var interval) ? interval : 10000;
     }
 
     private void ClickDelayOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-
-        try
-        {
-            Drawing.ClickDelay = int.Parse(ClickDelayElement.Text);
-        }
-        catch
-        {
-            Drawing.ClickDelay = 1000;
-        }
+        Drawing.ClickDelay = int.TryParse(ClickDelayElement.Text, out var clickDelay) ? clickDelay : 1000;
     }
 
     private void minBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-
-        try
-        {
-            _minBlackThreshold = int.Parse(minBlackThresholdElement.Text);
-        }
-        catch
-        {
-            _minBlackThreshold = 127;
-        }
+        _minBlackThreshold = int.TryParse(minBlackThresholdElement.Text, out var black) ? black : 127;
     }
 
     private void maxBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-
-        try
-        {
-            _maxBlackThreshold = int.Parse(maxBlackThresholdElement.Text);
-        }
-        catch
-        {
-            _maxBlackThreshold = 127;
-        }
+        _maxBlackThreshold = int.TryParse(maxBlackThresholdElement.Text, out var black) ? black : 127;
     }
 
     private void AlphaThresholdOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-
-        try
-        {
-            _alphaThresh = int.Parse(AlphaThresholdElement.Text);
-        }
-        catch
-        {
-            _alphaThresh = 127;
-        }
+        _alphaThresh = int.TryParse(AlphaThresholdElement.Text, out var alpha) ? alpha : 127;
     }
 
     private void FreeDrawCheckboxOnClick(object? sender, RoutedEventArgs e)
@@ -534,16 +492,6 @@ public partial class MainWindow : Window
     private void MinimizeAppOnClick(object? sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
-    }
-
-    private void QuitAppOnClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
-    private void DevOnClick(object? sender, RoutedEventArgs e)
-    {
-        OpenDevWindow();
     }
 
     public async void PasteControl()

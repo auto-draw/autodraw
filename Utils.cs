@@ -57,6 +57,7 @@ public class Config
                 obj.Add("ConfigFolder", File.ReadAllText(Path.Combine(OldPath, "dir.txt")));
             var emptyJObject = JsonConvert.SerializeObject(obj);
             File.WriteAllText(ConfigPath, emptyJObject);
+            
         }
 
         Utils.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Styles"), ThemesPath);
