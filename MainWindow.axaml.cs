@@ -282,20 +282,6 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
-            static extern bool AXIsProcessTrusted();
-            if (!AXIsProcessTrusted())
-            {
-                var settings = Environment.OSVersion.Version.Major <= 12 ? "System Preferences > Security & Privacy > Privacy > Accessibility" : 
-                    "System Preferences > Privacy & Security > Accessibility";
-                new MessageBox().ShowMessageBox("Error!", "You have not given AutoDraw permission to control the cursor. " + 
-                            "To give AutoDraw this permission, go to '"+settings+"' and allow AutoDraw.", "error");
-                return;
-            }
-        }
-
         if (Drawing.IsDrawing) return;
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
