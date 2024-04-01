@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia;
@@ -23,7 +24,7 @@ public partial class MainWindow : Window
 
     private readonly Regex _numberRegex = new(@"[^0-9]");
     private DevTest? _devwindow;
-
+    
     private Settings? _settings;
     private OpenAIPrompt? _aiPrompt;
     private int _alphaThresh = 200;
@@ -279,6 +280,20 @@ public partial class MainWindow : Window
         {
             new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error");
             return;
+        }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            [DllImport("/System/Library/Frameworks/ApplicationServices.framework/ApplicationServices")]
+            static extern bool AXIsProcessTrusted();
+            if (!AXIsProcessTrusted())
+            {
+                var settings = Environment.OSVersion.Version.Major <= 12 ? "System Preferences > Security & Privacy > Privacy > Accessibility" : 
+                    "System Preferences > Privacy & Security > Accessibility";
+                new MessageBox().ShowMessageBox("Error!", "You have not given AutoDraw permission to control the cursor. " + 
+                            "To give AutoDraw this permission, go to '"+settings+"' and allow AutoDraw.", "error");
+                return;
+            }
         }
 
         if (Drawing.IsDrawing) return;
