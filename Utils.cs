@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Numerics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media.Imaging;
@@ -11,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpHook.Native;
 using SkiaSharp;
+using Vector = Avalonia.Vector;
 
 namespace Autodraw;
 
@@ -38,6 +40,9 @@ public class Config
     public static KeyCode Keybind_PauseDrawing = KeyCode.VcBackslash;
     public static KeyCode Keybind_SkipRescan = KeyCode.VcBackspace;
     public static KeyCode Keybind_LockPreview = KeyCode.VcLeftControl;
+    public static KeyCode Keybind_ClearLock = KeyCode.VcBackQuote;
+    
+    public static Vector2 Preview_LastLockPos = new Vector2(0,0);
 
     public static string ConfigPath = Path.Combine(FolderPath, "config.json");
     public static string ThemesPath = Path.Combine(FolderPath, "Themes");
@@ -104,6 +109,15 @@ public class Config
         if (GetEntry("Keybind_LockPreview") is not null)
         {
             Keybind_LockPreview = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_LockPreview")!);
+        }
+        if (GetEntry("Keybind_ClearLock") is not null)
+        {
+            Keybind_ClearLock = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_ClearLock")!);
+        }
+        
+        if (GetEntry("Preview_LastLockedX") is not null && GetEntry("Preview_LastLockedY") is not null )
+        {
+            Preview_LastLockPos = new Vector2(int.Parse(GetEntry("Preview_LastLockedX")!),int.Parse(GetEntry("Preview_LastLockedY")!));
         }
         
     }

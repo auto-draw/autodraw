@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Numerics;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
@@ -40,7 +41,7 @@ public partial class Preview : Window
         Dispatcher.UIThread.Invoke(() =>
         {
             var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
-            if (currUnix < lastMovement + 16) return;
+            if (currUnix < lastMovement + 10) return;
             lastMovement = currUnix;
             var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
             var x = usedPos.X - ((Width / 2) * scale);
@@ -81,7 +82,17 @@ public partial class Preview : Window
         if (e.Data.KeyCode == Config.Keybind_LockPreview)
         {
             if (Drawing.LastPos.X == 0 && Drawing.LastPos.Y == 0) Drawing.LastPos = Input.mousePos;
+            Config.SetEntry("Preview_LastLockedX", Drawing.LastPos.X.ToString());
+            Config.SetEntry("Preview_LastLockedY", Drawing.LastPos.Y.ToString());
             Drawing.UseLastPos = !Drawing.UseLastPos;
+        }
+
+        if (e.Data.KeyCode == Config.Keybind_ClearLock)
+        {
+            Drawing.LastPos = new Vector2(0,0);
+            Config.SetEntry("Preview_LastLockedX", "0");
+            Config.SetEntry("Preview_LastLockedY", "0");
+            Drawing.UseLastPos = false;
         }
     }
 
