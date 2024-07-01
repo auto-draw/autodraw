@@ -49,8 +49,8 @@ public partial class MainWindow : Window
         
         // Set language to user-specified language 
         var installedLanguage = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
-        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage );
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage);
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage );
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
         Utils.Log(installedLanguage);
 
         InitializeComponent();
@@ -514,7 +514,7 @@ public partial class MainWindow : Window
     {
         var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
         if (folder.Count != 1) return;
-        Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
+        Config.SetEntry("ConfigFolder", folder[0].TryGetLocalPath());
         RefreshConfigList(this, null);
     }
 
@@ -588,7 +588,7 @@ public partial class MainWindow : Window
 
     public void RefreshConfigList(object? sender, RoutedEventArgs? e)
     {
-        var configFolder = Config.getEntry("ConfigFolder");
+        var configFolder = Config.GetEntry("ConfigFolder");
         if (configFolder == null) return;
         if (!Directory.Exists(configFolder)) return;
         var files = Directory.GetFiles(configFolder, "*.drawcfg");
@@ -603,6 +603,6 @@ public partial class MainWindow : Window
         if (ConfigsListBox.SelectedItem == null) return;
         var selectedItem = ConfigsListBox.SelectedItem.ToString();
         if (selectedItem == null) return;
-        LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), selectedItem)}.drawcfg");
+        LoadConfig($"{Path.Combine(Config.GetEntry("ConfigFolder"), selectedItem)}.drawcfg");
     }
 }

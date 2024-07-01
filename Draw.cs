@@ -40,7 +40,7 @@ public static class Drawing
     public static bool UseLastPos = false;
 
     public static bool ShowPopup =
-        Config.getEntry("showPopup") == null || bool.Parse(Config.getEntry("showPopup") ?? "true");
+        Config.GetEntry("showPopup") == null || bool.Parse(Config.GetEntry("showPopup") ?? "true");
 
 
     private static DrawDataDisplay? _dataDisplay;

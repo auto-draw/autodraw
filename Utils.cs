@@ -49,7 +49,7 @@ public class Config
         if (!File.Exists(ConfigPath))
         {
             JObject obj = new();
-            // Migrates old directory list path (from autodrawer v1) to the new config file
+            // Migrates old directory list path (from AutoDraw v1) to the new config file
             var OldPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "AutoDraw");
             if (File.Exists(Path.Combine(OldPath, "dir.txt")) &&
@@ -62,61 +62,53 @@ public class Config
 
         Utils.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Styles"), ThemesPath);
         
-        // Start of Compatability Code, please remove 1 month after release of v2.1, aka during 1st of February.
-        if (getEntry("SavedPath") is not null)
-        {
-            setEntry("SavedThemesPath", getEntry("SavedPath"));
-            setEntry("SavedPath", "");
-        }
-        // End of Compatability Code
-        
-        // Check Configuration Path for Themes.
-        if (getEntry("SavedThemesPath") is null || !Directory.Exists(getEntry("SavedPath")))
+        // Check Configuration Path for Themes
+        if (GetEntry("SavedThemesPath") is null || !Directory.Exists(GetEntry("SavedPath")))
         {
             Directory.CreateDirectory(ThemesPath);
-            setEntry("SavedThemesPath", ThemesPath);
+            SetEntry("SavedThemesPath", ThemesPath);
         }
         else
         {
-            ThemesPath = getEntry("SavedThemesPath");
+            ThemesPath = GetEntry("SavedThemesPath")!;
         }
         
-        // Check Configuration Path for Cache.
-        if (getEntry("SavedCachePath") is null || !Directory.Exists(getEntry("SavedPath")))
+        // Check Configuration Path for Cache
+        if (GetEntry("SavedCachePath") is null || !Directory.Exists(GetEntry("SavedPath")))
         {
             Directory.CreateDirectory(CachePath);
-            setEntry("SavedCachePath", CachePath);
+            SetEntry("SavedCachePath", CachePath);
         }
         else
         {
-            CachePath = getEntry("SavedCachePath");
+            CachePath = GetEntry("SavedCachePath")!;
         }
         
-        // Get the Keybinds :P
-        if (getEntry("Keybind_StartDrawing") is not null)
+        // Get Keybinds
+        if (GetEntry("Keybind_StartDrawing") is not null)
         {
-            Keybind_StartDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_StartDrawing"));
+            Keybind_StartDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_StartDrawing")!);
         }
-        if (getEntry("Keybind_StopDrawing") is not null)
+        if (GetEntry("Keybind_StopDrawing") is not null)
         {
-            Keybind_StopDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_StopDrawing"));
+            Keybind_StopDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_StopDrawing")!);
         }
-        if (getEntry("Keybind_PauseDrawing") is not null)
+        if (GetEntry("Keybind_PauseDrawing") is not null)
         {
-            Keybind_PauseDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_PauseDrawing"));
+            Keybind_PauseDrawing = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_PauseDrawing")!);
         }
-        if (getEntry("Keybind_SkipRescan") is not null)
+        if (GetEntry("Keybind_SkipRescan") is not null)
         {
-            Keybind_SkipRescan = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_SkipRescan"));
+            Keybind_SkipRescan = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_SkipRescan")!);
         }
-        if (getEntry("Keybind_LockPreview") is not null)
+        if (GetEntry("Keybind_LockPreview") is not null)
         {
-            Keybind_LockPreview = (KeyCode)Enum.Parse(typeof(KeyCode), getEntry("Keybind_LockPreview"));
+            Keybind_LockPreview = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_LockPreview")!);
         }
         
     }
 
-    public static string? getEntry(string entry)
+    public static string? GetEntry(string entry)
     {
         if (!File.Exists(ConfigPath)) return null;
         var json = File.ReadAllText(ConfigPath);
@@ -124,7 +116,7 @@ public class Config
         return (string?)parse[entry];
     }
 
-    public static bool setEntry(string entry, string data)
+    public static bool SetEntry(string entry, string data)
     {
         if (!File.Exists(ConfigPath)) return false;
         var json = File.ReadAllText(ConfigPath);
@@ -139,7 +131,7 @@ public class Utils
 {
     public static string LogFolder = Path.Combine(Config.FolderPath, "logs");
     public static string LogsPath = Path.Combine(LogFolder, $"{DateTime.Now:dd.MM.yyyy}.txt");
-    public static bool LoggingEnabled = Config.getEntry("logsEnabled") == "True";
+    public static bool LoggingEnabled = Config.GetEntry("logsEnabled") == "True";
     public static StreamWriter? LogObject;
 
     public static void Log(string text)

@@ -22,7 +22,7 @@ public partial class OpenAIPrompt : Window
     {
         InitializeComponent();
 
-        if (Config.getEntry("OpenAIKey") is null)
+        if (Config.GetEntry("OpenAIKey") is null)
         {
             Warning1.Opacity = 1;
             Warning2.Opacity = 1;
@@ -72,7 +72,7 @@ public partial class OpenAIPrompt : Window
 
     private void GenerateOnClick(object? sender, RoutedEventArgs e)
     {
-        var OpenAIKey = Config.getEntry("OpenAIKey");
+        var OpenAIKey = Config.GetEntry("OpenAIKey");
         if (OpenAIKey is null)
         {
             new MessageBox().ShowMessageBox("Error!", "You have not set up an API key!", "error");

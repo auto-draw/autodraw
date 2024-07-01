@@ -12,10 +12,10 @@ namespace Autodraw;
 
 public class App : Application
 {
-    public static string CurrentTheme = Config.getEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
+    public static string CurrentTheme = Config.GetEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
 
     public static bool SavedIsDark =
-        Config.getEntry("isDarkTheme") == null || bool.Parse(Config.getEntry("isDarkTheme") ?? "true");
+        Config.GetEntry("isDarkTheme") == null || bool.Parse(Config.GetEntry("isDarkTheme") ?? "true");
 
     private static void ThemeFailed()
     {
@@ -30,8 +30,8 @@ public class App : Application
             if (Current.Styles.Count > 4)
                 Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
-            Config.setEntry("theme", CurrentTheme);
-            Config.setEntry("isDarkTheme", SavedIsDark.ToString());
+            Config.SetEntry("theme", CurrentTheme);
+            Config.SetEntry("isDarkTheme", SavedIsDark.ToString());
         }
         catch
         {
@@ -45,8 +45,8 @@ public class App : Application
             Current.Styles.Add(Resource);
             CurrentTheme = "avares://Autodraw/Styles/dark.axaml";
             SavedIsDark = true;
-            Config.setEntry("theme", "avares://Autodraw/Styles/dark.axaml");
-            Config.setEntry("isDarkTheme", true.ToString());
+            Config.SetEntry("theme", "avares://Autodraw/Styles/dark.axaml");
+            Config.SetEntry("isDarkTheme", true.ToString());
         }
     }
 
@@ -83,8 +83,8 @@ public class App : Application
             {
                 CurrentTheme = themeUri;
                 SavedIsDark = isDark;
-                Config.setEntry("theme", themeUri);
-                Config.setEntry("isDarkTheme", isDark.ToString());
+                Config.SetEntry("theme", themeUri);
+                Config.SetEntry("isDarkTheme", isDark.ToString());
             }
         }
         catch (Exception ex)
@@ -113,8 +113,8 @@ public class App : Application
             Current.Styles.Add(Resource);
             CurrentTheme = themeUri;
             SavedIsDark = isDark;
-            Config.setEntry("theme", themeUri);
-            Config.setEntry("isDarkTheme", isDark.ToString());
+            Config.SetEntry("theme", themeUri);
+            Config.SetEntry("isDarkTheme", isDark.ToString());
         }
         catch
         {
