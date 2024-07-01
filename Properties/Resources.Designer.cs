@@ -87,7 +87,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to v2.1.
+        ///   Looks up a localized string similar to v2.2.
         /// </summary>
         public static string AutoDrawVersion {
             get {
@@ -96,7 +96,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Version: v2.1.0.
+        ///   Looks up a localized string similar to Current Version: v2.2.0.
         /// </summary>
         public static string AutoDrawVersionDetailed {
             get {

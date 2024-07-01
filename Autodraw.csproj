@@ -18,8 +18,8 @@
         <StartupObject></StartupObject>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <FileVersion>2.1.0.0</FileVersion>
-        <AssemblyVersion>7.15.2023</AssemblyVersion>
+        <FileVersion>2.2.0.0</FileVersion>
+        <AssemblyVersion>7.1.2024</AssemblyVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -104,12 +104,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="bin\Debug\net6.0-windows\icons8-pogchamp-96.png"/>
-        <Content Include="bin\Release\net6.0-windows\icons8-pogchamp-96.png"/>
-        <Content Include="bin\Release\net6.0-windows\win-x64\icons8-pogchamp-96.png"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <EmbeddedResource Include="Styles\Anime\anime.axaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
@@ -161,7 +155,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\ThemeItems\Anime\"/>
-        <Folder Include="Assets\ThemeItems\Landscape\"/>
+        <Folder Include="Assets\ThemeItems\Anime\" />
+        <Folder Include="Assets\ThemeItems\Landscape\" />
     </ItemGroup>
 </Project>

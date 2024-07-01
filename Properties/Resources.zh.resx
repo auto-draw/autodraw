@@ -198,7 +198,7 @@
         <value>比例尺</value>
     </data>
     <data name="AutoDrawVersionDetailed" xml:space="preserve">
-        <value>当前软件版本：v2.1.0</value>
+        <value>当前软件版本：v2.2.0</value>
     </data>
     <data name="AutoDrawLanguageVersion" xml:space="preserve">
         <value>语言版本： C# 10.0</value>
