@@ -321,4 +321,7 @@
     <data name="AutoDrawNetFramework" xml:space="preserve">
         <value>.NET Framework Version: net6.0</value>
     </data>
+    <data name="LockAspectRatio" xml:space="preserve">
+        <value>Lock Aspect Ratio</value>
+    </data>
 </root>

@@ -117,9 +117,6 @@
         <EmbeddedResource Include="Styles\Landscape\landscape.jpg">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
-        <EmbeddedResource Update="Properties\Resources.en-au.resx">
-          <DependentUpon>Resources.resx</DependentUpon>
-        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>

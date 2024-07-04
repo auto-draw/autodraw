@@ -415,9 +415,10 @@ public partial class MainWindow : Window
             PercentageNumber.Text = "8096";
             return;
         }
-
-        ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
-
+        
+        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
+        else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
+        
         _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
         WidthInput.Text = _displayedBitmap.Size.Width.ToString();
@@ -444,7 +445,8 @@ public partial class MainWindow : Window
                 return;
         }
 
-        ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
+        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
+        else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
 
         _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
