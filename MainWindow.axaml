@@ -76,7 +76,7 @@
         <Image Classes="MainBodySecond" Grid.Row="1" />
         <Image Classes="MainBodyThird" Grid.Row="1" />
 
-        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="8" RowDefinitions="*,8,32" ColumnDefinitions="3*,8,2*">
+        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="8" RowDefinitions="*,8,32" ColumnDefinitions="3*,8,300">
             <Grid Grid.Column="0" Grid.RowSpan="3" RowDefinitions="1*,48,26,4">
                 <Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
                     <Canvas.ContextMenu>
@@ -109,57 +109,64 @@
             <Border BorderBrush="#5000" BorderThickness="1" Grid.Row="0" Grid.Column="2" CornerRadius="2"/>
             <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="0">
                 <TabItem Header="{x:Static assets:Resources.MainTab1}">
-                    <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
-                        <Border Background="#4000" CornerRadius="4" Grid.RowSpan="4"  Grid.ColumnSpan="3"/>
-                        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center">
-                            <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
-                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralInterval}"/>
-                            <TextBox Name="DrawIntervalElement" Margin="4 4" CornerRadius="2">
-                                7500
-                            </TextBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
-                            <ToolTip.Tip>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</ToolTip.Tip>
-                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralCD}"/>
-                            <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2">
-                                600
-                            </TextBox>
-                        </StackPanel>
-                        <Grid Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" VerticalAlignment="Center"
-                              RowDefinitions="Auto,*"
-                              ColumnDefinitions="*,8,*">
-                            <ToolTip.Tip>This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Content="{x:Static assets:Resources.GeneralLT}"/>
-                            <StackPanel Grid.Row="1" Grid.Column="0">
-                                <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Minimum}"/>
-                                <TextBox Name="minBlackThresholdElement" Margin="4 4" CornerRadius="2">
-                                    0
-                                </TextBox>
+                    <Grid>
+                        <Border Background="#4000" CornerRadius="4"/>
+                        <ScrollViewer Padding="4 8 4 8">
+                            <StackPanel Orientation="Vertical">
+                                <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
+                                    <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="0 8 0 0">
+                                        <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
+                                        <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralInterval}"/>
+                                        <TextBox Name="DrawIntervalElement" Margin="4 4" CornerRadius="2">
+                                            7500
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Margin="0 8 0 0">
+                                        <ToolTip.Tip>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</ToolTip.Tip>
+                                        <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralCD}"/>
+                                        <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2">
+                                            600
+                                        </TextBox>
+                                    </StackPanel>
+                                    <Grid Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" VerticalAlignment="Center"
+                                          RowDefinitions="Auto,*"
+                                          ColumnDefinitions="*,8,*"
+                                          Margin="0 8 0 0">
+                                        <ToolTip.Tip>This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255</ToolTip.Tip>
+                                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Content="{x:Static assets:Resources.GeneralLT}"/>
+                                        <StackPanel Grid.Row="1" Grid.Column="0">
+                                            <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Minimum}"/>
+                                            <TextBox Name="minBlackThresholdElement" Margin="4 4" CornerRadius="2">
+                                                0
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="2">
+                                            <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Maximum}"/>
+                                            <TextBox Name="maxBlackThresholdElement" Margin="4 4" CornerRadius="2">
+                                                127
+                                            </TextBox>
+                                        </StackPanel>
+                                    </Grid>
+                                    <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"  Margin="0 8 0 0">
+                                        <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
+                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralAT}"/>
+                                        <TextBox Name="AlphaThresholdElement" Margin="4 4" CornerRadius="2">
+                                            127
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="0 8 0 0">
+                                        <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
+                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDP}"/>
+                                        <ComboBox Name="PatternSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem Content="{x:Static assets:Resources.DPH}"/>
+                                            <ComboBoxItem Content="{x:Static assets:Resources.DPV}"/>
+                                            <ComboBoxItem Content="{x:Static assets:Resources.DPD}"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0" Content="{x:Static assets:Resources.FDBypass}" />
+                                </Grid>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="2">
-                                <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Maximum}"/>
-                                <TextBox Name="maxBlackThresholdElement" Margin="4 4" CornerRadius="2">
-                                    127
-                                </TextBox>
-                            </StackPanel>
-                        </Grid>
-                        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center">
-                            <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label FontSize="16" Content="{x:Static assets:Resources.GeneralAT}"/>
-                            <TextBox Name="AlphaThresholdElement" Margin="4 4" CornerRadius="2">
-                                127
-                            </TextBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center">
-                            <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                            <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDP}"/>
-                            <ComboBox Name="PatternSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
-                                <ComboBoxItem Content="{x:Static assets:Resources.DPH}"/>
-                                <ComboBoxItem Content="{x:Static assets:Resources.DPV}"/>
-                                <ComboBoxItem Content="{x:Static assets:Resources.DPD}"/>
-                            </ComboBox>
-                        </StackPanel>
-                        <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0" Content="{x:Static assets:Resources.FDBypass}" />
+                        </ScrollViewer>
                     </Grid>
                 </TabItem>
                 
