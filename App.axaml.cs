@@ -17,6 +17,8 @@ public class App : Application
     public static bool SavedIsDark =
         Config.GetEntry("isDarkTheme") == null || bool.Parse(Config.GetEntry("isDarkTheme") ?? "true");
 
+    private static int themeIndex = 5;
+
     private static void ThemeFailed()
     {
         // This function is for if it failed to load a theme, will revert to previous, or will decide to use darkmode if all else fails.
@@ -27,8 +29,8 @@ public class App : Application
                 new Uri(CurrentTheme)
             );
             Current.RequestedThemeVariant = SavedIsDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            if (Current.Styles.Count > 4)
-                Current.Styles.Remove(Current.Styles[4]);
+            if (Current.Styles.Count > themeIndex)
+                Current.Styles.Remove(Current.Styles[themeIndex]);
             Current.Styles.Add(Resource);
             Config.SetEntry("theme", CurrentTheme);
             Config.SetEntry("isDarkTheme", SavedIsDark.ToString());
@@ -40,8 +42,8 @@ public class App : Application
                 new Uri("avares://Autodraw/Styles/dark.axaml")
             );
             Current.RequestedThemeVariant = ThemeVariant.Dark;
-            if (Current.Styles.Count > 4)
-                Current.Styles.Remove(Current.Styles[4]);
+            if (Current.Styles.Count > themeIndex)
+                Current.Styles.Remove(Current.Styles[themeIndex]);
             Current.Styles.Add(Resource);
             CurrentTheme = "avares://Autodraw/Styles/dark.axaml";
             SavedIsDark = true;
@@ -77,7 +79,7 @@ public class App : Application
                 TextInput
             );
             Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            Current.Styles.Remove(Current.Styles[4]);
+            Current.Styles.Remove(Current.Styles[themeIndex]);
             Current.Styles.Add(Resource);
             if (themeUri != "")
             {
@@ -109,7 +111,7 @@ public class App : Application
                 new Uri(themeUri)
             );
             Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            Current.Styles.Remove(Current.Styles[4]);
+            Current.Styles.Remove(Current.Styles[themeIndex]);
             Current.Styles.Add(Resource);
             CurrentTheme = themeUri;
             SavedIsDark = isDark;

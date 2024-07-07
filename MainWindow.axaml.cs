@@ -242,7 +242,7 @@ public partial class MainWindow : Window
 
         _processedBitmap = ImageProcessing.Process(_preFxBitmap, GetSelectFilters());
         _displayedBitmap = _processedBitmap.ConvertToAvaloniaBitmap();
-        ImagePreview.Source = _displayedBitmap;
+        ImagePreview.Image = _displayedBitmap;
     }
 
     public void ImportImage(string? path, byte[]? img = null)
@@ -252,7 +252,7 @@ public partial class MainWindow : Window
         _displayedBitmap = _rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
         _processedBitmap?.Dispose();
         _processedBitmap = null;
-        ImagePreview.Source = _displayedBitmap;
+        ImagePreview.Image = _displayedBitmap;
 
         _inChange = true;
         SizeSlider.Value = 100;
@@ -313,7 +313,7 @@ public partial class MainWindow : Window
         _preFxBitmap = new SKBitmap(318, 318, true);
         _processedBitmap = null;
         _displayedBitmap = null;
-        ImagePreview.Source = null;
+        ImagePreview.Image = null;
     }
 
     // Inputs Handles
@@ -341,7 +341,7 @@ public partial class MainWindow : Window
             _preFxBitmap = resizedBitmap;
             _displayedBitmap?.Dispose();
             _displayedBitmap = resizedBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Source = _displayedBitmap;
+            ImagePreview.Image = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             _memoryPressure += resizedBitmap.ByteCount;
         }
@@ -355,7 +355,7 @@ public partial class MainWindow : Window
             _processedBitmap = postProcessBitmap;
             _displayedBitmap?.Dispose();
             _displayedBitmap = postProcessBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Source = _displayedBitmap;
+            ImagePreview.Image = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             _memoryPressure += resizedBitmap.ByteCount;
         }

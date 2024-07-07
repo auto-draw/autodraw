@@ -52,6 +52,7 @@
             <NoWarn>true</NoWarn>
         </PackageReference>
         <PackageReference Include="TextMateSharp.Grammars" Version="1.0.58" />
+        <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
     </ItemGroup>
 
     <ItemGroup>

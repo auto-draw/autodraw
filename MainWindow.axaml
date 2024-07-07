@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:assets="clr-namespace:Autodraw.Properties"
         
+        xmlns:avaloniaControls="clr-namespace:UVtools.AvaloniaControls;assembly=UVtools.AvaloniaControls"
+
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
         x:Name="AutoDraw"
 
@@ -89,9 +91,9 @@
                     <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
                             Height="{Binding $parent.Bounds.Height}">
                     </Border>
-                    <Image Name="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
-                           Height="{Binding $parent.Bounds.Height}" DragDrop.AllowDrop="True">
-                    </Image>
+                    <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False"
+                                                       Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
+                    </avaloniaControls:AdvancedImageBox>
                 </Canvas>
                 <Slider Grid.Row="1" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100"
                         TickFrequency="1" Padding="8 0 8 0" />

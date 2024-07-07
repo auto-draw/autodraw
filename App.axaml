@@ -4,6 +4,7 @@
              RequestedThemeVariant="Dark">
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml"/>
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
         <StyleInclude Source="avares://Autodraw/Styles/universal.axaml" />
