@@ -45,6 +45,13 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        InitializeComponent();
+        
+        if (Design.IsDesignMode)
+        {
+            return;
+        }
+        
         this.AttachDevTools();
         
         // Set language to user-specified language 
@@ -52,8 +59,6 @@ public partial class MainWindow : Window
         Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage );
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
         Utils.Log(installedLanguage);
-
-        InitializeComponent();
 
         CurrentMainWindow = this;
         // Onboarding
