@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia;
@@ -23,40 +22,38 @@ public partial class MainWindow : Window
         { Invert = false, MaxThreshold = 127, AlphaThreshold = 200 };
 
     private readonly Regex _numberRegex = new(@"[^0-9]");
-    private DevTest? _devwindow;
-    
-    private Settings? _settings;
     private OpenAIPrompt? _aiPrompt;
     private int _alphaThresh = 200;
+    private DevTest? _devwindow;
     private Bitmap? _displayedBitmap;
-    private int _minBlackThreshold;
-    private int _maxBlackThreshold = 127;
+    private bool _inChange;
 
     private long _lastMem;
+    private long _lastTime = DateTime.Now.ToFileTime();
+    private int _maxBlackThreshold = 127;
+
     // ReSharper disable once NotAccessedField.Local
     private long _memoryPressure;
-    private bool _inChange;
-    private long _lastTime = DateTime.Now.ToFileTime();
-    public long sessionTime = DateTime.Now.ToFileTime();
-
-    private SKBitmap? _rawBitmap = new(318, 318, true);
+    private int _minBlackThreshold;
     private SKBitmap? _preFxBitmap = new(318, 318, true);
     private SKBitmap? _processedBitmap;
+
+    private SKBitmap? _rawBitmap = new(318, 318, true);
+
+    private Settings? _settings;
+    public long sessionTime = DateTime.Now.ToFileTime();
 
     public MainWindow()
     {
         InitializeComponent();
-        
-        if (Design.IsDesignMode)
-        {
-            return;
-        }
-        
+
+        if (Design.IsDesignMode) return;
+
         this.AttachDevTools();
-        
+
         // Set language to user-specified language 
         var installedLanguage = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
-        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage );
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
         Utils.Log(installedLanguage);
 
@@ -77,7 +74,7 @@ public partial class MainWindow : Window
         OpenButton.Click += OpenButtonOnClick;
         ProcessButton.Click += ProcessButtonOnClick;
         RunButton.Click += RunButtonOnClick;
-        
+
         ImageAIGeneration.Click += ImageAIGenerationOnClick;
         ImageSaveImage.Click += ImageSaveImageOnClick;
         ImageClearImage.Click += ImageClearImageOnClick;
@@ -96,7 +93,7 @@ public partial class MainWindow : Window
 
         FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
 
-        EventHandler<TextChangingEventArgs> textChangeEvent = (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        EventHandler<TextChangingEventArgs> textChangeEvent = (sender, e) => HandleTextChange(e);
         HorizontalFilterText.TextChanging += textChangeEvent;
         VerticalFilterText.TextChanging += textChangeEvent;
         BorderAdvancedText.TextChanging += textChangeEvent;
@@ -116,9 +113,22 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
+    // User Configuration Handles
+
+    //*
+    public static FilePickerFileType ConfigsFileFilter { get; } = new("AutoDraw Config Files")
+    {
+        Patterns = new[] { "*.drawcfg" }
+    };
+
+    public static FilePickerFileType PngFileFilter { get; } = new("Portable Network Graphics")
+    {
+        Patterns = new[] { "*.png" }
+    };
+
     private void ImageAIGenerationOnClick(object? sender, RoutedEventArgs e)
     {
-        if(_aiPrompt is not null) return; 
+        if (_aiPrompt is not null) return;
         _aiPrompt = new OpenAIPrompt();
         _aiPrompt.Show();
         _aiPrompt.Closed += AiPromptOnClosed;
@@ -128,19 +138,6 @@ public partial class MainWindow : Window
     {
         _aiPrompt = null;
     }
-
-    // User Configuration Handles
-
-    //*
-    public static FilePickerFileType ConfigsFileFilter { get; } = new("AutoDraw Config Files")
-    {
-        Patterns = new[] { "*.drawcfg" }
-    };
-    
-    public static FilePickerFileType PngFileFilter { get; } = new("Portable Network Graphics")
-    {
-        Patterns = new[] { "*.png" }
-    };
 
 
     // Core Functions
@@ -182,24 +179,24 @@ public partial class MainWindow : Window
         _currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
-        
+
         //// Generic Filters
         _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         _currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
-        
+
         //// Pattern Filters
         _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         _currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
         _currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
         _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
-        
+
         //// Experimental Filters
         _currentFilters.BorderAdvanced = int.Parse(BorderAdvancedText.Text ?? "0");
         _currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
         _currentFilters.InlineAdvanced = int.Parse(InlineAdvancedText.Text ?? "0");
         _currentFilters.InlineBorderAdvanced = int.Parse(InlineBorderAdvancedText.Text ?? "0");
         _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
-        
+
         // Dither Filters
         // **Yet to be implemented**
 
@@ -222,7 +219,7 @@ public partial class MainWindow : Window
     {
         _settings = null;
     }
-    
+
     private void OpenDevWindow()
     {
         _devwindow ??= new DevTest();
@@ -300,7 +297,7 @@ public partial class MainWindow : Window
             Title = "Save Processed Image",
             FileTypeChoices = new[] { PngFileFilter }
         });
-        
+
         if (file is not null)
         {
             var encodedData = _processedBitmap.Encode(SKEncodedImageFormat.Png, 100);
@@ -309,11 +306,11 @@ public partial class MainWindow : Window
             encodedData.SaveTo(stream);
         }
     }
-    
+
     private void ImageClearImageOnClick(object? sender, RoutedEventArgs e)
-    { 
-        _rawBitmap = new(318, 318, true);
-        _preFxBitmap = new(318, 318, true);
+    {
+        _rawBitmap = new SKBitmap(318, 318, true);
+        _preFxBitmap = new SKBitmap(318, 318, true);
         _processedBitmap = null;
         _displayedBitmap = null;
         ImagePreview.Source = null;
@@ -323,7 +320,7 @@ public partial class MainWindow : Window
 
     private void HandleTextChange(TextChangingEventArgs e)
     {
-        TextBox source = (TextBox)e.Source;
+        var source = (TextBox)e.Source;
         source.Text = _numberRegex.Replace(source.Text, "");
         e.Handled = true;
 
@@ -420,10 +417,10 @@ public partial class MainWindow : Window
             PercentageNumber.Text = "8096";
             return;
         }
-        
+
         if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
         else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
-        
+
         _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
         WidthInput.Text = _displayedBitmap.Size.Width.ToString();
@@ -516,7 +513,7 @@ public partial class MainWindow : Window
             Utils.Log("Error with PasteControl(): " + ex);
         }
     }
-    
+
     public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)
     {
         var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
@@ -530,7 +527,8 @@ public partial class MainWindow : Window
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) return;
         var lines = File.ReadAllLines(path);
-        SelectedConfigLabel.Content = $"{Properties.Resources.ConfigSelected} - {Path.GetFileNameWithoutExtension(path)}";
+        SelectedConfigLabel.Content =
+            $"{Properties.Resources.ConfigSelected} - {Path.GetFileNameWithoutExtension(path)}";
 
         DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
 
