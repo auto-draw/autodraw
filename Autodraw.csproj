@@ -46,7 +46,7 @@
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
         <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="RestSharp" Version="111.3.0" />
+        <PackageReference Include="RestSharp" Version="112.1.0" />
         <PackageReference Include="SharpHook" Version="5.3.6" />
         <PackageReference Include="SimWinMouse" Version="1.0.2">
             <NoWarn>true</NoWarn>
