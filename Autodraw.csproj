@@ -45,7 +45,7 @@
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.5" />
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="RestSharp" Version="110.2.0"/>
+        <PackageReference Include="RestSharp" Version="112.1.0" />
         <PackageReference Include="SharpHook" Version="5.2.0" />
         <PackageReference Include="SimWinMouse" Version="1.0.2">
             <NoWarn>true</NoWarn>
