@@ -18,8 +18,8 @@
         <StartupObject></StartupObject>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <FileVersion>2.2.0.0</FileVersion>
-        <AssemblyVersion>7.1.2024</AssemblyVersion>
+        <FileVersion>2.1.0.0</FileVersion>
+        <AssemblyVersion>7.15.2023</AssemblyVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -32,27 +32,25 @@
 
     <ItemGroup>
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1"/>
-        <PackageReference Include="Avalonia" Version="11.0.11" />
-        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.6" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
+        <PackageReference Include="Avalonia" Version="11.0.6" />
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <!-- ^^^ yeah yeah whatever, too bad we using it anyways in build :D -->
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.11" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.11" />
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.11" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.11" />
-        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.6" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
+        <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.5" />
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
-        <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="RestSharp" Version="112.1.0" />
-        <PackageReference Include="SharpHook" Version="5.3.6" />
+        <PackageReference Include="RestSharp" Version="110.2.0"/>
+        <PackageReference Include="SharpHook" Version="5.2.0" />
         <PackageReference Include="SimWinMouse" Version="1.0.2">
             <NoWarn>true</NoWarn>
         </PackageReference>
-        <PackageReference Include="TextMateSharp.Grammars" Version="1.0.58" />
-        <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
+        <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -106,6 +104,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="bin\Debug\net6.0-windows\icons8-pogchamp-96.png"/>
+        <Content Include="bin\Release\net6.0-windows\icons8-pogchamp-96.png"/>
+        <Content Include="bin\Release\net6.0-windows\win-x64\icons8-pogchamp-96.png"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <EmbeddedResource Include="Styles\Anime\anime.axaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
@@ -117,6 +121,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="Styles\Landscape\landscape.jpg">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.en-au.resx">
+          <DependentUpon>Resources.resx</DependentUpon>
         </EmbeddedResource>
     </ItemGroup>
 
@@ -154,7 +161,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\ThemeItems\Anime\" />
-        <Folder Include="Assets\ThemeItems\Landscape\" />
+        <Folder Include="Assets\ThemeItems\Anime\"/>
+        <Folder Include="Assets\ThemeItems\Landscape\"/>
     </ItemGroup>
 </Project>

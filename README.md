@@ -30,7 +30,8 @@ AutoDrawer is a program that allows users to draw imported images using their cu
 <a name="Installation"/>
 <h1> Installation </h1>
 
-Follow [this guide](https://github.com/auto-draw/autodraw/releases) to install AutoDrawer.
+Follow [this guide](https://github.com/Siydge/autodraw-roblox/releases) to install AutoDrawer
+and [this guide](https://github.com/AlexCYP/autodrawer/wiki/Quickstart) to get up and running.
 
 <a name="Version2"/>
 <h3> Version 2 </h3>

@@ -12,12 +12,10 @@ namespace Autodraw;
 
 public class App : Application
 {
-    public static string CurrentTheme = Config.GetEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
+    public static string CurrentTheme = Config.getEntry("theme") ?? "avares://Autodraw/Styles/dark.axaml";
 
     public static bool SavedIsDark =
-        Config.GetEntry("isDarkTheme") == null || bool.Parse(Config.GetEntry("isDarkTheme") ?? "true");
-
-    private static int themeIndex = 5;
+        Config.getEntry("isDarkTheme") == null || bool.Parse(Config.getEntry("isDarkTheme") ?? "true");
 
     private static void ThemeFailed()
     {
@@ -29,11 +27,11 @@ public class App : Application
                 new Uri(CurrentTheme)
             );
             Current.RequestedThemeVariant = SavedIsDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            if (Current.Styles.Count > themeIndex)
-                Current.Styles.Remove(Current.Styles[themeIndex]);
+            if (Current.Styles.Count > 4)
+                Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
-            Config.SetEntry("theme", CurrentTheme);
-            Config.SetEntry("isDarkTheme", SavedIsDark.ToString());
+            Config.setEntry("theme", CurrentTheme);
+            Config.setEntry("isDarkTheme", SavedIsDark.ToString());
         }
         catch
         {
@@ -42,13 +40,13 @@ public class App : Application
                 new Uri("avares://Autodraw/Styles/dark.axaml")
             );
             Current.RequestedThemeVariant = ThemeVariant.Dark;
-            if (Current.Styles.Count > themeIndex)
-                Current.Styles.Remove(Current.Styles[themeIndex]);
+            if (Current.Styles.Count > 4)
+                Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
             CurrentTheme = "avares://Autodraw/Styles/dark.axaml";
             SavedIsDark = true;
-            Config.SetEntry("theme", "avares://Autodraw/Styles/dark.axaml");
-            Config.SetEntry("isDarkTheme", true.ToString());
+            Config.setEntry("theme", "avares://Autodraw/Styles/dark.axaml");
+            Config.setEntry("isDarkTheme", true.ToString());
         }
     }
 
@@ -79,14 +77,14 @@ public class App : Application
                 TextInput
             );
             Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            Current.Styles.Remove(Current.Styles[themeIndex]);
+            Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
             if (themeUri != "")
             {
                 CurrentTheme = themeUri;
                 SavedIsDark = isDark;
-                Config.SetEntry("theme", themeUri);
-                Config.SetEntry("isDarkTheme", isDark.ToString());
+                Config.setEntry("theme", themeUri);
+                Config.setEntry("isDarkTheme", isDark.ToString());
             }
         }
         catch (Exception ex)
@@ -111,12 +109,12 @@ public class App : Application
                 new Uri(themeUri)
             );
             Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-            Current.Styles.Remove(Current.Styles[themeIndex]);
+            Current.Styles.Remove(Current.Styles[4]);
             Current.Styles.Add(Resource);
             CurrentTheme = themeUri;
             SavedIsDark = isDark;
-            Config.SetEntry("theme", themeUri);
-            Config.SetEntry("isDarkTheme", isDark.ToString());
+            Config.setEntry("theme", themeUri);
+            Config.setEntry("isDarkTheme", isDark.ToString());
         }
         catch
         {

@@ -36,11 +36,11 @@ public static class Drawing
     public static bool IsSkipping;
     public static bool FreeDraw2 = false;
 
-    public static Vector2 LastPos = Config.Preview_LastLockPos;
+    public static Vector2 LastPos = new(0, 0);
     public static bool UseLastPos = false;
 
     public static bool ShowPopup =
-        Config.GetEntry("showPopup") == null || bool.Parse(Config.GetEntry("showPopup") ?? "true");
+        Config.getEntry("showPopup") == null || bool.Parse(Config.getEntry("showPopup") ?? "true");
 
 
     private static DrawDataDisplay? _dataDisplay;

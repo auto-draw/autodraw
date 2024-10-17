@@ -52,7 +52,7 @@ public partial class Settings : Window
         ShowPopup.IsChecked = Drawing.ShowPopup;
         AltMouseControl.IsChecked = Input.forceUio;
         NoRescan.IsChecked = Drawing.NoRescan;
-        LogFile.IsChecked = Config.GetEntry("logsEnabled") == "True";
+        LogFile.IsChecked = Config.getEntry("logsEnabled") == "True";
         
         //  Keybinds
         ChangeKeybind_StartDrawing.Content = Config.Keybind_StartDrawing;
@@ -62,7 +62,7 @@ public partial class Settings : Window
             ChangeKeybind_StartDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
             Config.Keybind_StartDrawing = keybind;
-            Config.SetEntry("Keybind_StartDrawing", keybind.ToString());
+            Config.setEntry("Keybind_StartDrawing", keybind.ToString());
             ChangeKeybind_StartDrawing.Content = Config.Keybind_StartDrawing;
         };
         
@@ -73,7 +73,7 @@ public partial class Settings : Window
             ChangeKeybind_StopDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
             Config.Keybind_StopDrawing = keybind;
-            Config.SetEntry("Keybind_StopDrawing", keybind.ToString());
+            Config.setEntry("Keybind_StopDrawing", keybind.ToString());
             ChangeKeybind_StopDrawing.Content = Config.Keybind_StopDrawing;
         };
         
@@ -84,7 +84,7 @@ public partial class Settings : Window
             ChangeKeybind_PauseDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
             Config.Keybind_PauseDrawing = keybind;
-            Config.SetEntry("Keybind_PauseDrawing", keybind.ToString());
+            Config.setEntry("Keybind_PauseDrawing", keybind.ToString());
             ChangeKeybind_PauseDrawing.Content = Config.Keybind_PauseDrawing;
         };
         
@@ -95,7 +95,7 @@ public partial class Settings : Window
             ChangeKeybind_LockPreview.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
             Config.Keybind_LockPreview = keybind;
-            Config.SetEntry("Keybind_LockPreview", keybind.ToString());
+            Config.setEntry("Keybind_LockPreview", keybind.ToString());
             ChangeKeybind_LockPreview.Content = Config.Keybind_LockPreview;
         };
         
@@ -106,7 +106,7 @@ public partial class Settings : Window
             ChangeKeybind_SkipBacktrace.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
             Config.Keybind_SkipRescan = keybind;
-            Config.SetEntry("Keybind_SkipRescan", keybind.ToString());
+            Config.setEntry("Keybind_SkipRescan", keybind.ToString());
             ChangeKeybind_SkipBacktrace.Content = Config.Keybind_SkipRescan;
         };
         
@@ -114,11 +114,11 @@ public partial class Settings : Window
         MarketplaceTabs.PropertyChanged += MarketplaceTabsOnPropertyChanged;
 
         // DALL-E API Keys
-        SaveOpenAiKey.Click += (sender, e) => Config.SetEntry("OpenAIKey", OpenAiKey.Text);
+        SaveOpenAiKey.Click += (sender, e) => Config.setEntry("OpenAIKey", OpenAiKey.Text);
         RevealAiKey.Click += (sender, e) => OpenAiKey.RevealPassword = !OpenAiKey.RevealPassword;
 
-        if (Config.GetEntry("showPopup") == null) Config.SetEntry("showPopup", Drawing.ShowPopup.ToString());
-        if (Config.GetEntry("OpenAIKey") != null) OpenAiKey.Text = Config.GetEntry("OpenAIKey");
+        if (Config.getEntry("showPopup") == null) Config.setEntry("showPopup", Drawing.ShowPopup.ToString());
+        if (Config.getEntry("OpenAIKey") != null) OpenAiKey.Text = Config.getEntry("OpenAIKey");
 
         //  Interactions
 
@@ -271,7 +271,7 @@ public partial class Settings : Window
         }
 
         Config.CachePath = Path.GetFullPath(ImageCacheLocationTextBox.Text);
-        Config.SetEntry("SavedCachePath", Config.CachePath);
+        Config.setEntry("SavedCachePath", Config.CachePath);
         ImageCacheLocationTextBox.Text = Config.CachePath;
     }
 
@@ -293,7 +293,7 @@ public partial class Settings : Window
         }
 
         Config.ThemesPath = Path.GetFullPath(ThemesLocationTextBox.Text);
-        Config.SetEntry("SavedThemesPath", Config.ThemesPath);
+        Config.setEntry("SavedThemesPath", Config.ThemesPath);
         ThemesLocationTextBox.Text = Config.ThemesPath;
     }
 
@@ -509,7 +509,7 @@ public partial class Settings : Window
     {
         if (ShowPopup.IsChecked == null) return;
         Drawing.ShowPopup = (bool)ShowPopup.IsChecked;
-        Config.SetEntry("showPopup", ShowPopup.IsChecked.ToString() ?? "true");
+        Config.setEntry("showPopup", ShowPopup.IsChecked.ToString() ?? "true");
     }
 
     private void AltMouseControl_IsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -527,7 +527,7 @@ public partial class Settings : Window
     private void LogFile_IsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         if (LogFile.IsChecked == null) return;
-        Config.SetEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
+        Config.setEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
         Utils.LoggingEnabled = (bool)LogFile.IsChecked;
     }
 

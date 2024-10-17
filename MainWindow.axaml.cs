@@ -22,65 +22,60 @@ public partial class MainWindow : Window
         { Invert = false, MaxThreshold = 127, AlphaThreshold = 200 };
 
     private readonly Regex _numberRegex = new(@"[^0-9]");
+    private DevTest? _devwindow;
+
+    private Settings? _settings;
     private OpenAIPrompt? _aiPrompt;
     private int _alphaThresh = 200;
-    private DevTest? _devwindow;
     private Bitmap? _displayedBitmap;
-    private bool _inChange;
-
-    private long _lastMem;
-    private long _lastTime = DateTime.Now.ToFileTime();
+    private int _minBlackThreshold;
     private int _maxBlackThreshold = 127;
 
+    private long _lastMem;
     // ReSharper disable once NotAccessedField.Local
     private long _memoryPressure;
-    private int _minBlackThreshold;
+    private bool _inChange;
+    private long _lastTime = DateTime.Now.ToFileTime();
+    public long sessionTime = DateTime.Now.ToFileTime();
+
+    private SKBitmap? _rawBitmap = new(318, 318, true);
     private SKBitmap? _preFxBitmap = new(318, 318, true);
     private SKBitmap? _processedBitmap;
 
-    private SKBitmap? _rawBitmap = new(318, 318, true);
-
-    private Settings? _settings;
-    public long sessionTime = DateTime.Now.ToFileTime();
-
     public MainWindow()
     {
-        InitializeComponent();
-
-        if (Design.IsDesignMode) return;
-
         this.AttachDevTools();
-
+        
         // Set language to user-specified language 
         var installedLanguage = CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
-        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.GetEntry("userlang") ?? installedLanguage);
+        Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage );
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Config.getEntry("userlang") ?? installedLanguage);
         Utils.Log(installedLanguage);
 
+        InitializeComponent();
+
         CurrentMainWindow = this;
-        // Onboarding
-        //if (!File.Exists(Config.ConfigPath)) 
-        //new Onboarding(CurrentMainWindow);
         Config.init();
 
         // Taskbar
-        CloseAppButton.Click += (_, _) => Close();
+        CloseAppButton.Click += QuitAppOnClick;
         MinimizeAppButton.Click += MinimizeAppOnClick;
         SettingsButton.Click += OpenSettingsOnClick;
-        DevButton.Click += (_, _) => OpenDevWindow();
+        DevButton.Click += DevOnClick;
 
         // Base
-        Closing += (_, _) => Cleanup();
+        Closing += (_, _) => { Cleanup(); };
         OpenButton.Click += OpenButtonOnClick;
         ProcessButton.Click += ProcessButtonOnClick;
         RunButton.Click += RunButtonOnClick;
-
+        
         ImageAIGeneration.Click += ImageAIGenerationOnClick;
         ImageSaveImage.Click += ImageSaveImageOnClick;
         ImageClearImage.Click += ImageClearImageOnClick;
 
         // Inputs
         SizeSlider.ValueChanged += SizeSliderOnValueChanged;
+
         WidthInput.TextChanging += WidthInputOnTextChanged;
         HeightInput.TextChanging += HeightInputOnTextChanged;
         PercentageNumber.TextChanging += PercentageNumberOnTextChanged;
@@ -89,18 +84,19 @@ public partial class MainWindow : Window
         ClickDelayElement.TextChanging += ClickDelayOnTextChanging;
         minBlackThresholdElement.TextChanging += minBlackThresholdElementOnTextChanging;
         maxBlackThresholdElement.TextChanging += maxBlackThresholdElementOnTextChanging;
+
         AlphaThresholdElement.TextChanging += AlphaThresholdOnTextChanging;
 
         FreeDrawCheckbox.Click += FreeDrawCheckboxOnClick;
 
-        EventHandler<TextChangingEventArgs> textChangeEvent = (sender, e) => HandleTextChange(e);
-        HorizontalFilterText.TextChanging += textChangeEvent;
-        VerticalFilterText.TextChanging += textChangeEvent;
-        BorderAdvancedText.TextChanging += textChangeEvent;
-        OutlineAdvancedText.TextChanging += textChangeEvent;
-        InlineAdvancedText.TextChanging += textChangeEvent;
-        InlineBorderAdvancedText.TextChanging += textChangeEvent;
-        ErosionAdvancedText.TextChanging += textChangeEvent;
+        // There's prob a better way of doing this 🤷‍♂️
+        HorizontalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        VerticalFilterText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        BorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        OutlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        InlineAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        InlineBorderAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
+        ErosionAdvancedText.TextChanging += (object? sender, TextChangingEventArgs e) => HandleTextChange(e);
 
         // Config
         RefreshConfigsButton.Click += RefreshConfigList;
@@ -113,22 +109,9 @@ public partial class MainWindow : Window
         Input.Start();
     }
 
-    // User Configuration Handles
-
-    //*
-    public static FilePickerFileType ConfigsFileFilter { get; } = new("AutoDraw Config Files")
-    {
-        Patterns = new[] { "*.drawcfg" }
-    };
-
-    public static FilePickerFileType PngFileFilter { get; } = new("Portable Network Graphics")
-    {
-        Patterns = new[] { "*.png" }
-    };
-
     private void ImageAIGenerationOnClick(object? sender, RoutedEventArgs e)
     {
-        if (_aiPrompt is not null) return;
+        if(_aiPrompt is not null) return; 
         _aiPrompt = new OpenAIPrompt();
         _aiPrompt.Show();
         _aiPrompt.Closed += AiPromptOnClosed;
@@ -139,6 +122,19 @@ public partial class MainWindow : Window
         _aiPrompt = null;
     }
 
+    // User Configuration Handles
+
+    //*
+    public static FilePickerFileType ConfigsFileFilter { get; } = new("AutoDraw Config Files")
+    {
+        Patterns = new[] { "*.drawcfg" }
+    };
+    
+    public static FilePickerFileType PngFileFilter { get; } = new("Portable Network Graphics")
+    {
+        Patterns = new[] { "*.png" }
+    };
+
 
     // Core Functions
 
@@ -147,7 +143,10 @@ public partial class MainWindow : Window
         _devwindow?.Close();
         _settings?.Close();
         _aiPrompt?.Close();
-        if (Utils.LogObject != null) Utils.LogObject.Close();
+        if (Utils.LogObject != null)
+        {
+            Utils.LogObject.Close();
+        }
         Input.Stop();
         Drawing.Halt();
     }
@@ -179,24 +178,24 @@ public partial class MainWindow : Window
         _currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
-
+        
         //// Generic Filters
         _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
         _currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
-
+        
         //// Pattern Filters
         _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
         _currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
         _currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
         _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
-
+        
         //// Experimental Filters
         _currentFilters.BorderAdvanced = int.Parse(BorderAdvancedText.Text ?? "0");
         _currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
         _currentFilters.InlineAdvanced = int.Parse(InlineAdvancedText.Text ?? "0");
         _currentFilters.InlineBorderAdvanced = int.Parse(InlineBorderAdvancedText.Text ?? "0");
         _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
-
+        
         // Dither Filters
         // **Yet to be implemented**
 
@@ -219,7 +218,7 @@ public partial class MainWindow : Window
     {
         _settings = null;
     }
-
+    
     private void OpenDevWindow()
     {
         _devwindow ??= new DevTest();
@@ -242,7 +241,7 @@ public partial class MainWindow : Window
 
         _processedBitmap = ImageProcessing.Process(_preFxBitmap, GetSelectFilters());
         _displayedBitmap = _processedBitmap.ConvertToAvaloniaBitmap();
-        ImagePreview.Image = _displayedBitmap;
+        ImagePreview.Source = _displayedBitmap;
     }
 
     public void ImportImage(string? path, byte[]? img = null)
@@ -252,7 +251,7 @@ public partial class MainWindow : Window
         _displayedBitmap = _rawBitmap.NormalizeColor().ConvertToAvaloniaBitmap();
         _processedBitmap?.Dispose();
         _processedBitmap = null;
-        ImagePreview.Image = _displayedBitmap;
+        ImagePreview.Source = _displayedBitmap;
 
         _inChange = true;
         SizeSlider.Value = 100;
@@ -297,7 +296,7 @@ public partial class MainWindow : Window
             Title = "Save Processed Image",
             FileTypeChoices = new[] { PngFileFilter }
         });
-
+        
         if (file is not null)
         {
             var encodedData = _processedBitmap.Encode(SKEncodedImageFormat.Png, 100);
@@ -306,21 +305,21 @@ public partial class MainWindow : Window
             encodedData.SaveTo(stream);
         }
     }
-
+    
     private void ImageClearImageOnClick(object? sender, RoutedEventArgs e)
-    {
-        _rawBitmap = new SKBitmap(318, 318, true);
-        _preFxBitmap = new SKBitmap(318, 318, true);
+    { 
+        _rawBitmap = new(318, 318, true);
+        _preFxBitmap = new(318, 318, true);
         _processedBitmap = null;
         _displayedBitmap = null;
-        ImagePreview.Image = null;
+        ImagePreview.Source = null;
     }
 
     // Inputs Handles
 
     private void HandleTextChange(TextChangingEventArgs e)
     {
-        var source = (TextBox)e.Source;
+        TextBox source = (TextBox)e.Source;
         source.Text = _numberRegex.Replace(source.Text, "");
         e.Handled = true;
 
@@ -341,7 +340,7 @@ public partial class MainWindow : Window
             _preFxBitmap = resizedBitmap;
             _displayedBitmap?.Dispose();
             _displayedBitmap = resizedBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Image = _displayedBitmap;
+            ImagePreview.Source = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             _memoryPressure += resizedBitmap.ByteCount;
         }
@@ -355,7 +354,7 @@ public partial class MainWindow : Window
             _processedBitmap = postProcessBitmap;
             _displayedBitmap?.Dispose();
             _displayedBitmap = postProcessBitmap.ConvertToAvaloniaBitmap();
-            ImagePreview.Image = _displayedBitmap;
+            ImagePreview.Source = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
             _memoryPressure += resizedBitmap.ByteCount;
         }
@@ -418,8 +417,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
-        else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
+        ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
 
         _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
@@ -447,8 +445,7 @@ public partial class MainWindow : Window
                 return;
         }
 
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
-        else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
+        ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
 
         _inChange = true;
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
@@ -460,31 +457,71 @@ public partial class MainWindow : Window
     private void DrawIntervalOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-        Drawing.Interval = int.TryParse(DrawIntervalElement.Text, out var interval) ? interval : 10000;
+
+        try
+        {
+            Drawing.Interval = int.Parse(DrawIntervalElement.Text);
+        }
+        catch
+        {
+            Drawing.Interval = 10000;
+        }
     }
 
     private void ClickDelayOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-        Drawing.ClickDelay = int.TryParse(ClickDelayElement.Text, out var clickDelay) ? clickDelay : 1000;
+
+        try
+        {
+            Drawing.ClickDelay = int.Parse(ClickDelayElement.Text);
+        }
+        catch
+        {
+            Drawing.ClickDelay = 1000;
+        }
     }
 
     private void minBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-        _minBlackThreshold = int.TryParse(minBlackThresholdElement.Text, out var black) ? black : 127;
+
+        try
+        {
+            _minBlackThreshold = int.Parse(minBlackThresholdElement.Text);
+        }
+        catch
+        {
+            _minBlackThreshold = 127;
+        }
     }
 
     private void maxBlackThresholdElementOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-        _maxBlackThreshold = int.TryParse(maxBlackThresholdElement.Text, out var black) ? black : 127;
+
+        try
+        {
+            _maxBlackThreshold = int.Parse(maxBlackThresholdElement.Text);
+        }
+        catch
+        {
+            _maxBlackThreshold = 127;
+        }
     }
 
     private void AlphaThresholdOnTextChanging(object? sender, TextChangingEventArgs e)
     {
         HandleTextChange(e);
-        _alphaThresh = int.TryParse(AlphaThresholdElement.Text, out var alpha) ? alpha : 127;
+
+        try
+        {
+            _alphaThresh = int.Parse(AlphaThresholdElement.Text);
+        }
+        catch
+        {
+            _alphaThresh = 127;
+        }
     }
 
     private void FreeDrawCheckboxOnClick(object? sender, RoutedEventArgs e)
@@ -497,6 +534,16 @@ public partial class MainWindow : Window
     private void MinimizeAppOnClick(object? sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Minimized;
+    }
+
+    private void QuitAppOnClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void DevOnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenDevWindow();
     }
 
     public async void PasteControl()
@@ -513,12 +560,12 @@ public partial class MainWindow : Window
             Utils.Log("Error with PasteControl(): " + ex);
         }
     }
-
+    
     public async void SetConfigFolderViaDialog(object? sender, RoutedEventArgs e)
     {
         var folder = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { AllowMultiple = false });
         if (folder.Count != 1) return;
-        Config.SetEntry("ConfigFolder", folder[0].TryGetLocalPath());
+        Config.setEntry("ConfigFolder", folder[0].TryGetLocalPath());
         RefreshConfigList(this, null);
     }
 
@@ -527,8 +574,7 @@ public partial class MainWindow : Window
         // TODO: use the warning box (Not implemented yet) system to make it return a "This config does not exist!"
         if (!path.EndsWith(".drawcfg")) return;
         var lines = File.ReadAllLines(path);
-        SelectedConfigLabel.Content =
-            $"{Properties.Resources.ConfigSelected} - {Path.GetFileNameWithoutExtension(path)}";
+        SelectedConfigLabel.Content = $"{Properties.Resources.ConfigSelected} - {Path.GetFileNameWithoutExtension(path)}";
 
         DrawIntervalElement.Text = lines.Length > 0 ? lines[0] : "10000";
 
@@ -593,7 +639,7 @@ public partial class MainWindow : Window
 
     public void RefreshConfigList(object? sender, RoutedEventArgs? e)
     {
-        var configFolder = Config.GetEntry("ConfigFolder");
+        var configFolder = Config.getEntry("ConfigFolder");
         if (configFolder == null) return;
         if (!Directory.Exists(configFolder)) return;
         var files = Directory.GetFiles(configFolder, "*.drawcfg");
@@ -608,6 +654,6 @@ public partial class MainWindow : Window
         if (ConfigsListBox.SelectedItem == null) return;
         var selectedItem = ConfigsListBox.SelectedItem.ToString();
         if (selectedItem == null) return;
-        LoadConfig($"{Path.Combine(Config.GetEntry("ConfigFolder"), selectedItem)}.drawcfg");
+        LoadConfig($"{Path.Combine(Config.getEntry("ConfigFolder"), selectedItem)}.drawcfg");
     }
 }

@@ -87,7 +87,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to v2.2.
+        ///   Looks up a localized string similar to v2.1.
         /// </summary>
         public static string AutoDrawVersion {
             get {
@@ -96,7 +96,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Version: v2.2.0.
+        ///   Looks up a localized string similar to Current Version: v2.1.0.
         /// </summary>
         public static string AutoDrawVersionDetailed {
             get {
@@ -398,15 +398,6 @@ namespace Autodraw.Properties {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lock Aspect Ratio.
-        /// </summary>
-        public static string LockAspectRatio {
-            get {
-                return ResourceManager.GetString("LockAspectRatio", resourceCulture);
             }
         }
         

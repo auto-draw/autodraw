@@ -127,7 +127,7 @@
 <value>AutoDraw Open Beta</value> 
 </data>
     <data name="AutoDrawVersion" xml:space="preserve"> 
-        <value>v2.2</value> 
+        <value>v2.1</value> 
     </data>
     <data name="MainTab1" xml:space="preserve"> 
 <value>General</value> 
@@ -313,15 +313,12 @@
         <value>Language</value>
     </data>
     <data name="AutoDrawVersionDetailed" xml:space="preserve">
-        <value>Current Version: v2.2.0</value>
+        <value>Current Version: v2.1.0</value>
     </data>
     <data name="AutoDrawLanguageVersion" xml:space="preserve">
         <value>Language Version: C# 10.0</value>
     </data>
     <data name="AutoDrawNetFramework" xml:space="preserve">
         <value>.NET Framework Version: net6.0</value>
-    </data>
-    <data name="LockAspectRatio" xml:space="preserve">
-        <value>Lock Aspect Ratio</value>
     </data>
 </root>

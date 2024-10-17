@@ -1,0 +1,204 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="AutoDrawTitle" xml:space="preserve">
+        <value>Magic draw thingy try!</value>
+    </data>
+    <data name="AutoDrawVersion" xml:space="preserve">
+        <value>Newer rock 2.1!</value>
+    </data>
+    <data name="BeginDraw" xml:space="preserve">
+        <value>Me draw!</value>
+    </data>
+    <data name="BSS" xml:space="preserve">
+        <value>Edge! (Half Shadow-Rock!)</value>
+    </data>
+    <data name="ConfigLoad" xml:space="preserve">
+        <value>Put in cave settings!</value>
+    </data>
+    <data name="ConfigSelected" xml:space="preserve">
+        <value>Pick rock setup!</value>
+    </data>
+    <data name="Crosshatch" xml:space="preserve">
+        <value>Crisscross scratch!</value>
+    </data>
+    <data name="Dcrosshatch" xml:space="preserve">
+        <value>Slanty crisscross scratch!</value>
+    </data>
+    <data name="DPD" xml:space="preserve">
+        <value>Slanty!</value>
+    </data>
+    <data name="DPH" xml:space="preserve">
+        <value>Flat scratch!</value>
+    </data>
+    <data name="DPV" xml:space="preserve">
+        <value>Up-and-down scratch!</value>
+    </data>
+    <data name="ES" xml:space="preserve">
+        <value>Rock wear-off magic!</value>
+    </data>
+    <data name="FDBypass" xml:space="preserve">
+        <value>Draw play cave game cheat!</value>
+    </data>
+    <data name="Files1" xml:space="preserve">
+        <value>Fresh rock!</value>
+    </data>
+    <data name="Files2" xml:space="preserve">
+        <value>Uncover cave!</value>
+    </data>
+    <data name="Files3" xml:space="preserve">
+        <value>Keep rock markings!</value>
+    </data>
+    <data name="FiltersExperimental" xml:space="preserve">
+        <value>Play with strange rock effects!</value>
+    </data>
+    <data name="FiltersGeneral" xml:space="preserve">
+        <value>All-around rock changes!</value>
+    </data>
+    <data name="FiltersPattern" xml:space="preserve">
+        <value>Rock pattern magic!</value>
+    </data>
+    <data name="GeneralAT" xml:space="preserve">
+        <value>See-through rock border!</value>
+    </data>
+    <data name="GeneralCD" xml:space="preserve">
+        <value>Wait after poke!</value>
+    </data>
+    <data name="GeneralDP" xml:space="preserve">
+        <value>Make rock design!</value>
+    </data>
+    <data name="GeneralInfo1" xml:space="preserve">
+        <value>
+Rock not finished, some things not doable.</value>
+    </data>
+    <data name="GeneralInterval" xml:space="preserve">
+        <value>Time between pokes!</value>
+    </data>
+    <data name="GeneralLT" xml:space="preserve">
+        <value>Glowy brightness border!</value>
+    </data>
+    <data name="GeneralSwitch1" xml:space="preserve">
+        <value>Other stick for poke (half work)!</value>
+    </data>
+    <data name="GeneralSwitch2" xml:space="preserve">
+        <value>Display done rock signal!</value>
+    </data>
+    <data name="GeneralSwitch3" xml:space="preserve">
+        <value>Keep records of rock moves!</value>
+    </data>
+    <data name="GeneralSwitch4" xml:space="preserve">
+        <value>Magic skip relook rock!</value>
+    </data>
+    <data name="Height" xml:space="preserve">
+        <value>Tall rock!</value>
+    </data>
+    <data name="Hstripes" xml:space="preserve">
+        <value>Flat lines on rock!</value>
+    </data>
+    <data name="IS" xml:space="preserve">
+        <value>Edge (magic rock)</value>
+    </data>
+    <data name="MainTab1" xml:space="preserve">
+        <value>Rock magic</value>
+    </data>
+    <data name="IBSS" xml:space="preserve">
+        <value>Edge line (half shadow magic)!</value>
+    </data>
+    <data name="Invert" xml:space="preserve">
+        <value>Opposite rock!</value>
+    </data>
+    <data name="ReportDev" xml:space="preserve">
+        <value>Tell cave builders about this!</value>
+    </data>
+    <data name="Scale" xml:space="preserve">
+        <value>Make rock big or small!</value>
+    </data>
+    <data name="MainTab2" xml:space="preserve">
+        <value>Rock changes</value>
+    </data>
+    <data name="Minimum" xml:space="preserve">
+        <value>Smallest rock!</value>
+    </data>
+    <data name="MainTab3" xml:space="preserve">
+        <value>Rock setups</value>
+    </data>
+    <data name="Maximum" xml:space="preserve">
+        <value>Biggest rock!</value>
+    </data>
+    <data name="MainTab4" xml:space="preserve">
+        <value>Rock drawing</value>
+    </data>
+    <data name="SettingsTab1" xml:space="preserve">
+        <value>All-around rock magic!</value>
+    </data>
+    <data name="OpenAPIKey" xml:space="preserve">
+        <value>Magic key to OpenAI cave!</value>
+    </data>
+    <data name="OS" xml:space="preserve">
+        <value>Rock border (magic shadow)!</value>
+    </data>
+    <data name="Outline" xml:space="preserve">
+        <value>Rock edge!</value>
+    </data>
+    <data name="ProcessIMG" xml:space="preserve">
+        <value>Work on picture rock!</value>
+    </data>
+    <data name="SettingsTab2" xml:space="preserve">
+        <value>Rock styles!</value>
+    </data>
+    <data name="SettingsTab5" xml:space="preserve">
+        <value>Cave-maker choices!</value>
+    </data>
+    <data name="SettingsTab3" xml:space="preserve">
+        <value>Rock permissions!</value>
+    </data>
+    <data name="SettingsTab4" xml:space="preserve">
+        <value>Rock trading place!</value>
+    </data>
+    <data name="ThemeToggle" xml:space="preserve">
+        <value>Shadow/Bright rock!</value>
+    </data>
+    <data name="ThemeDark" xml:space="preserve">
+        <value>Cave in the shadows?</value>
+    </data>
+    <data name="SettingsTitle" xml:space="preserve">
+        <value>Rock adjustments!</value>
+    </data>
+    <data name="ThemeLoad" xml:space="preserve">
+        <value>Bring forth dark cave look!</value>
+    </data>
+    <data name="TT2" xml:space="preserve">
+        <value>This wait time (in sunsets) between each piece of picture rock.</value>
+    </data>
+    <data name="TT1" xml:space="preserve">
+        <value>This how fast picture rock appear. One wait equals tiny 100 sunsets!</value>
+    </data>
+    <data name="Vstripes" xml:space="preserve">
+        <value>Up-and-down lines on rock!</value>
+    </data>
+    <data name="TT3" xml:space="preserve">
+        <value>This chooses which parts of picture rock show, depending on if it's in magic range. Magic range is from cave dark to bright, 0 to 255!</value>
+    </data>
+    <data name="Width" xml:space="preserve">
+        <value>Wide rock!</value>
+    </data>
+    <data name="Language" xml:space="preserve">
+        <value>Caveman Speak</value>
+    </data>
+    <data name="SelectLanguage" xml:space="preserve">
+        <value>Choose words!</value>
+    </data>
+    <data name="WordLanguage" xml:space="preserve">
+        <value>Word!</value>
+    </data>
+</root>
