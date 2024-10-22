@@ -1,10 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using SharpHook;
@@ -20,6 +22,7 @@ public partial class Preview : Window
     public long lastMovement;
     public Bitmap? renderedBitmap;
     private double scale = 1;
+    public PixelPoint primaryScreenBounds;
 
     public Preview()
     {
@@ -27,6 +30,7 @@ public partial class Preview : Window
         scale = Screens.ScreenFromWindow(this).Scaling;
         Closing += OnClosing;
         Input.MousePosUpdate += UpdateMousePosition;
+        primaryScreenBounds = Screens.Primary.Bounds.TopLeft;
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
