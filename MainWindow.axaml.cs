@@ -152,25 +152,6 @@ public partial class MainWindow : Window
         Drawing.Halt();
     }
 
-    private void SetPath(int path)
-    {
-        PatternSelection.SelectedIndex =
-            path == 12345678 ? 0 :
-            path == 14627358 ? 1 :
-            path == 26573481 ? 2 :
-            0;
-        UpdatePath();
-    }
-
-    private void UpdatePath()
-    {
-        Drawing.PathValue =
-            PatternSelection.SelectedIndex == 0 ? 12345678
-            : PatternSelection.SelectedIndex == 1 ? 14627358
-            : PatternSelection.SelectedIndex == 2 ? 26573481
-            : 12345678;
-    }
-
     private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
@@ -199,8 +180,6 @@ public partial class MainWindow : Window
 
         // Dither Filters
         // **Yet to be implemented**
-
-        UpdatePath();
 
         return _currentFilters;
     }
@@ -277,7 +256,6 @@ public partial class MainWindow : Window
 
     private void RunButtonOnClick(object? sender, RoutedEventArgs e)
     {
-        UpdatePath();
         if (_processedBitmap == null)
         {
             new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error");
@@ -285,6 +263,7 @@ public partial class MainWindow : Window
         }
 
         if (Drawing.IsDrawing) return;
+        Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
@@ -544,10 +523,9 @@ public partial class MainWindow : Window
         Drawing.FreeDraw2 = _fd2;
 
         if (lines.Length <= 5) return;
-        if (!int.TryParse(lines[5], out var _path)) return;
-        SetPath(_path);
+        //if (!int.TryParse(lines[5], out var _path)) return;
 
-        minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
+        //minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
     }
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -560,7 +538,6 @@ public partial class MainWindow : Window
 
         if (file is not null)
         {
-            UpdatePath();
             await using var stream = await file.OpenWriteAsync();
             await using var streamWriter = new StreamWriter(stream);
 
@@ -571,7 +548,7 @@ public partial class MainWindow : Window
                 maxBlackThresholdElement.Text,
                 AlphaThresholdElement.Text,
                 FreeDrawCheckbox.IsChecked.ToString(),
-                Drawing.PathValue.ToString(),
+                "", //We should've used Json for future compatibility and freedom to change and remove config variables @gz9.
                 minBlackThresholdElement.Text
             };
 

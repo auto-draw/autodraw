@@ -125,7 +125,7 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Margin="0 8 0 0">
                                         <ToolTip.Tip>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</ToolTip.Tip>
-                                        <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralCD}"/>
+                                        <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralClickDelay}"/>
                                         <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2">
                                             600
                                         </TextBox>
@@ -135,7 +135,7 @@
                                           ColumnDefinitions="*,8,*"
                                           Margin="0 8 0 0">
                                         <ToolTip.Tip>This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Content="{x:Static assets:Resources.GeneralLT}"/>
+                                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="16" Content="{x:Static assets:Resources.GeneralLuminanceThreshold}"/>
                                         <StackPanel Grid.Row="1" Grid.Column="0">
                                             <Label FontSize="14" HorizontalAlignment="Center" Content="{x:Static assets:Resources.Minimum}"/>
                                             <TextBox Name="minBlackThresholdElement" Margin="4 4" CornerRadius="2">
@@ -151,18 +151,17 @@
                                     </Grid>
                                     <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"  Margin="0 8 0 0">
                                         <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralAT}"/>
+                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralAlphaThreshold}"/>
                                         <TextBox Name="AlphaThresholdElement" Margin="4 4" CornerRadius="2">
                                             127
                                         </TextBox>
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="0 8 0 0">
-                                        <ToolTip.Tip>This is the Threshold for transparency. Draws whatever falls below the threshold. Threshold is based on 0-255</ToolTip.Tip>
-                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDP}"/>
-                                        <ComboBox Name="PatternSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
-                                            <ComboBoxItem Content="{x:Static assets:Resources.DPH}"/>
-                                            <ComboBoxItem Content="{x:Static assets:Resources.DPV}"/>
-                                            <ComboBoxItem Content="{x:Static assets:Resources.DPD}"/>
+                                        <ToolTip.Tip>This is the algorithm used for drawing, we suggest DFS for most things.</ToolTip.Tip>
+                                        <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDrawAlgorithm}"/>
+                                        <ComboBox Name="AlgorithmSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem Content="{x:Static assets:Resources.AlgorithmDFS}"/>
+                                            <ComboBoxItem Content="{x:Static assets:Resources.AlgorithmEdgeTraversal}"/>
                                         </ComboBox>
                                     </StackPanel>
                                     <CheckBox Name="FreeDrawCheckbox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Margin="4 0" Content="{x:Static assets:Resources.FDBypass}" />
@@ -185,11 +184,11 @@
                                 <CheckBox Name="CrosshatchFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Crosshatch}"/>
                                 <CheckBox Name="DiagCrossFilterCheck" Classes="FilterItem" Content="{x:Static assets:Resources.Dcrosshatch}"/>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.Hstripes}"/>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.StripesHorizontal}"/>
                                     <TextBox Name="HorizontalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.Vstripes}"/>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.StripesVertical}"/>
                                     <TextBox Name="VerticalFilterText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Separator/>
@@ -199,15 +198,15 @@
                                     <TextBox Name="BorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.OS}"/>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.OutlineShader}"/>
                                     <TextBox Name="OutlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.IS}"/>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.InlineShader}"/>
                                     <TextBox Name="InlineAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
-                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.IBSS}"/>
+                                    <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.InlineBorderShader}"/>
                                     <TextBox Name="InlineBorderAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
                                 <Grid Margin="12 2" ColumnDefinitions="*,72">
