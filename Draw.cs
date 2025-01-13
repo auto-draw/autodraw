@@ -383,9 +383,9 @@ public static class Drawing
         LastPos = usedPos;
         Pos startPos = new() { X = (int)usedPos.X - bitmap.Width / 2, Y = (int)usedPos.Y - bitmap.Height / 2 };
         Input.MoveTo((short)startPos.X, (short)startPos.Y);
+        await NOP(50000);
         Input.SendClick(Input.MouseTypes.MouseLeft);
-
-        await NOP(100000);
+        await NOP(50000);
 
         byte[,] dataArray = Scan(bitmap);
 
@@ -423,24 +423,25 @@ public static class Drawing
                 if (!isDown)
                 {
                     isDown = true;
-                    Input.MoveTo(x, y);
+                    Input.MoveTo(x, (short)(y-1));
                     await NOP(ClickDelay * 5000);
+                    Input.MoveTo(x, y);
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 } // Just initializes the Mouse Down
                 if (IsPaused)
                 {
-                    //Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                    Input.SendClickUp(Input.MouseTypes.MouseLeft);
                     while (IsPaused) await NOP(500000);
                     Input.MoveTo(x, y);
                     await NOP(500000);
-                    //Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                    Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 }
                 
                 Input.MoveTo(x, y);
                 await NOP(Interval);
             }
-            await NOP(ClickDelay * 5000);
             Input.SendClickUp(Input.MouseTypes.MouseLeft);
+            await NOP(ClickDelay * 5000);
             if (!IsDrawing) break;
         }
 
