@@ -127,7 +127,7 @@
 <value>AutoDraw Open Beta</value> 
 </data>
     <data name="AutoDrawVersion" xml:space="preserve"> 
-        <value>v2.2</value> 
+        <value>v2.2b</value> 
     </data>
     <data name="MainTab1" xml:space="preserve"> 
 <value>General</value> 
@@ -144,10 +144,10 @@
     <data name="GeneralInterval" xml:space="preserve"> 
 <value>Interval</value> 
 </data>
-    <data name="GeneralCD" xml:space="preserve"> 
+    <data name="GeneralClickDelay" xml:space="preserve"> 
 <value>Click Delay</value> 
 </data>
-    <data name="GeneralLT" xml:space="preserve"> 
+    <data name="GeneralLuminanceThreshold" xml:space="preserve"> 
 <value>Luminance Threshold</value> 
 </data>
     <data name="Minimum" xml:space="preserve"> 
@@ -156,21 +156,12 @@
     <data name="Maximum" xml:space="preserve"> 
 <value>Maximum</value> 
 </data>
-    <data name="GeneralAT" xml:space="preserve"> 
+    <data name="GeneralAlphaThreshold" xml:space="preserve"> 
 <value>Alpha Threshold</value> 
 </data>
-    <data name="GeneralDP" xml:space="preserve"> 
-<value>Draw Pattern</value> 
-</data>
-    <data name="DPH" xml:space="preserve"> 
-<value>Horizontal</value> 
-</data>
-    <data name="DPV" xml:space="preserve"> 
-<value>Vertical</value> 
-</data>
-    <data name="DPD" xml:space="preserve"> 
-<value>Diagonal</value> 
-</data>
+    <data name="GeneralDrawAlgorithm" xml:space="preserve"> 
+        <value>Draw Algorithm</value> 
+    </data>
     <data name="FDBypass" xml:space="preserve"> 
 <value>Free Draw Bypass</value> 
 </data>
@@ -195,22 +186,22 @@
     <data name="Dcrosshatch" xml:space="preserve"> 
 <value>Diagonal Crosshatch</value> 
 </data>
-    <data name="Hstripes" xml:space="preserve"> 
+    <data name="StripesHorizontal" xml:space="preserve"> 
 <value>Horizontal Stripes</value> 
 </data>
-    <data name="Vstripes" xml:space="preserve"> 
+    <data name="StripesVertical" xml:space="preserve"> 
 <value>Vertical Stripes</value> 
 </data>
     <data name="BSS" xml:space="preserve"> 
 <value>Border (Semi-Shader)</value> 
 </data>
-    <data name="OS" xml:space="preserve"> 
+    <data name="OutlineShader" xml:space="preserve"> 
 <value>Outline (Shader)</value> 
 </data>
-    <data name="IS" xml:space="preserve"> 
+    <data name="InlineShader" xml:space="preserve"> 
 <value>Inline (Shader)</value> 
 </data>
-    <data name="IBSS" xml:space="preserve"> 
+    <data name="InlineBorderShader" xml:space="preserve"> 
 <value>Inline Border (Semi-Shader)</value> 
 </data>
     <data name="ES" xml:space="preserve"> 
@@ -234,13 +225,13 @@
     <data name="Width" xml:space="preserve"> 
 <value>Width</value> 
 </data>
-    <data name="TT1" xml:space="preserve"> 
+    <data name="ToolTipSpeed" xml:space="preserve"> 
 <value>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</value> 
 </data>
-    <data name="TT2" xml:space="preserve"> 
+    <data name="ToolTipDelay" xml:space="preserve"> 
 <value>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</value> 
 </data>
-    <data name="TT3" xml:space="preserve"> 
+    <data name="ToolTipThreshold" xml:space="preserve"> 
 <value>This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255</value> 
 </data>
     <data name="SettingsTitle" xml:space="preserve"> 
@@ -279,13 +270,13 @@
     <data name="ThemeToggle" xml:space="preserve"> 
 <value>Dark/Light</value> 
 </data>
-    <data name="Files1" xml:space="preserve"> 
+    <data name="FileNew" xml:space="preserve"> 
 <value>New</value> 
 </data>
-    <data name="Files2" xml:space="preserve"> 
+    <data name="FileOpen" xml:space="preserve"> 
 <value>Open</value> 
 </data>
-    <data name="Files3" xml:space="preserve"> 
+    <data name="FileSave" xml:space="preserve"> 
 <value>Save</value> 
 </data>
     <data name="ThemeLoad" xml:space="preserve"> 
@@ -323,5 +314,11 @@
     </data>
     <data name="LockAspectRatio" xml:space="preserve">
         <value>Lock Aspect Ratio</value>
+    </data>
+    <data name="AlgorithmEdgeTraversal" xml:space="preserve">
+        <value>Edge-Following</value>
+    </data>
+    <data name="AlgorithmDFS" xml:space="preserve">
+        <value>DFS</value>
     </data>
 </root>
