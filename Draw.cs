@@ -295,22 +295,34 @@ public static class Drawing
         Stack<Vector2> stack = new();
         List<Vector2> path = new();
 
-        // Mark the starting point as visited
+        Vector2? previousPosition = null;
+
         stack.Push(start);
         data[(int)start.X, (int)start.Y] = 2;
 
         while (stack.Count > 0)
         {
             Vector2 currentPosition = stack.Pop();
-            path.Add(currentPosition);
 
-            // Check and push all valid neighbors
+            if (previousPosition.HasValue && !IsAdjacent(previousPosition.Value, currentPosition, directions))
+            {
+                List<Vector2> aStarPath = AStar(previousPosition.Value, currentPosition, data);
+                path.AddRange(aStarPath);
+
+                foreach (var position in aStarPath)
+                {
+                    data[(int)position.X, (int)position.Y] = 2;
+                }
+            }
+
+            path.Add(currentPosition);
+            previousPosition = currentPosition;
+
             foreach (Vector2 direction in directions)
             {
                 Vector2 neighbor = currentPosition + direction;
                 if (IsValidMove(neighbor, data))
                 {
-                    // Mark as visited and add to the stack
                     data[(int)neighbor.X, (int)neighbor.Y] = 2;
                     stack.Push(neighbor);
                 }
@@ -320,6 +332,86 @@ public static class Drawing
         return path;
     }
 
+    private static bool IsAdjacent(Vector2 position1, Vector2 position2, Vector2[] directions)
+    {
+        foreach (Vector2 direction in directions)
+        {
+            if (position1 + direction == position2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static List<Vector2> AStar(Vector2 start, Vector2 goal, byte[,] data)
+    {
+        PriorityQueue<Vector2, float> openSet = new();
+        HashSet<Vector2> closedSet = new();
+        Dictionary<Vector2, Vector2?> cameFrom = new();
+        Dictionary<Vector2, float> gScore = new();
+        Dictionary<Vector2, float> fScore = new();
+
+        openSet.Enqueue(start, 0);
+        gScore[start] = 0;
+        fScore[start] = Heuristic(start, goal);
+
+        while (openSet.Count > 0)
+        {
+            Vector2 current = openSet.Dequeue();
+
+            if (current == goal)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            closedSet.Add(current);
+
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 neighbor = current + GetRelativeDirection(i);
+                if (!IsWithinBounds(neighbor, data) || data[(int)neighbor.X, (int)neighbor.Y] == 0 || closedSet.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                float tentativeGScore = gScore[current] + 1;
+
+                if (!gScore.ContainsKey(neighbor) || tentativeGScore < gScore[neighbor])
+                {
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    fScore[neighbor] = gScore[neighbor] + Heuristic(neighbor, goal);
+
+                    if (!openSet.UnorderedItems.Any(item => item.Element == neighbor))
+                    {
+                        openSet.Enqueue(neighbor, fScore[neighbor]);
+                    }
+                }
+            }
+        }
+
+        return new();
+    }
+
+    private static float Heuristic(Vector2 a, Vector2 b)
+    {
+        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+    }
+
+    private static List<Vector2> ReconstructPath(Dictionary<Vector2, Vector2?> cameFrom, Vector2 current)
+    {
+        List<Vector2> path = new();
+        while (cameFrom.ContainsKey(current) && cameFrom[current].HasValue)
+        {
+            path.Add(current);
+            current = cameFrom[current].Value;
+        }
+
+        path.Reverse();
+        return path;
+    }
+    
     private static IEnumerable<int> GetDirectionOrder(int currentDirection)
     {
         return new[]
@@ -330,6 +422,28 @@ public static class Drawing
             (currentDirection + 2) % 4,  // Backward
             4, 5, 6, 7                   // Diagonals
         };
+    }
+
+    private static Vector2 GetRelativeDirection(int directionIndex)
+    {
+        return directionIndex switch
+        {
+            0 => new Vector2(0, -1),  // Up
+            1 => new Vector2(1, 0),   // Right
+            2 => new Vector2(0, 1),   // Down
+            3 => new Vector2(-1, 0),  // Left
+            4 => new Vector2(-1, -1), // Top-Left
+            5 => new Vector2(1, -1),  // Top-Right
+            6 => new Vector2(1, 1),   // Bottom-Right
+            7 => new Vector2(-1, 1),  // Bottom-Left
+            _ => throw new ArgumentOutOfRangeException(nameof(directionIndex), "Invalid direction index.")
+        };
+    }
+
+    private static bool IsWithinBounds(Vector2 position, byte[,] data)
+    {
+        return position.X >= 0 && position.Y >= 0 &&
+               position.X < data.GetLength(0) && position.Y < data.GetLength(1);
     }
     
     
@@ -426,6 +540,7 @@ public static class Drawing
                     Input.MoveTo(x, (short)(y-1));
                     await NOP(ClickDelay * 5000);
                     Input.MoveTo(x, y);
+                    await NOP(ClickDelay * 2500);
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 } // Just initializes the Mouse Down
                 if (IsPaused)
@@ -441,7 +556,7 @@ public static class Drawing
                 await NOP(Interval);
             }
             Input.SendClickUp(Input.MouseTypes.MouseLeft);
-            await NOP(ClickDelay * 5000);
+            await NOP(ClickDelay * 2500);
             if (!IsDrawing) break;
         }
 
