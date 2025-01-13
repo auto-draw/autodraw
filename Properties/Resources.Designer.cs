@@ -384,15 +384,6 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lock Aspect Ratio.
-        /// </summary>
-        public static string LockAspectRatio {
-            get {
-                return ResourceManager.GetString("LockAspectRatio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         public static string MainTab1 {
@@ -632,6 +623,15 @@ namespace Autodraw.Properties {
         public static string ToolTipThreshold {
             get {
                 return ResourceManager.GetString("ToolTipThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock Aspect Ratio.
+        /// </summary>
+        public static string UnlockAspectRatio {
+            get {
+                return ResourceManager.GetString("UnlockAspectRatio", resourceCulture);
             }
         }
         

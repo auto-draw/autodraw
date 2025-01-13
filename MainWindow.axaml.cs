@@ -390,14 +390,18 @@ public partial class MainWindow : Window
 
         if (numberText.Length < 1) return;
         var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 8096)
+        switch (setNumber)
         {
-            PercentageNumber.Text = "8096";
-            return;
+            case < 1:
+                numberText = "1";
+                return;
+            case > 4096:
+                numberText = "4096";
+                return;
         }
+        HeightInput.Text = numberText;
 
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
         else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
 
         _inChange = true;
@@ -419,14 +423,15 @@ public partial class MainWindow : Window
         switch (setNumber)
         {
             case < 1:
-                PercentageNumber.Text = "1";
+                numberText = "1";
                 return;
             case > 4096:
-                PercentageNumber.Text = "4096";
+                numberText = "4096";
                 return;
         }
+        WidthInput.Text = numberText;
 
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
         else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
 
         _inChange = true;

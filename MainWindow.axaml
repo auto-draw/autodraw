@@ -213,7 +213,7 @@
                                     <Label Grid.Column="0" VerticalAlignment="Center" FontSize="12" Padding="0" Content="{x:Static assets:Resources.ES}"/>
                                     <TextBox Name="ErosionAdvancedText" Grid.Column="1" HorizontalAlignment="Stretch" CornerRadius="2">0</TextBox>
                                 </Grid>
-                                <CheckBox Name="LockAspectRatioCheckBox" Classes="FilterItem" Content="{x:Static assets:Resources.LockAspectRatio}"/>
+                                <CheckBox Name="UnlockAspectRatioCheckBox" Classes="FilterItem" Content="{x:Static assets:Resources.UnlockAspectRatio}"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>
