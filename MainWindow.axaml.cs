@@ -355,6 +355,22 @@ public partial class MainWindow : Window
         _inChange = false;
     }
 
+    private void sizeLimit(TextBox numberText)
+    {
+        var setNumber = int.Parse(numberText.Text);
+        var setText = setNumber.ToString();
+        switch (setNumber)
+        {
+            case < 1:
+                setText = "1";
+                break;
+            case > 4096:
+                setText = "4096";
+                break;
+        }
+        numberText.Text = setText;
+    }
+
     private void PercentageNumberOnTextChanged(object? sender, TextChangingEventArgs e)
     {
         if (PercentageNumber.Text == null) return;
@@ -389,17 +405,9 @@ public partial class MainWindow : Window
         e.Handled = true;
 
         if (numberText.Length < 1) return;
+        sizeLimit(WidthInput);
+        sizeLimit(HeightInput);
         var setNumber = int.Parse(numberText);
-        switch (setNumber)
-        {
-            case < 1:
-                numberText = "1";
-                return;
-            case > 4096:
-                numberText = "4096";
-                return;
-        }
-        HeightInput.Text = numberText;
 
         if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
         else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
@@ -419,17 +427,9 @@ public partial class MainWindow : Window
         e.Handled = true;
 
         if (numberText.Length < 1) return;
+        sizeLimit(WidthInput);
+        sizeLimit(HeightInput);
         var setNumber = int.Parse(numberText);
-        switch (setNumber)
-        {
-            case < 1:
-                numberText = "1";
-                return;
-            case > 4096:
-                numberText = "4096";
-                return;
-        }
-        WidthInput.Text = numberText;
 
         if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
         else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
