@@ -355,22 +355,6 @@ public partial class MainWindow : Window
         _inChange = false;
     }
 
-    private void sizeLimit(TextBox numberText)
-    {
-        var setNumber = int.Parse(numberText.Text);
-        var setText = setNumber.ToString();
-        switch (setNumber)
-        {
-            case < 1:
-                setText = "1";
-                break;
-            case > 4096:
-                setText = "4096";
-                break;
-        }
-        numberText.Text = setText;
-    }
-
     private void PercentageNumberOnTextChanged(object? sender, TextChangingEventArgs e)
     {
         if (PercentageNumber.Text == null) return;
@@ -401,20 +385,33 @@ public partial class MainWindow : Window
         if (HeightInput.Text == null) return;
         if (_inChange) return;
         var numberText = _numberRegex.Replace(HeightInput.Text, "");
+        _inChange = true;
         HeightInput.Text = numberText;
+        _inChange = false;
         e.Handled = true;
 
         if (numberText.Length < 1) return;
-        sizeLimit(WidthInput);
-        sizeLimit(HeightInput);
-        var setNumber = int.Parse(numberText);
-
-        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
-        else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
-
         _inChange = true;
-        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        double ratio = _rawBitmap.Width / _rawBitmap.Height;
+
+        int heightNumber =  int.Parse(_numberRegex.Replace(HeightInput.Text, ""));
+        int widthNumber = (int)(heightNumber * ratio);
+
+        if(widthNumber > 4096)
+        {
+            heightNumber = (int)(4096 / ratio);
+            widthNumber = 4096;
+            HeightInput.Text = heightNumber.ToString();
+        }
+        
+        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
+        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), heightNumber);
+        else ResizeImage(widthNumber, heightNumber);
+
+        PercentageNumber.Text = $"{Math.Round((decimal)heightNumber / _rawBitmap.Height * 100)}%";
+        WidthInput.Text = widthNumber.ToString();
         _inChange = false;
     }
 
@@ -423,20 +420,33 @@ public partial class MainWindow : Window
         if (WidthInput.Text == null) return;
         if (_inChange) return;
         var numberText = _numberRegex.Replace(WidthInput.Text, "");
+        _inChange = true;
         WidthInput.Text = numberText;
+        _inChange = false;
         e.Handled = true;
 
         if (numberText.Length < 1) return;
-        sizeLimit(WidthInput);
-        sizeLimit(HeightInput);
-        var setNumber = int.Parse(numberText);
-
-        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
-        else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
-
         _inChange = true;
-        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        double ratio = _rawBitmap.Height / _rawBitmap.Width;
+
+        int widthNumber = int.Parse(_numberRegex.Replace(WidthInput.Text, ""));
+        int heightNumber = (int)(widthNumber * ratio);
+
+        if(heightNumber > 4096)
+        {
+            widthNumber = (int)(4096 / ratio);
+            heightNumber = 4096;
+            WidthInput.Text = widthNumber.ToString();
+        }
+        
+        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
+        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(widthNumber, int.Parse(HeightInput.Text));
+        else ResizeImage(widthNumber, heightNumber);
+
+        PercentageNumber.Text = $"{Math.Round((decimal)widthNumber / _rawBitmap.Width * 100)}%";
+        HeightInput.Text = heightNumber.ToString();
         _inChange = false;
     }
 
