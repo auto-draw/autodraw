@@ -44,6 +44,12 @@
     <Style Selector="Image.CloseApp">
         <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/close.png" />
     </Style>
+    <Style Selector="Image.LockedIcon">
+        <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/lock.png" />
+    </Style>
+    <Style Selector="Image.UnlockedIcon">
+        <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/unlock.png" />
+    </Style>
 
 
     <Style Selector="Label">

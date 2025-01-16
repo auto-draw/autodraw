@@ -97,13 +97,19 @@
                 </Canvas>
                 <Slider Grid.Row="1" VerticalAlignment="Center" Name="SizeSlider" Minimum="1" Maximum="200" Value="100"
                         TickFrequency="1" Padding="8 0 8 0" />
-                <Grid Grid.Row="2" Margin="12 0" ColumnDefinitions="2*,*,1.5*,*,2*">
+                <Grid Grid.Row="2" Margin="12 0" ColumnDefinitions="2*,4,26,48,1.2*,48,26,4,2*">
 
                     <TextBox Grid.Column="0" Name="WidthInput" FontSize="14" CornerRadius="4" Text="318" 
                              Watermark="{x:Static assets:Resources.Width}" HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Column="2" Name="PercentageNumber" FontSize="14" CornerRadius="4" Text="100%" 
+                    <Button Padding="1" Name="WidthLock" Width="26" Height="26" Grid.Column="2" Background="Transparent" >
+                        <Image Name="WidthLockImage" Classes="UnlockedIcon"/>
+                    </Button>
+                    <TextBox Grid.Column="4" Name="PercentageNumber" FontSize="14" CornerRadius="4" Text="100%" 
                              Watermark="{x:Static assets:Resources.Scale}" HorizontalContentAlignment="Center" />
-                    <TextBox Grid.Column="4" Name="HeightInput" FontSize="14" CornerRadius="4" Text="318" 
+                    <Button Padding="1" Name="HeightLock" Width="26" Height="26" Grid.Column="6" Background="Transparent" >
+                        <Image Name="HeightLockImage" Classes="UnlockedIcon"/>
+                    </Button>
+                    <TextBox Grid.Column="8" Name="HeightInput" FontSize="14" CornerRadius="4" Text="318" 
                              Watermark="{x:Static assets:Resources.Height}" HorizontalContentAlignment="Center"/>
                 </Grid>
             </Grid>

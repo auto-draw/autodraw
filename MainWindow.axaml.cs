@@ -43,6 +43,11 @@ public partial class MainWindow : Window
     private Settings? _settings;
     public long sessionTime = DateTime.Now.ToFileTime();
 
+    public int widthLock = 0;
+    public int heightLock = 0;
+    public int widthNumber = 1;
+    public int heightNumber = 1;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -83,6 +88,10 @@ public partial class MainWindow : Window
         SizeSlider.ValueChanged += SizeSliderOnValueChanged;
         WidthInput.TextChanging += WidthInputOnTextChanged;
         HeightInput.TextChanging += HeightInputOnTextChanged;
+        
+        WidthLock.Click += WidthLockOnClick;
+        HeightLock.Click += HeightLockOnClick;
+        
         PercentageNumber.TextChanging += PercentageNumberOnTextChanged;
 
         DrawIntervalElement.TextChanging += DrawIntervalOnTextChanging;
@@ -237,9 +246,11 @@ public partial class MainWindow : Window
         SizeSlider.Value = 100;
 
         PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
-        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        WidthInput.Text = widthLock > 0 ? widthLock.ToString() : _displayedBitmap.Size.Width.ToString();
+        HeightInput.Text =  heightLock > 0 ? heightLock.ToString() : _displayedBitmap.Size.Height.ToString();
         _inChange = false;
+        
+        if (widthLock > 0 || heightLock > 0) ResizeImage(_displayedBitmap.Size.Width, _displayedBitmap.Size.Height);
     }
 
     private async void OpenButtonOnClick(object? sender, RoutedEventArgs e)
@@ -308,8 +319,12 @@ public partial class MainWindow : Window
 
     private void ResizeImage(double width, double height)
     {
-        width = Math.Max(1, width);
-        height = Math.Max(1, height);
+        width = widthLock > 0 ? widthLock : Math.Max(1, width);
+        height = heightLock > 0 ? heightLock :  Math.Max(1, height);
+
+        if (widthLock == 0) widthNumber = (int)width;
+        if (heightLock == 0) heightNumber = (int)height;
+        
         if (GC.GetTotalMemory(false) < _lastMem) GC.RemoveMemoryPressure(_lastMem);
         _lastMem = GC.GetTotalMemory(false);
 
@@ -392,26 +407,26 @@ public partial class MainWindow : Window
 
         if (numberText.Length < 1) return;
         _inChange = true;
-        double ratio = _rawBitmap.Width / _rawBitmap.Height;
+        double ratio = (double)_rawBitmap.Width / _rawBitmap.Height; // STUPID STUPID STUPID!!!
 
-        int heightNumber =  int.Parse(_numberRegex.Replace(HeightInput.Text, ""));
-        int widthNumber = (int)(heightNumber * ratio);
+        int _heightNumber =  int.Parse(_numberRegex.Replace(HeightInput.Text, ""));
+        int _widthNumber = (bool)UnlockAspectRatioCheckBox.IsChecked! ? int.Parse(WidthInput.Text) : (int)(_heightNumber * ratio);
 
-        if(widthNumber > 4096)
+        if(_widthNumber > 4096)
         {
-            heightNumber = (int)(4096 / ratio);
-            widthNumber = 4096;
-            HeightInput.Text = heightNumber.ToString();
+            _heightNumber = (int)(4096 / ratio);
+            _widthNumber = 4096;
         }
         
-        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
-        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+        _widthNumber = Math.Max(Math.Min(_widthNumber, 4096), 1);
+        _heightNumber = Math.Max(Math.Min(_heightNumber, 4096), 1);
+        
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), _heightNumber);
+        else ResizeImage(_widthNumber, _heightNumber);
 
-        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), heightNumber);
-        else ResizeImage(widthNumber, heightNumber);
-
-        PercentageNumber.Text = $"{Math.Round((decimal)heightNumber / _rawBitmap.Height * 100)}%";
-        WidthInput.Text = widthNumber.ToString();
+        PercentageNumber.Text = $"{Math.Round((decimal)_heightNumber / _rawBitmap.Height * 100)}%";
+        WidthInput.Text = _widthNumber.ToString();
+        HeightInput.Text = _heightNumber.ToString();
         _inChange = false;
     }
 
@@ -427,27 +442,43 @@ public partial class MainWindow : Window
 
         if (numberText.Length < 1) return;
         _inChange = true;
-        double ratio = _rawBitmap.Height / _rawBitmap.Width;
+        double ratio = (double)_rawBitmap.Height / _rawBitmap.Width; // STUPID STUPID STUPID!!!
 
-        int widthNumber = int.Parse(_numberRegex.Replace(WidthInput.Text, ""));
-        int heightNumber = (int)(widthNumber * ratio);
+        int _widthNumber = int.Parse(_numberRegex.Replace(WidthInput.Text, ""));
+        int _heightNumber = (bool)UnlockAspectRatioCheckBox.IsChecked! ? int.Parse(HeightInput.Text) : (int)(_widthNumber * ratio);
+        Console.WriteLine(_heightNumber);
+        Console.WriteLine(ratio);
 
-        if(heightNumber > 4096)
+        if(_heightNumber > 4096)
         {
-            widthNumber = (int)(4096 / ratio);
-            heightNumber = 4096;
-            WidthInput.Text = widthNumber.ToString();
+            _widthNumber = (int)(4096 / ratio);
+            _heightNumber = 4096;
         }
         
-        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
-        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+        _widthNumber = Math.Max(Math.Min(_widthNumber, 4096), 1);
+        _heightNumber = Math.Max(Math.Min(_heightNumber, 4096), 1);
 
-        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(widthNumber, int.Parse(HeightInput.Text));
-        else ResizeImage(widthNumber, heightNumber);
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(_widthNumber, int.Parse(HeightInput.Text));
+        else ResizeImage(_widthNumber, _heightNumber);
 
-        PercentageNumber.Text = $"{Math.Round((decimal)widthNumber / _rawBitmap.Width * 100)}%";
-        HeightInput.Text = heightNumber.ToString();
+        PercentageNumber.Text = $"{Math.Round((decimal)_widthNumber / _rawBitmap.Width * 100)}%";
+        WidthInput.Text = _widthNumber.ToString();
+        HeightInput.Text = _heightNumber.ToString();
         _inChange = false;
+    }
+
+    private void HeightLockOnClick(object? sender, RoutedEventArgs e)
+    {
+        heightLock = heightLock > 0 ? 0 : heightNumber;
+        HeightLockImage.Classes.Clear();
+        HeightLockImage.Classes.Add(heightLock > 0 ? "LockedIcon" : "UnlockedIcon");
+    }
+
+    private void WidthLockOnClick(object? sender, RoutedEventArgs e)
+    {
+        widthLock = widthLock > 0 ? 0 : widthNumber;
+        WidthLockImage.Classes.Clear();
+        WidthLockImage.Classes.Add(widthLock > 0 ? "LockedIcon" : "UnlockedIcon");
     }
 
 
