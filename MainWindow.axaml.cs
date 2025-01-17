@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using SharpHook;
 using SkiaSharp;
 
 namespace Autodraw;
@@ -220,6 +223,14 @@ public partial class MainWindow : Window
     {
         _devwindow = null;
     }
+    
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.GetPosition(this).Y <= 20)
+            BeginMoveDrag(e);
+    }
+
 
     // Base UI Handles
 
@@ -274,6 +285,14 @@ public partial class MainWindow : Window
             return;
         }
 
+        // Windows doesn't ask for permissions before mouse movement, Linux (wayland) and macOS require it.
+        // We just create an empty Mouse Movement to trigger the popup
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var hook = new TaskPoolGlobalHook();
+            hook.MouseMoved += (o, args) => { }; // Start listening for input
+            hook.RunAsync();
+        }
         if (Drawing.IsDrawing) return;
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
         List<SKBitmap> bitmaps = new List<SKBitmap> { _processedBitmap,_processedBitmap,_processedBitmap };

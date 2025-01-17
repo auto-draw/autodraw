@@ -13,12 +13,17 @@
         CanResize="False"
 
         WindowStartupLocation="CenterScreen"
-
+        ShowInTaskbar="False"
+        Topmost="True"
+        
+        
         Title="Message"
 
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="20">
+        ExtendClientAreaTitleBarHeightHint="20"
+        SystemDecorations="BorderOnly"
+        PointerPressed="OnPointerPressed">
 
     <Grid>
         <Grid.RowDefinitions>

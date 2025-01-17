@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Controls;
 using SharpHook;
 using SharpHook.Native;
 #if WINDOWS
@@ -21,6 +23,7 @@ public class Input
     public static Vector2 mousePos;
     public static bool forceUio = false;
     public static event EventHandler? MousePosUpdate;
+    public static PixelPoint primaryScreenBounds;
 
     //// Functions
 
@@ -36,10 +39,14 @@ public class Input
     {
         if (taskHook.IsRunning) return;
         if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
+        primaryScreenBounds = MainWindow.CurrentMainWindow.Screens.Primary.Bounds.TopLeft; // updates if main screen orientation changes
 
         taskHook.MouseMoved += (sender, e) =>
         {
             mousePos = new Vector2(e.Data.X, e.Data.Y);
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) // || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+                mousePos = new Vector2(mousePos.X + primaryScreenBounds.X, mousePos.Y + primaryScreenBounds.Y);
             MousePosUpdate?.Invoke(null, EventArgs.Empty);
         };
 

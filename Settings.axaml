@@ -14,6 +14,8 @@
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaToDecorationsHint="True"
+        SystemDecorations="BorderOnly"
+        PointerPressed="OnPointerPressed"
         MinWidth="750"
         MinHeight="450"
         Width="750"
