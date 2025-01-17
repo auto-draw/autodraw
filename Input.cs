@@ -168,6 +168,19 @@ public class Input
         }
     }
 
+    public static void SendKeyDown(KeyCode keyCode)
+    {
+        eventSim.SimulateKeyPress(keyCode);
+    }
+    public static void SendKeyUp(KeyCode keyCode)
+    {
+        eventSim.SimulateKeyRelease(keyCode);
+    }
+    public static void SendText(string text)
+    {
+        eventSim.SimulateTextEntry(text);
+    }
+
     public static class MouseTypes
     {
         public static byte MouseLeft = 1;

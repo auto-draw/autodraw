@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -275,7 +276,8 @@ public partial class MainWindow : Window
 
         if (Drawing.IsDrawing) return;
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
-        new Preview().ReadyDraw(_processedBitmap);
+        List<SKBitmap> bitmaps = new List<SKBitmap> { _processedBitmap,_processedBitmap,_processedBitmap };
+        new Preview().ReadyStackDraw(_processedBitmap,bitmaps);
         WindowState = WindowState.Minimized;
     }
 

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -15,11 +17,12 @@ namespace Autodraw;
 
 public partial class Preview : Window
 {
-    public bool hasStarted = false;
     public SKBitmap? inputBitmap;
     public long lastMovement;
     public Bitmap? renderedBitmap;
     private double scale = 1;
+    private bool drawingStack;
+    private List<SKBitmap> stack = new();
 
     public Preview()
     {
@@ -54,10 +57,17 @@ public partial class Preview : Window
     {
         if (e.Data.KeyCode == Config.Keybind_StartDrawing)
         {
-            if (inputBitmap.IsNull) return;
+            //if (inputBitmap.IsNull && !drawingStack) return;
             Thread drawThread = new(async () =>
             {
-                await Drawing.Draw(inputBitmap);
+                if (drawingStack)
+                {
+                    await Drawing.DrawStack(stack,Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos);
+                }
+                else
+                {
+                    await Drawing.Draw(inputBitmap,Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos);
+                }
             });
             drawThread.Start();
             Dispatcher.UIThread.Invoke(Close);
@@ -96,8 +106,27 @@ public partial class Preview : Window
         }
     }
 
+    public void ReadyStackDraw(SKBitmap bitmap, List<SKBitmap> _stack)
+    {
+        drawingStack = true;
+        renderedBitmap?.Dispose();
+        renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
+        PreviewImage.Source = renderedBitmap;
+
+        Width = (bitmap.Width) / scale;
+        Height = (bitmap.Height) / scale;
+
+        Show();
+
+        stack.Clear();
+        stack = _stack;
+        
+        Input.taskHook.KeyReleased += Keybind;
+    }
+
     public void ReadyDraw(SKBitmap bitmap)
     {
+        drawingStack = false;
         renderedBitmap?.Dispose();
         renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
         PreviewImage.Source = renderedBitmap;

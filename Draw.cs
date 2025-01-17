@@ -455,7 +455,61 @@ public static class Drawing
                data[(int)position.X, (int)position.Y] == 1;
     }
 
-    public static async Task<bool> Draw(SKBitmap bitmap)
+    private static bool StackHalted;
+    public static async Task<bool> DrawStack(List<SKBitmap> stack,Vector2 position)
+    {
+        StackHalted = false;
+        static void KeybindRelease(object? sender, KeyboardHookEventArgs e)
+        {
+            if (e.Data.KeyCode == Config.Keybind_StopDrawing) { StackHalted = true; }
+        }
+        Input.taskHook.KeyReleased += KeybindRelease;
+
+        foreach (SKBitmap bitmap in stack)
+        {
+            if (StackHalted)
+            {
+                break;
+            }
+            
+            // TODO: Add actual actions lol
+            
+            Input.MoveTo(1060,110);
+            await NOP(1000000);
+            Input.SendClick(Input.MouseTypes.MouseLeft);
+            await NOP(1000000);
+            Input.MoveTo(1100,280);
+            await NOP(1000000);
+            Input.SendClick(Input.MouseTypes.MouseLeft);
+            await NOP(1000000);
+            Input.SendKeyDown(KeyCode.VcLeftControl);
+            await NOP(100000);
+            Input.SendKeyDown(KeyCode.VcA);
+            await NOP(100000);
+            Input.SendKeyUp(KeyCode.VcLeftControl);
+            await NOP(100000);
+            Input.SendKeyUp(KeyCode.VcA);
+            await NOP(1000000);
+            Input.SendText("#010101");
+            await NOP(1000000);
+            Input.MoveTo(860,780);
+            await NOP(1000000);
+            Input.SendClick(Input.MouseTypes.MouseLeft);
+            await NOP(1000000);
+            
+            if (StackHalted)
+            {
+                break;
+            }
+            
+
+            await Draw(bitmap,position);
+        }
+
+        return true;
+    }
+
+    public static async Task<bool> Draw(SKBitmap bitmap,Vector2 position)
     {
         if (IsDrawing) return false;
 
@@ -484,7 +538,7 @@ public static class Drawing
         Input.taskHook.KeyReleased += KeybindRelease;
 
         IsDrawing = true;
-        var usedPos = UseLastPos ? LastPos : Input.mousePos;
+        var usedPos = position;
 
         Dispatcher.UIThread.Invoke(() =>
         {
