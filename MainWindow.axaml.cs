@@ -155,25 +155,6 @@ public partial class MainWindow : Window
         Drawing.Halt();
     }
 
-    private void SetPath(int path)
-    {
-        PatternSelection.SelectedIndex =
-            path == 12345678 ? 0 :
-            path == 14627358 ? 1 :
-            path == 26573481 ? 2 :
-            0;
-        UpdatePath();
-    }
-
-    private void UpdatePath()
-    {
-        Drawing.PathValue =
-            PatternSelection.SelectedIndex == 0 ? 12345678
-            : PatternSelection.SelectedIndex == 1 ? 14627358
-            : PatternSelection.SelectedIndex == 2 ? 26573481
-            : 12345678;
-    }
-
     private ImageProcessing.Filters GetSelectFilters()
     {
         // Generic Filters
@@ -202,8 +183,6 @@ public partial class MainWindow : Window
 
         // Dither Filters
         // **Yet to be implemented**
-
-        UpdatePath();
 
         return _currentFilters;
     }
@@ -288,7 +267,6 @@ public partial class MainWindow : Window
 
     private void RunButtonOnClick(object? sender, RoutedEventArgs e)
     {
-        UpdatePath();
         if (_processedBitmap == null)
         {
             new MessageBox().ShowMessageBox("Error!", "Please select and process an image beforehand.", "error");
@@ -304,6 +282,7 @@ public partial class MainWindow : Window
             hook.RunAsync();
         }
         if (Drawing.IsDrawing) return;
+        Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
@@ -425,24 +404,33 @@ public partial class MainWindow : Window
         if (HeightInput.Text == null) return;
         if (_inChange) return;
         var numberText = _numberRegex.Replace(HeightInput.Text, "");
+        _inChange = true;
         HeightInput.Text = numberText;
+        _inChange = false;
         e.Handled = true;
 
         if (numberText.Length < 1) return;
-        var setNumber = int.Parse(numberText);
-        if (setNumber < 1) return;
-        if (setNumber > 8096)
-        {
-            PercentageNumber.Text = "8096";
-            return;
-        }
-
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), setNumber);
-        else ResizeImage(_rawBitmap.Width / (float)_rawBitmap.Height * setNumber, setNumber);
-
         _inChange = true;
-        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        WidthInput.Text = _displayedBitmap.Size.Width.ToString();
+        double ratio = _rawBitmap.Width / _rawBitmap.Height;
+
+        int heightNumber =  int.Parse(_numberRegex.Replace(HeightInput.Text, ""));
+        int widthNumber = (int)(heightNumber * ratio);
+
+        if(widthNumber > 4096)
+        {
+            heightNumber = (int)(4096 / ratio);
+            widthNumber = 4096;
+            HeightInput.Text = heightNumber.ToString();
+        }
+        
+        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
+        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(int.Parse(WidthInput.Text), heightNumber);
+        else ResizeImage(widthNumber, heightNumber);
+
+        PercentageNumber.Text = $"{Math.Round((decimal)heightNumber / _rawBitmap.Height * 100)}%";
+        WidthInput.Text = widthNumber.ToString();
         _inChange = false;
     }
 
@@ -451,27 +439,33 @@ public partial class MainWindow : Window
         if (WidthInput.Text == null) return;
         if (_inChange) return;
         var numberText = _numberRegex.Replace(WidthInput.Text, "");
+        _inChange = true;
         WidthInput.Text = numberText;
+        _inChange = false;
         e.Handled = true;
 
         if (numberText.Length < 1) return;
-        var setNumber = int.Parse(numberText);
-        switch (setNumber)
-        {
-            case < 1:
-                PercentageNumber.Text = "1";
-                return;
-            case > 4096:
-                PercentageNumber.Text = "4096";
-                return;
-        }
-
-        if (LockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(setNumber, int.Parse(HeightInput.Text));
-        else ResizeImage(setNumber, _rawBitmap.Height / (float)_rawBitmap.Width * setNumber);
-
         _inChange = true;
-        PercentageNumber.Text = $"{Math.Round(SizeSlider.Value)}%";
-        HeightInput.Text = _displayedBitmap.Size.Height.ToString();
+        double ratio = _rawBitmap.Height / _rawBitmap.Width;
+
+        int widthNumber = int.Parse(_numberRegex.Replace(WidthInput.Text, ""));
+        int heightNumber = (int)(widthNumber * ratio);
+
+        if(heightNumber > 4096)
+        {
+            widthNumber = (int)(4096 / ratio);
+            heightNumber = 4096;
+            WidthInput.Text = widthNumber.ToString();
+        }
+        
+        widthNumber = Math.Max(Math.Min(widthNumber, 4096), 1);
+        heightNumber = Math.Max(Math.Min(heightNumber, 4096), 1);
+
+        if (UnlockAspectRatioCheckBox.IsChecked ?? false) ResizeImage(widthNumber, int.Parse(HeightInput.Text));
+        else ResizeImage(widthNumber, heightNumber);
+
+        PercentageNumber.Text = $"{Math.Round((decimal)widthNumber / _rawBitmap.Width * 100)}%";
+        HeightInput.Text = heightNumber.ToString();
         _inChange = false;
     }
 
@@ -563,10 +557,9 @@ public partial class MainWindow : Window
         Drawing.FreeDraw2 = _fd2;
 
         if (lines.Length <= 5) return;
-        if (!int.TryParse(lines[5], out var _path)) return;
-        SetPath(_path);
+        //if (!int.TryParse(lines[5], out var _path)) return;
 
-        minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
+        //minBlackThresholdElement.Text = lines.Length > 6 ? lines[6] : "0";
     }
 
     public async void SaveConfigViaDialog(object? sender, RoutedEventArgs e)
@@ -579,7 +572,6 @@ public partial class MainWindow : Window
 
         if (file is not null)
         {
-            UpdatePath();
             await using var stream = await file.OpenWriteAsync();
             await using var streamWriter = new StreamWriter(stream);
 
@@ -590,7 +582,7 @@ public partial class MainWindow : Window
                 maxBlackThresholdElement.Text,
                 AlphaThresholdElement.Text,
                 FreeDrawCheckbox.IsChecked.ToString(),
-                Drawing.PathValue.ToString(),
+                "", //We should've used Json for future compatibility and freedom to change and remove config variables @gz9.
                 minBlackThresholdElement.Text
             };
 

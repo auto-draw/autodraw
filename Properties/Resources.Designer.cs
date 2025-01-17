@@ -60,6 +60,24 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DFS.
+        /// </summary>
+        public static string AlgorithmDFS {
+            get {
+                return ResourceManager.GetString("AlgorithmDFS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edge-Following.
+        /// </summary>
+        public static string AlgorithmEdgeTraversal {
+            get {
+                return ResourceManager.GetString("AlgorithmEdgeTraversal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Version: C# 10.0.
         /// </summary>
         public static string AutoDrawLanguageVersion {
@@ -87,7 +105,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to v2.2.
+        ///   Looks up a localized string similar to v2.2b.
         /// </summary>
         public static string AutoDrawVersion {
             get {
@@ -159,33 +177,6 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Diagonal.
-        /// </summary>
-        public static string DPD {
-            get {
-                return ResourceManager.GetString("DPD", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Horizontal.
-        /// </summary>
-        public static string DPH {
-            get {
-                return ResourceManager.GetString("DPH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Vertical.
-        /// </summary>
-        public static string DPV {
-            get {
-                return ResourceManager.GetString("DPV", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Erosion (Shader).
         /// </summary>
         public static string ES {
@@ -206,27 +197,27 @@ namespace Autodraw.Properties {
         /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
-        public static string Files1 {
+        public static string FileNew {
             get {
-                return ResourceManager.GetString("Files1", resourceCulture);
+                return ResourceManager.GetString("FileNew", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
-        public static string Files2 {
+        public static string FileOpen {
             get {
-                return ResourceManager.GetString("Files2", resourceCulture);
+                return ResourceManager.GetString("FileOpen", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        public static string Files3 {
+        public static string FileSave {
             get {
-                return ResourceManager.GetString("Files3", resourceCulture);
+                return ResourceManager.GetString("FileSave", resourceCulture);
             }
         }
         
@@ -260,27 +251,27 @@ namespace Autodraw.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Alpha Threshold.
         /// </summary>
-        public static string GeneralAT {
+        public static string GeneralAlphaThreshold {
             get {
-                return ResourceManager.GetString("GeneralAT", resourceCulture);
+                return ResourceManager.GetString("GeneralAlphaThreshold", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Click Delay.
         /// </summary>
-        public static string GeneralCD {
+        public static string GeneralClickDelay {
             get {
-                return ResourceManager.GetString("GeneralCD", resourceCulture);
+                return ResourceManager.GetString("GeneralClickDelay", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Draw Pattern.
+        ///   Looks up a localized string similar to Draw Algorithm.
         /// </summary>
-        public static string GeneralDP {
+        public static string GeneralDrawAlgorithm {
             get {
-                return ResourceManager.GetString("GeneralDP", resourceCulture);
+                return ResourceManager.GetString("GeneralDrawAlgorithm", resourceCulture);
             }
         }
         
@@ -305,9 +296,9 @@ namespace Autodraw.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Luminance Threshold.
         /// </summary>
-        public static string GeneralLT {
+        public static string GeneralLuminanceThreshold {
             get {
-                return ResourceManager.GetString("GeneralLT", resourceCulture);
+                return ResourceManager.GetString("GeneralLuminanceThreshold", resourceCulture);
             }
         }
         
@@ -357,20 +348,20 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal Stripes.
+        ///   Looks up a localized string similar to Inline Border (Semi-Shader).
         /// </summary>
-        public static string Hstripes {
+        public static string InlineBorderShader {
             get {
-                return ResourceManager.GetString("Hstripes", resourceCulture);
+                return ResourceManager.GetString("InlineBorderShader", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inline Border (Semi-Shader).
+        ///   Looks up a localized string similar to Inline (Shader).
         /// </summary>
-        public static string IBSS {
+        public static string InlineShader {
             get {
-                return ResourceManager.GetString("IBSS", resourceCulture);
+                return ResourceManager.GetString("InlineShader", resourceCulture);
             }
         }
         
@@ -384,29 +375,11 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inline (Shader).
-        /// </summary>
-        public static string IS {
-            get {
-                return ResourceManager.GetString("IS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lock Aspect Ratio.
-        /// </summary>
-        public static string LockAspectRatio {
-            get {
-                return ResourceManager.GetString("LockAspectRatio", resourceCulture);
             }
         }
         
@@ -474,20 +447,20 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Outline (Shader).
-        /// </summary>
-        public static string OS {
-            get {
-                return ResourceManager.GetString("OS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Outline.
         /// </summary>
         public static string Outline {
             get {
                 return ResourceManager.GetString("Outline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outline (Shader).
+        /// </summary>
+        public static string OutlineShader {
+            get {
+                return ResourceManager.GetString("OutlineShader", resourceCulture);
             }
         }
         
@@ -582,6 +555,24 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Horizontal Stripes.
+        /// </summary>
+        public static string StripesHorizontal {
+            get {
+                return ResourceManager.GetString("StripesHorizontal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Stripes.
+        /// </summary>
+        public static string StripesVertical {
+            get {
+                return ResourceManager.GetString("StripesVertical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark theme?.
         /// </summary>
         public static string ThemeDark {
@@ -609,38 +600,38 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds.
+        ///   Looks up a localized string similar to This is the delay (in ms) which AutoDraw will wait in-between each image chunk..
         /// </summary>
-        public static string TT1 {
+        public static string ToolTipDelay {
             get {
-                return ResourceManager.GetString("TT1", resourceCulture);
+                return ResourceManager.GetString("ToolTipDelay", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the delay (in ms) which AutoDraw will wait in-between each image chunk..
+        ///   Looks up a localized string similar to This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds.
         /// </summary>
-        public static string TT2 {
+        public static string ToolTipSpeed {
             get {
-                return ResourceManager.GetString("TT2", resourceCulture);
+                return ResourceManager.GetString("ToolTipSpeed", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to This decides what portions of the image will be drawn, based on if it falls within the threshold. Threshold is based on 0-255.
         /// </summary>
-        public static string TT3 {
+        public static string ToolTipThreshold {
             get {
-                return ResourceManager.GetString("TT3", resourceCulture);
+                return ResourceManager.GetString("ToolTipThreshold", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vertical Stripes.
+        ///   Looks up a localized string similar to Lock Aspect Ratio.
         /// </summary>
-        public static string Vstripes {
+        public static string UnlockAspectRatio {
             get {
-                return ResourceManager.GetString("Vstripes", resourceCulture);
+                return ResourceManager.GetString("UnlockAspectRatio", resourceCulture);
             }
         }
         
