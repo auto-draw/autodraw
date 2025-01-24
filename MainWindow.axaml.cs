@@ -295,8 +295,7 @@ public partial class MainWindow : Window
         }
         if (Drawing.IsDrawing) return;
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
-        List<SKBitmap> bitmaps = new List<SKBitmap> { _processedBitmap,_processedBitmap,_processedBitmap };
-        new Preview().ReadyStackDraw(_processedBitmap,bitmaps);
+        new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
 
