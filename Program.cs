@@ -28,7 +28,7 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
-            .UsePlatformDetect()
+            .UsePlatformDetect().With(new Win32PlatformOptions{RenderingMode = new[] { Win32RenderingMode.Wgl }, CompositionMode = new[] { Win32CompositionMode.WinUIComposition }})
             .WithInterFont()
             .LogToTrace();
     }
