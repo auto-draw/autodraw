@@ -20,13 +20,10 @@ public static class ImageExtensions
 {
     public static Bitmap ConvertToAvaloniaBitmap(this SKBitmap bitmap)
     {
-        return new Bitmap
-        (PixelFormat.Bgra8888, AlphaFormat.Premul,
-            bitmap.GetPixels(),
-            new PixelSize(bitmap.Width, bitmap.Height),
-            new Vector(96, 96),
-            bitmap.GetPixelSpan().Length
-        );
+        using var encodedStream = new MemoryStream();
+        bitmap.Encode(encodedStream, SKEncodedImageFormat.Png, 100);
+        encodedStream.Seek(0, SeekOrigin.Begin);
+        return new Bitmap(encodedStream);
     }
 }
 
