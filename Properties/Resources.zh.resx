@@ -198,7 +198,7 @@
         <value>.NET Framework 版本：net6.0</value>
     </data>
     <data name="UnlockAspectRatio" xml:space="preserve">
-        <value>锁定纵横比</value>
+        <value>解锁宽高比</value>
     </data>
     <data name="AutoDrawVersion" xml:space="preserve">
         <value>2.2b版</value>
