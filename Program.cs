@@ -13,7 +13,8 @@ internal class Program
     {
         try
         {
-            BuildAvaloniaApp()
+            var compatability = args?.Length > 0 && args[0].Equals("compat", StringComparison.OrdinalIgnoreCase);
+            BuildAvaloniaApp(compatability)
                 .StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e)
@@ -25,11 +26,22 @@ internal class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
+    public static AppBuilder BuildAvaloniaApp(bool compatability = false)
     {
-        return AppBuilder.Configure<App>()
-            .UsePlatformDetect().With(new Win32PlatformOptions{RenderingMode = new[] { Win32RenderingMode.Wgl }, CompositionMode = new[] { Win32CompositionMode.WinUIComposition }})
-            .WithInterFont()
+        var app = AppBuilder.Configure<App>()
+            .UsePlatformDetect();
+             
+        if (compatability)
+        {
+            app = app.With(new Win32PlatformOptions
+            {
+                RenderingMode = [Win32RenderingMode.Wgl],
+                CompositionMode = [Win32CompositionMode.WinUIComposition]
+            });
+        }
+
+        app.WithInterFont()
             .LogToTrace();
+        return app;
     }
 }

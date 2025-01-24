@@ -100,6 +100,9 @@
         <None Remove="Assets\Sounds\Music.mp3"/>
         <None Remove="Assets\test-pattern.jpg"/>
         <None Remove="Styles\DefaultTheme.txt"/>
+        <None Update="autodraw-compat.bat">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
