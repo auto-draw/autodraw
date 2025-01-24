@@ -627,7 +627,7 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lock Aspect Ratio.
+        ///   Looks up a localized string similar to Unlock Aspect Ratio.
         /// </summary>
         public static string UnlockAspectRatio {
             get {

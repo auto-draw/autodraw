@@ -313,7 +313,7 @@
         <value>.NET Framework Version: net6.0</value>
     </data>
     <data name="UnlockAspectRatio" xml:space="preserve">
-        <value>Lock Aspect Ratio</value>
+        <value>Unlock Aspect Ratio</value>
     </data>
     <data name="AlgorithmEdgeTraversal" xml:space="preserve">
         <value>Edge-Following</value>
