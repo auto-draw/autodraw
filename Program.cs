@@ -35,8 +35,8 @@ internal class Program
         {
             app = app.With(new Win32PlatformOptions
             {
-                RenderingMode = [Win32RenderingMode.Wgl],
-                CompositionMode = [Win32CompositionMode.WinUIComposition]
+                RenderingMode = [Win32RenderingMode.Wgl,Win32RenderingMode.Vulkan,Win32RenderingMode.Software],
+                CompositionMode = [Win32CompositionMode.WinUIComposition,Win32CompositionMode.DirectComposition,Win32CompositionMode.RedirectionSurface]
             });
         }
 
