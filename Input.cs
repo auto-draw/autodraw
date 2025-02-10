@@ -5,6 +5,9 @@ using Avalonia;
 using Avalonia.Controls;
 using SharpHook;
 using SharpHook.Native;
+#if WINDOWS
+using SimWinInput;
+#endif
 
 namespace Autodraw;
 
@@ -59,33 +62,68 @@ public class Input
 
     public static void MoveTo(short x, short y)
     {
-        eventSim.SimulateMouseMovement(x, y);
+#if WINDOWS
+            SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
+            mousePos = new Vector2(x, y);
+#else
+            eventSim.SimulateMouseMovement(x, y);
+#endif
     }
 
     public static void MoveBy(short xOffset, short yOffset)
     {
+#if WINDOWS
+        SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
+        mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
+#else
         eventSim.SimulateMouseMovementRelative(xOffset, yOffset);
+#endif
     }
 
     // Click Handling
 
     public static void SendClick(byte mouseType)
     {
+#if WINDOWS
+        var buttonDown = mouseType == MouseTypes.MouseLeft
+            ? SimMouse.Action.LeftButtonDown
+            : SimMouse.Action.RightButtonDown;
+        var buttonUp = mouseType == MouseTypes.MouseLeft
+            ? SimMouse.Action.LeftButtonUp
+            : SimMouse.Action.RightButtonUp;
+        SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+        SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+#else
         var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
         eventSim.SimulateMousePress(button);
         eventSim.SimulateMouseRelease(button);
+#endif
     }
 
     public static void SendClickDown(byte mouseType)
     {
+#if WINDOWS
+        var buttonDown = mouseType == MouseTypes.MouseLeft
+            ? SimMouse.Action.LeftButtonDown
+            : SimMouse.Action.RightButtonDown;
+        SimMouse.Act(buttonDown, (int)mousePos.X, (int)mousePos.Y);
+#else
         var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
         eventSim.SimulateMousePress(button);
+#endif
     }
 
     public static void SendClickUp(byte mouseType)
     {
+#if WINDOWS
+        var buttonUp = mouseType == MouseTypes.MouseLeft
+            ? SimMouse.Action.LeftButtonUp
+            : SimMouse.Action.RightButtonUp;
+        SimMouse.Act(buttonUp, (int)mousePos.X, (int)mousePos.Y);
+#else
         var button = mouseType == MouseTypes.MouseLeft ? MouseButton.Button1 : MouseButton.Button2;
         eventSim.SimulateMouseRelease(button);
+#endif
     }
 
     public static void SendKeyDown(KeyCode keyCode)

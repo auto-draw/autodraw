@@ -48,6 +48,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="RestSharp" Version="112.1.0" />
         <PackageReference Include="SharpHook" Version="5.3.8" />
+        <PackageReference Include="SimWinMouse" Version="1.0.3" />
         <PackageReference Include="TextMateSharp.Grammars" Version="1.0.65" />
         <PackageReference Include="UVtools.AvaloniaControls" Version="4.0.2" />
     </ItemGroup>
