@@ -605,8 +605,8 @@ public static class Drawing
                         Input.MoveTo(interpX, interpY);
                         await NOP((long)stepDelay);
                     }
-                    Input.SendClickDown(Input.MouseTypes.MouseLeft);
                     await NOP(ClickDelay * 2500);
+                    Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 } // Just initializes the Mouse Down
                 if (IsPaused)
                 {
