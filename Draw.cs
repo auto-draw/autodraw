@@ -591,11 +591,22 @@ public static class Drawing
                 if (!isDown)
                 {
                     isDown = true;
-                    Input.MoveTo(x, (short)(y-1));
-                    await NOP(ClickDelay * 5000);
-                    Input.MoveTo(x, y);
-                    await NOP(ClickDelay * 2500);
+                    Vector2 currentPosition = Input.mousePos;
+                    Vector2 targetPosition = new Vector2(x, y);
+                    int steps = 20;
+                    float stepDelay = ClickDelay * 5000f / steps;
+
+                    for (int i = 1; i <= steps; i++)
+                    {
+                        var interpP = Vector2.Lerp(currentPosition, targetPosition, i / (float)steps);
+                        short interpX = (short)interpP.X;
+                        short interpY = (short)interpP.Y;
+
+                        Input.MoveTo(interpX, interpY);
+                        await NOP((long)stepDelay);
+                    }
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                    await NOP(ClickDelay * 2500);
                 } // Just initializes the Mouse Down
                 if (IsPaused)
                 {
