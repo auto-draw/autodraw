@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 
@@ -21,6 +22,7 @@ public class App : Application
 
     private static void ThemeFailed()
     {
+        Console.WriteLine("Theme Failed.");
         // This function is for if it failed to load a theme, will revert to previous, or will decide to use darkmode if all else fails.
         try
         {
@@ -37,6 +39,7 @@ public class App : Application
         }
         catch
         {
+            Console.WriteLine("Theme Failed 2");
             // Tries loading our default theme. Purpose of this is if a theme somehow vanished.
             var Resource = (IStyle)AvaloniaXamlLoader.Load(
                 new Uri("avares://Autodraw/Styles/dark.axaml")
@@ -74,7 +77,11 @@ public class App : Application
             if (isCodeDark.Success && isCodeLight.Success) throw new Exception("My brother in christ, you cannot have both DarkTheme and LightTheme.");
             if (isCodeDark.Success) isDark = true;
             if (isCodeLight.Success) isDark = false;
-
+            
+            // This is a bugfix, no joke. Somehow fixes any sort of avalonia parsing errors.
+            // Please push to github.com/Avalonia, its revolutionary.
+            Console.WriteLine(typeof(Binding));
+            
             var Resource = AvaloniaRuntimeXamlLoader.Parse<Styles>(
                 TextInput
             );
@@ -93,6 +100,8 @@ public class App : Application
         {
             ThemeFailed();
             OutputMessage += "# Theme has failed to load successfully due to an error.\n" + ex.Message;
+            OutputMessage += "\n Full message:\n" + ex;
+            Console.WriteLine(OutputMessage);
             return OutputMessage;
         }
 
@@ -129,6 +138,9 @@ public class App : Application
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Exception Caught.");
                 ThemeFailed();
                 return ex.Message;
             }
