@@ -94,7 +94,7 @@
                     <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
                             Height="{Binding $parent.Bounds.Height}">
                     </Border>
-                    <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False" ZoomWithMouseWheelBehaviour="ZoomLevelsAltNative"
+                    <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False" ZoomWithMouseWheelBehaviour="ZoomLevelsAltNative" AutoZoomToFit="True"
                                                        Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
                     </avaloniaControls:AdvancedImageBox>
                 </Canvas>
