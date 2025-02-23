@@ -36,6 +36,7 @@ public partial class MainWindow : Window
     private long _lastTime = DateTime.Now.ToFileTime();
     private int _maxBlackThreshold = 127;
 
+    // You are wrong!
     // ReSharper disable once NotAccessedField.Local
     private long _memoryPressure;
     private int _minBlackThreshold;
@@ -466,8 +467,8 @@ public partial class MainWindow : Window
 
         int _widthNumber = int.Parse(_numberRegex.Replace(WidthInput.Text, ""));
         int _heightNumber = (bool)UnlockAspectRatioCheckBox.IsChecked! ? int.Parse(HeightInput.Text) : (int)(_widthNumber * ratio);
-        Console.WriteLine(_heightNumber);
-        Console.WriteLine(ratio);
+        Utils.Log(_heightNumber);
+        Utils.Log(ratio);
 
         if(_heightNumber > 4096)
         {
@@ -549,12 +550,13 @@ public partial class MainWindow : Window
         try
         {
             var clipboard = Clipboard;
-            var fileFormat = (await clipboard.GetFormatsAsync()).ToList()[0];
-            var file = await clipboard.GetDataAsync(fileFormat);
-            ImportImage("", (byte[])file);
+            var file = await clipboard.GetDataAsync(DataFormats.Files) as IEnumerable<IStorageItem>;
+            
+            ImportImage(file.First().Path.LocalPath);
         }
         catch (Exception ex)
         {
+            new MessageBox().ShowMessageBox("Error!", "Invalid Image to Paste!", "error");
             Utils.Log("Error with PasteControl(): " + ex);
         }
     }
