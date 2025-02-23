@@ -145,9 +145,10 @@ public class Utils
     public static bool LoggingEnabled = Config.GetEntry("logsEnabled") == "True";
     public static StreamWriter? LogObject;
 
-    public static void Log(string text)
+    public static void Log(object data)
     {
-        Debug.WriteLine(text);
+        string text = data.ToString() ?? "null";
+        Console.WriteLine(text);
         if (!LoggingEnabled) return;
         if (!Directory.Exists(LogFolder)) Directory.CreateDirectory(LogFolder);
         if (LogObject == null) LogObject = new StreamWriter(LogsPath);
