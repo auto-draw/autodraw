@@ -53,6 +53,14 @@
                 </Button>
             </StackPanel>
 
+            <Menu>
+                <MenuItem Header="_AutoDraw" FontSize="9" Height="0" IsEnabled="True">
+                    <MenuItem x:Name="PasteImage" Header="_Paste Image"
+                              Command="{Binding $parent[Window].PasteControl}"
+                              CommandParameter="{Binding ElementName=MainWindow}" HotKey="Ctrl+V" />
+                </MenuItem>
+            </Menu>
+
             <!--Buttons-->
             <Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}"
                   ColumnDefinitions="*,20,20,20">
@@ -81,9 +89,6 @@
                             <MenuItem Name="ImageAIGeneration" Header="AI Generation"/>
                             <MenuItem Name="ImageSaveImage" Header="Save Image"/>
                             <MenuItem Name="ImageClearImage" Header="Clear Image"/>
-                            <MenuItem x:Name="PasteImage" Header="_Paste Image"
-                                      Command="{Binding $parent[Window].PasteControl}"
-                                      CommandParameter="{Binding ElementName=MainWindow}" HotKey="Ctrl+V" />
                         </ContextMenu>
                     </Canvas.ContextMenu>
                     <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
