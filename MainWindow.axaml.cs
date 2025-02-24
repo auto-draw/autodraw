@@ -13,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Newtonsoft.Json;
 using SharpHook;
 using SkiaSharp;
 
@@ -547,17 +548,39 @@ public partial class MainWindow : Window
 
     public async void PasteControl()
     {
+        var clipboard = Clipboard;
+        async void writeDump()
+        {
+            string dump = JsonConvert.SerializeObject(await clipboard.GetFormatsAsync(), Formatting.Indented);
+            Utils.Log(dump);
+            dump = JsonConvert.SerializeObject(await clipboard.GetTextAsync(), Formatting.Indented);
+            Utils.Log(dump);
+            dump = JsonConvert.SerializeObject(await clipboard.GetDataAsync(DataFormats.FileNames), Formatting.Indented);
+            Utils.Log(dump);
+            dump = JsonConvert.SerializeObject(await clipboard.GetDataAsync(DataFormats.Text), Formatting.Indented);
+            Utils.Log(dump);
+        }
         try
         {
-            var clipboard = Clipboard;
             var file = await clipboard.GetDataAsync(DataFormats.Files) as IEnumerable<IStorageItem>;
+            var img = await clipboard.GetDataAsync("PNG");
+            string d = JsonConvert.SerializeObject(await clipboard.GetFormatsAsync(), Formatting.Indented);
+            Utils.Log(d);
+            if (file is not null) {ImportImage(file.First().Path.LocalPath);}
+            else if (img is not null) {ImportImage("",(byte[]?)img);}
+            else
+            {
+                new MessageBox().ShowMessageBox("Error!", "Invalid Image to Paste!", "error");
+                Utils.Log("Error with PasteControl(): No image found in clipboard! Dumping clipboard.");
+                writeDump();
+            }
             
-            ImportImage(file.First().Path.LocalPath);
         }
         catch (Exception ex)
         {
             new MessageBox().ShowMessageBox("Error!", "Invalid Image to Paste!", "error");
             Utils.Log("Error with PasteControl(): " + ex);
+            writeDump();
         }
     }
 
