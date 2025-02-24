@@ -5,6 +5,9 @@ namespace Autodraw;
 
 internal class Program
 {
+    
+    static bool compatability = false
+
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
@@ -13,8 +16,8 @@ internal class Program
     {
         try
         {
-            var compatability = args?.Length > 0 && args[0].Equals("compat", StringComparison.OrdinalIgnoreCase);
-            BuildAvaloniaApp(compatability)
+            compatability = args?.Length > 0 && args[0].Equals("compat", StringComparison.OrdinalIgnoreCase);
+            BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e)
@@ -26,7 +29,7 @@ internal class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp(bool compatability = false)
+    public static AppBuilder BuildAvaloniaApp()
     {
         var app = AppBuilder.Configure<App>()
             .UsePlatformDetect();
