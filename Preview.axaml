@@ -7,10 +7,37 @@
         Title="Preview"
         Background="#0fff"
         SystemDecorations="None"
-        Opacity="90"
 
         TransparencyLevelHint="None"
 
         Topmost="True">
-    <Image Name="PreviewImage" />
+    
+    <Panel>
+        <Image Opacity="90" Name="PreviewImage" Source="Assets/test-pattern.jpg"/>
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>Auto,*</Grid.ColumnDefinitions>
+            <Button Background="#d222" VerticalAlignment="Top" Classes="Proggy" Width="15" Height="16" Padding="0" BorderBrush="DarkSlateGray" BorderThickness="0 1 1 1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1">></Button>
+            <Panel Grid.Column="0">
+                <Border Background="Black" BorderBrush="DarkSlateGray" BorderThickness="1" CornerRadius="0 0 4 0"></Border>
+                <StackPanel IsVisible="True" Width="100" Height="120">
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">X:</Label>
+                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center" Width="48">480</TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">Y:</Label>
+                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center" Width="48">360</TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">X Lock:</Label>
+                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">Y Lock:</Label>
+                        <TextBox Classes="Proggy" Padding="0" VerticalContentAlignment="Center" ></TextBox>
+                    </StackPanel>
+                </StackPanel>
+            </Panel>
+        </Grid>
+    </Panel>
 </Window>

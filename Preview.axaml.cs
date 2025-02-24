@@ -46,6 +46,7 @@ public partial class Preview : Window
 
     private void UpdateMousePosition(object? sender, EventArgs e)
     {
+        return;
         Dispatcher.UIThread.Invoke(() =>
         {
             var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
@@ -60,6 +61,7 @@ public partial class Preview : Window
 
     private void Keybind(object? sender, KeyboardHookEventArgs e)
     {
+        return;
         if (e.Data.KeyCode == Config.Keybind_StartDrawing)
         {
             //if (inputBitmap.IsNull && !drawingStack) return;

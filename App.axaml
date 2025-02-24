@@ -2,6 +2,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Autodraw.App"
              RequestedThemeVariant="Dark">
+    
+	<!--
+	Unfortunately, Avalonia Styling is not powerful enough to let us override some stuff.
+	Therefore, we must change whatever fluenttheme is doing, by stealing its code
+	and then applying our changes directly :P
+	-->
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://Autodraw/Styles/Overrides/CheckBox.axaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+		<FontFamily x:Key="ProggyTiny">avares://Autodraw/Assets#ProggyTiny</FontFamily>
+	</Application.Resources>
+	
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml"/>
@@ -10,17 +25,4 @@
         <StyleInclude Source="avares://Autodraw/Styles/universal.axaml" />
         <StyleInclude Source="avares://Autodraw/Styles/dark.axaml" />
     </Application.Styles>
-
-    <!--
-	Unfortunately, Avalonia Styling is not powerful enough to let us override some stuff.
-	Therefore, we must change whatever fluenttheme is doing, by stealing its code
-	and then applying our changes directly :P
-	-->
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://Autodraw/Styles/Overrides/CheckBox.axaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
 </Application>

@@ -97,4 +97,13 @@
     <Style Selector="Label.ClickThru">
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
+    
+    <!-- Proggy Stuff, for Preview, but can be used elsewhere if need be -->
+    <Style Selector="TextBox.Proggy, Button.Proggy, Label.Proggy, TreeViewItem.Proggy, CheckBox.Proggy, ComboBox.Proggy, TabItem.Proggy">
+        <Setter Property="FontFamily" Value="{StaticResource ProggyTiny}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+
+
 </Styles>
