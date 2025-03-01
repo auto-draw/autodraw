@@ -544,11 +544,11 @@ public static class Drawing
             _dataDisplay = new DrawDataDisplay();
             _dataDisplay.Show();
             _dataDisplay.Position =
-                new PixelPoint((int)(usedPos.X + bitmap.Width / 2), (int)(usedPos.Y + bitmap.Height / 2));
+                new PixelPoint((int)(usedPos.X + bitmap.Width), (int)(usedPos.Y + bitmap.Height));
         });
 
         LastPos = usedPos;
-        Pos startPos = new() { X = (int)usedPos.X - bitmap.Width / 2, Y = (int)usedPos.Y - bitmap.Height / 2 };
+        Pos startPos = new() { X = (int)usedPos.X, Y = (int)usedPos.Y };
         Input.MoveTo((short)startPos.X, (short)startPos.Y);
         await NOP(50000);
         Input.SendClick(Input.MouseTypes.MouseLeft);
