@@ -39,7 +39,7 @@ public class Config
     public static KeyCode Keybind_LockPreview = KeyCode.VcLeftControl;
     public static KeyCode Keybind_ClearLock = KeyCode.VcBackQuote;
     
-    public static Vector2 Preview_LastLockPos = new Vector2(0,0);
+    public static Vector2 Preview_LastLockPos = new(0,0);
 
     public static string ConfigPath = Path.Combine(FolderPath, "config.json");
     public static string ThemesPath = Path.Combine(FolderPath, "Themes");

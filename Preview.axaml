@@ -6,35 +6,49 @@
         x:Class="Autodraw.Preview"
         Title="Preview"
         Background="#0fff"
+        
         SystemDecorations="None"
-
+        
         TransparencyLevelHint="None"
-
-        Topmost="True">
+        Topmost="True"
+        
+        WindowStartupLocation="Manual"
+        
+        PointerMoved="InputElement_OnPointerMoved"
+        
+        Loaded="Control_OnLoaded">
+    
+    <Window.Styles>
+        <SimpleTheme/> <!--I do NOT fw fluent theme tbh. too hard to customize. such as removing their stupid forced 32px height on checkbox... STUPID!-->
+    </Window.Styles>
+    
     
     <Panel>
-        <Image Opacity="90" Name="PreviewImage" Source="Assets/test-pattern.jpg"/>
+        <Image Opacity="90" Name="PreviewImage" Source="Assets/test-pattern.jpg" Cursor="SizeAll" PointerPressed="PreviewImage_OnPointerPressed" PointerReleased="PreviewImage_OnPointerReleased"/>
         <Grid VerticalAlignment="Top">
             <Grid.ColumnDefinitions>Auto,*</Grid.ColumnDefinitions>
-            <Button Background="#d222" VerticalAlignment="Top" Classes="Proggy" Width="15" Height="16" Padding="0" BorderBrush="DarkSlateGray" BorderThickness="0 1 1 1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1">></Button>
-            <Panel Grid.Column="0">
-                <Border Background="Black" BorderBrush="DarkSlateGray" BorderThickness="1" CornerRadius="0 0 4 0"></Border>
-                <StackPanel IsVisible="True" Width="100" Height="120">
-                    <StackPanel Orientation="Horizontal" Margin="1">
+            <Button Click="Button_OnClick" Background="{DynamicResource ThemeBackgroundColor}" VerticalAlignment="Top" Classes="Proggy" Width="15" Height="16" Padding="0" BorderBrush="DarkSlateGray" BorderThickness="0 1 1 1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.Column="1">
+                >
+            </Button>
+                
+            <Panel Name="EditPanel" IsVisible="False" Grid.Column="0">
+                <Border Background="{DynamicResource ThemeBackgroundColor}" BorderBrush="DarkSlateGray" BorderThickness="1"/>
+                <StackPanel IsVisible="True" Margin="4" Spacing="4">
+                    <StackPanel Orientation="Horizontal">
                         <Label Classes="Proggy" VerticalContentAlignment="Center">X:</Label>
-                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center" Width="48">480</TextBox>
+                        <TextBox Classes="Proggy" Name="XPos" VerticalContentAlignment="Center" Width="48" TextChanged="XPos_OnTextChanged">480</TextBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="1">
+                    <StackPanel Orientation="Horizontal">
                         <Label Classes="Proggy" VerticalContentAlignment="Center">Y:</Label>
-                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center" Width="48">360</TextBox>
+                        <TextBox Classes="Proggy" Name="YPos" VerticalContentAlignment="Center" Width="48" TextChanged="YPos_OnTextChanged">360</TextBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="1">
+                    <StackPanel Orientation="Horizontal">
                         <Label Classes="Proggy" VerticalContentAlignment="Center">X Lock:</Label>
-                        <TextBox Classes="Proggy" Padding="2" VerticalContentAlignment="Center"></TextBox>
+                        <CheckBox Classes="Proggy" Name="XLock" VerticalContentAlignment="Center" CornerRadius="0" IsCheckedChanged="XLock_OnIsCheckedChanged"></CheckBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="1">
+                    <StackPanel Orientation="Horizontal">
                         <Label Classes="Proggy" VerticalContentAlignment="Center">Y Lock:</Label>
-                        <TextBox Classes="Proggy" Padding="0" VerticalContentAlignment="Center" ></TextBox>
+                        <CheckBox Classes="Proggy" Name="YLock" VerticalContentAlignment="Center" CornerRadius="0" IsCheckedChanged="YLock_OnIsCheckedChanged"></CheckBox>
                     </StackPanel>
                 </StackPanel>
             </Panel>

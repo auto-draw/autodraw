@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -9,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using SharpHook;
@@ -31,49 +33,50 @@ public partial class Preview : Window
     public Preview()
     {
         InitializeComponent();
-        scale = Screens.ScreenFromWindow(this).Scaling;
+        Position = new PixelPoint((int)Drawing.LastPos.X, (int)Drawing.LastPos.Y);
+        // For the eventual case where someone's display settings change, especially in dual monitor cases.
+        if (Screens.ScreenFromPoint(Position) is null)
+        {
+            Position = new PixelPoint(0, 0);
+        }
+        var currScreen = Screens.ScreenFromWindow(this);
+        // For the eventual case where someone puts it out of bounds.
+        Position = new PixelPoint(Math.Min(Position.X, currScreen.Bounds.Width-64), Math.Min(Position.Y, currScreen.Bounds.Height-64));
+        
+        scale = currScreen.Scaling;
+        _isUpdatingPosition = true;
+        XPos.Text = Position.X.ToString();
+        YPos.Text = Position.Y.ToString();
+        _isUpdatingPosition = false;
         Closing += OnClosing;
-        Input.MousePosUpdate += UpdateMousePosition;
+        
         primaryScreenBounds = Screens.Primary.Bounds.TopLeft;
+    }
+
+    private void Control_OnLoaded(object? sender, RoutedEventArgs e)
+    {
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         renderedBitmap.Dispose();
         Closing -= OnClosing;
-        Input.MousePosUpdate -= UpdateMousePosition;
-    }
-
-    private void UpdateMousePosition(object? sender, EventArgs e)
-    {
-        return;
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            var currUnix = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
-            if (currUnix < lastMovement + 10) return;
-            lastMovement = currUnix;
-            var usedPos = Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos;
-            var x = usedPos.X - ((Width / 2) * scale);
-            var y = usedPos.Y - ((Height / 2) * scale);
-            Position = new PixelPoint((int)x, (int)y);
-        });
     }
 
     private void Keybind(object? sender, KeyboardHookEventArgs e)
     {
-        return;
         if (e.Data.KeyCode == Config.Keybind_StartDrawing)
         {
-            //if (inputBitmap.IsNull && !drawingStack) return;
+            if (inputBitmap.IsNull && !drawingStack) return;
             Thread drawThread = new(async () =>
             {
                 if (drawingStack)
                 {
-                    await Drawing.DrawStack(stack,Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos);
+                    await Drawing.DrawStack(stack,Drawing.LastPos);
                 }
                 else
                 {
-                    await Drawing.Draw(inputBitmap,Drawing.UseLastPos ? Drawing.LastPos : Input.mousePos);
+                    await Drawing.Draw(inputBitmap,Drawing.LastPos);
                 }
             });
             drawThread.Start();
@@ -95,22 +98,6 @@ public partial class Preview : Window
             });
             Input.taskHook.KeyReleased -= Keybind;
         }
-
-        if (e.Data.KeyCode == Config.Keybind_LockPreview)
-        {
-            if (Drawing.LastPos.X == 0 && Drawing.LastPos.Y == 0) Drawing.LastPos = Input.mousePos;
-            Config.SetEntry("Preview_LastLockedX", Drawing.LastPos.X.ToString());
-            Config.SetEntry("Preview_LastLockedY", Drawing.LastPos.Y.ToString());
-            Drawing.UseLastPos = !Drawing.UseLastPos;
-        }
-
-        if (e.Data.KeyCode == Config.Keybind_ClearLock)
-        {
-            Drawing.LastPos = new Vector2(0,0);
-            Config.SetEntry("Preview_LastLockedX", "0");
-            Config.SetEntry("Preview_LastLockedY", "0");
-            Drawing.UseLastPos = false;
-        }
     }
 
     public void ReadyStackDraw(SKBitmap bitmap, List<SKBitmap> _stack)
@@ -119,7 +106,7 @@ public partial class Preview : Window
         renderedBitmap?.Dispose();
         renderedBitmap = bitmap.ConvertToAvaloniaBitmap();
         PreviewImage.Source = renderedBitmap;
-
+        
         Width = (bitmap.Width) / scale;
         Height = (bitmap.Height) / scale;
 
@@ -145,5 +132,90 @@ public partial class Preview : Window
 
         inputBitmap = bitmap;
         Input.taskHook.KeyReleased += Keybind;
+    }
+
+    private bool isMoving = false;
+    private PointerPoint _originalPoint;
+    private void PreviewImage_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        isMoving = true;
+        _originalPoint = e.GetCurrentPoint(this);
+    }
+
+    private void PreviewImage_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        isMoving = false;
+        Drawing.LastPos = new Vector2(Position.X,Position.Y);
+        Config.SetEntry("Preview_LastLockedX", Drawing.LastPos.X.ToString());
+        Config.SetEntry("Preview_LastLockedY", Drawing.LastPos.Y.ToString());
+    }
+
+    // Thanks GMas0124816 on GitHub. Previous method was too buggy, and BeginMoveDrag doesnt allow locking of X / Y axis.
+    private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!isMoving) return;
+        PointerPoint currentPoint = e.GetCurrentPoint(this);
+        Position = new PixelPoint(
+            Position.X + (XLock.IsChecked == false ? (int)(currentPoint.Position.X - _originalPoint.Position.X) : 0),
+            Position.Y + (YLock.IsChecked == false ? (int)(currentPoint.Position.Y - _originalPoint.Position.Y) : 0)
+        );
+        Drawing.LastPos = new Vector2(Position.X,Position.Y);
+        _isUpdatingPosition = true;
+        XPos.Text = Position.X.ToString();
+        YPos.Text = Position.Y.ToString();
+        _isUpdatingPosition = false;
+    }
+    private bool _isUpdatingPosition; // Prevent recursive updates
+    private void XPos_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (_isUpdatingPosition)
+            return;
+        _isUpdatingPosition = true;
+        
+        float xValue = 0f;
+        if (!string.IsNullOrWhiteSpace(XPos.Text))
+        {
+            string filteredInput = new string(XPos.Text.Where(char.IsDigit).ToArray());
+            _ = float.TryParse(filteredInput, out xValue);
+        }
+
+        Drawing.LastPos = new Vector2(xValue, Position.Y);
+        Position = new PixelPoint((int)Drawing.LastPos.X, (int)Drawing.LastPos.Y);
+        
+        _isUpdatingPosition = false;
+    }
+
+    private void YPos_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (_isUpdatingPosition)
+            return;
+        _isUpdatingPosition = true;
+
+        float yValue = 0f;
+        if (!string.IsNullOrWhiteSpace(YPos.Text))
+        {
+            string filteredInput = new string(YPos.Text.Where(char.IsDigit).ToArray());
+            _ = float.TryParse(filteredInput, out yValue);
+        }
+
+        Drawing.LastPos = new Vector2(Position.X, yValue);
+        Position = new PixelPoint((int)Drawing.LastPos.X, (int)Drawing.LastPos.Y);
+        
+        _isUpdatingPosition = false;
+    }
+
+    private void XLock_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        XPos.IsEnabled = XLock.IsChecked == false;
+    }
+
+    private void YLock_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        YPos.IsEnabled = YLock.IsChecked == false;
+    }
+
+    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    {
+        EditPanel.IsVisible = !EditPanel.IsVisible;
     }
 }
