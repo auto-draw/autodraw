@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,19 +6,90 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Converters;
+using Avalonia.Media;
 using Avalonia.Threading;
 using SharpHook;
 using SharpHook.Native;
 using SkiaSharp;
 
 namespace Autodraw;
-// Most of this code is going to implement the same methods used for previous versions.
-// The reason I wish to do this, is because simply put, I cannot viably see another way of doing this that is more or less efficient.
-// The previous code was messy, but it's implementation for drawing was more or less, efficient and simple
-// I'm not here to over-engineer something if there's already a very stable method, I don't want to make anything unstable.
 
-// Maybe in the near future I'll program it to use an algorithm to try and go over each pixel without going back over
-// Because the current one loops back thru the stack if it hasn't touched everything, which sucks.
+
+// This is solely for Inputs from the DrawStack stuff.
+public class InputAction
+{
+    public enum ActionType
+    {
+        LeftClick,
+        RightClick,
+        MoveTo,
+        WriteString,
+        KeyDown,
+        KeyUp
+    }
+
+    public ActionType Action { get; set; }
+    public Vector2? Position { get; set; }
+    public string? Data { get; set; }
+
+    public InputAction(ActionType action, object? data = null)
+    {
+        Action = action;
+        switch (action)
+        {
+            case ActionType.MoveTo:
+                if (data is Vector2 pos)
+                {
+                    Position = pos;
+                }
+                break;
+
+            case ActionType.WriteString:
+            case ActionType.KeyDown:
+            case ActionType.KeyUp:
+                Data = data as string;
+                break;
+        }
+    }
+
+    public void PerformAction()
+    {
+        switch (Action)
+        {
+            case ActionType.MoveTo:
+                Input.MoveTo((short)Position.Value.X, (short)Position.Value.Y);
+                break;
+
+            case ActionType.LeftClick:
+                Input.SendClick(Input.MouseTypes.MouseLeft);
+                break;
+
+            case ActionType.RightClick:
+                Input.SendClick(Input.MouseTypes.MouseRight);
+                break;
+
+            case ActionType.WriteString:
+                Input.SendText(Data);
+                break;
+
+            case ActionType.KeyDown:
+                if (Enum.TryParse(typeof(KeyCode), Data, true, out var kc1))
+                {
+                    Input.SendKeyDown((KeyCode)kc1);
+                }
+                break;
+
+            case ActionType.KeyUp:
+                if (Enum.TryParse(typeof(KeyCode), Data, true, out var kc2))
+                {
+                    Input.SendKeyUp((KeyCode)kc2);
+                }
+                break;
+        }
+    }
+}
+
 
 public static class Drawing
 {
@@ -455,7 +525,7 @@ public static class Drawing
     }
 
     private static bool StackHalted;
-    public static async Task<bool> DrawStack(List<SKBitmap> stack,Vector2 position)
+    public static async Task<bool> DrawStack(List<SKBitmap> stack, List<InputAction> actions, Vector2 position)
     {
         StackHalted = false;
         static void KeybindRelease(object? sender, KeyboardHookEventArgs e)
@@ -466,43 +536,44 @@ public static class Drawing
 
         foreach (SKBitmap bitmap in stack)
         {
+            List<InputAction> actionsCopy = new(actions.Select(act => new InputAction(act.Action, act.Data is not null ? act.Data : act.Position)));
             if (StackHalted)
             {
                 break;
             }
             
-            // TODO: Add actual actions lol
+            // Pre-Process Actions:
+            Color color = ImageProcessing.GetColor(bitmap);
+            string hex = ColorToHexConverter.ToHexString(color, AlphaComponentPosition.Trailing); // Why yes I AM feeling lazy today! Thanks avalonia for this lol
+            hex = hex.Substring(0, 6);
+            Console.WriteLine(hex);
             
-            Input.MoveTo(1060,110);
-            await NOP(1000000);
-            Input.SendClick(Input.MouseTypes.MouseLeft);
-            await NOP(1000000);
-            Input.MoveTo(1100,280);
-            await NOP(1000000);
-            Input.SendClick(Input.MouseTypes.MouseLeft);
-            await NOP(1000000);
-            Input.SendKeyDown(KeyCode.VcLeftControl);
-            await NOP(100000);
-            Input.SendKeyDown(KeyCode.VcA);
-            await NOP(100000);
-            Input.SendKeyUp(KeyCode.VcLeftControl);
-            await NOP(100000);
-            Input.SendKeyUp(KeyCode.VcA);
-            await NOP(1000000);
-            Input.SendText("#010101");
-            await NOP(1000000);
-            Input.MoveTo(860,780);
-            await NOP(1000000);
-            Input.SendClick(Input.MouseTypes.MouseLeft);
-            await NOP(1000000);
+            foreach (var act in actionsCopy)
+            {
+                if (act.Action == InputAction.ActionType.WriteString && !string.IsNullOrEmpty(act.Data))
+                {
+                    // Replace all occurrences of "{colorHex}" in the Data property
+                    act.Data = act.Data.Replace("{colorHex}", hex);
+                    Console.WriteLine(act.Data);
+                    Console.WriteLine(hex);
+                }
+            }
+            
+            // Use the Actions :D
+            foreach (var act in actionsCopy)
+            {
+                act.PerformAction();
+                await NOP(1000000);
+            }
             
             if (StackHalted)
             {
                 break;
             }
             
-
-            await Draw(bitmap,position);
+            SKBitmap processedBitmap = ImageProcessing.Process(bitmap, ImageProcessing._currentFilters);
+            await NOP(1000000);
+            await Draw(processedBitmap,position);
         }
 
         return true;

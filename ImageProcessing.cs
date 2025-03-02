@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using Avalonia.Media;
 using SkiaSharp;
 
 namespace Autodraw;
@@ -28,6 +29,9 @@ public static class ImageProcessing
 
     private static readonly List<int[]> listCrosshatch = ReadPattern(patternCrosshatch.Pat);
     private static readonly List<int[]> listDiagCross = ReadPattern(patternDiagCross.Pat);
+
+    public static Filters _currentFilters = new()
+        { Invert = false, MaxThreshold = 127, AlphaThreshold = 200 };
 
     public static List<int[]> ReadPattern(string pat)
     {
@@ -331,6 +335,31 @@ public static class ImageProcessing
         
         GC.AddMemoryPressure(Process_MemPressure);
         return outputBitmap;
+    }
+
+    public static unsafe Color GetColor(SKBitmap sourceBitmap)
+    {
+        // Assume its Bgra8888
+        var width = sourceBitmap.Width;
+        var height = sourceBitmap.Height;
+        // I've always found it so weird how specifying this as a variable, instead of just chucking it into a for loop, improves performance so much.
+        // Guess the width/height variable could change in the middle of the function technically, so it has to re-read. Silly tho.
+        var srcPtr = (byte*)sourceBitmap.GetPixels().ToPointer();
+        
+        for (var row = 0; row < height; row++)
+        for (var col = 0; col < width; col++)
+        {
+            var b = *srcPtr++;
+            var g = *srcPtr++;
+            var r = *srcPtr++;
+            var a = *srcPtr++;
+
+            if (a == 255) // Look for only opaque pixels, transparent pixels sometimes are black or pink?! No clue why pink, but it happens often.
+            {
+                return Color.FromArgb(a, r, g, b);
+            }
+        }
+        return Color.FromArgb(0, 0, 0, 0);
     }
 
     public static unsafe SKBitmap NormalizeColor(this SKBitmap SourceBitmap)

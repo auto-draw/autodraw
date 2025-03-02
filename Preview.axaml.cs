@@ -26,9 +26,12 @@ public partial class Preview : Window
     public long lastMovement;
     public Bitmap? renderedBitmap;
     private double scale = 1;
-    private bool drawingStack;
-    private List<SKBitmap> stack = new();
     public PixelPoint primaryScreenBounds;
+    
+    
+    private bool drawingStack;
+    private List<InputAction> actions = new();
+    private List<SKBitmap> stack = new();
 
     public Preview()
     {
@@ -67,12 +70,12 @@ public partial class Preview : Window
     {
         if (e.Data.KeyCode == Config.Keybind_StartDrawing)
         {
-            if (inputBitmap.IsNull && !drawingStack) return;
+            if (inputBitmap is null && !drawingStack) return;
             Thread drawThread = new(async () =>
             {
                 if (drawingStack)
                 {
-                    await Drawing.DrawStack(stack,Drawing.LastPos);
+                    await Drawing.DrawStack(stack,actions,Drawing.LastPos);
                 }
                 else
                 {
@@ -100,7 +103,7 @@ public partial class Preview : Window
         }
     }
 
-    public void ReadyStackDraw(SKBitmap bitmap, List<SKBitmap> _stack)
+    public void ReadyStackDraw(SKBitmap bitmap, List<SKBitmap> _stack, List<InputAction> _actions)
     {
         drawingStack = true;
         renderedBitmap?.Dispose();
@@ -111,7 +114,9 @@ public partial class Preview : Window
         Height = (bitmap.Height) / scale;
 
         Show();
-
+        
+        actions.Clear();
+        actions = _actions;
         stack.Clear();
         stack = _stack;
         

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,6 +16,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Newtonsoft.Json;
 using SharpHook;
+using SharpHook.Native;
 using SkiaSharp;
 
 namespace Autodraw;
@@ -22,9 +24,6 @@ namespace Autodraw;
 public partial class MainWindow : Window
 {
     public static MainWindow? CurrentMainWindow;
-
-    private readonly ImageProcessing.Filters _currentFilters = new()
-        { Invert = false, MaxThreshold = 127, AlphaThreshold = 200 };
 
     private readonly Regex _numberRegex = new(@"[^0-9]");
     private OpenAIPrompt? _aiPrompt;
@@ -166,37 +165,37 @@ public partial class MainWindow : Window
         Input.Stop();
         Drawing.Halt();
     }
-
-    private ImageProcessing.Filters GetSelectFilters()
+    
+    public ImageProcessing.Filters GetSelectFilters() // This has practically become an Update _CurrentFilters if anything, but aight.
     {
         // Generic Filters
-        _currentFilters.MinThreshold = (byte)_minBlackThreshold;
-        _currentFilters.MaxThreshold = (byte)_maxBlackThreshold;
-        _currentFilters.AlphaThreshold = (byte)_alphaThresh;
+        ImageProcessing._currentFilters.MinThreshold = (byte)_minBlackThreshold;
+        ImageProcessing._currentFilters.MaxThreshold = (byte)_maxBlackThreshold;
+        ImageProcessing._currentFilters.AlphaThreshold = (byte)_alphaThresh;
 
         // Primary Filters
 
         //// Generic Filters
-        _currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
-        _currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
+        ImageProcessing._currentFilters.Invert = InvertFilterCheck.IsChecked ?? false;
+        ImageProcessing._currentFilters.Outline = OutlineFilterCheck.IsChecked ?? false;
 
         //// Pattern Filters
-        _currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
-        _currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
-        _currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
-        _currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
+        ImageProcessing._currentFilters.Crosshatch = CrosshatchFilterCheck.IsChecked ?? false;
+        ImageProcessing._currentFilters.DiagCrosshatch = DiagCrossFilterCheck.IsChecked ?? false;
+        ImageProcessing._currentFilters.HorizontalLines = int.Parse(HorizontalFilterText.Text ?? "0");
+        ImageProcessing._currentFilters.VerticalLines = int.Parse(VerticalFilterText.Text ?? "0");
 
         //// Experimental Filters
-        _currentFilters.BorderAdvanced = int.Parse(BorderAdvancedText.Text ?? "0");
-        _currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
-        _currentFilters.InlineAdvanced = int.Parse(InlineAdvancedText.Text ?? "0");
-        _currentFilters.InlineBorderAdvanced = int.Parse(InlineBorderAdvancedText.Text ?? "0");
-        _currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
+        ImageProcessing._currentFilters.BorderAdvanced = int.Parse(BorderAdvancedText.Text ?? "0");
+        ImageProcessing._currentFilters.OutlineAdvanced = int.Parse(OutlineAdvancedText.Text ?? "0");
+        ImageProcessing._currentFilters.InlineAdvanced = int.Parse(InlineAdvancedText.Text ?? "0");
+        ImageProcessing._currentFilters.InlineBorderAdvanced = int.Parse(InlineBorderAdvancedText.Text ?? "0");
+        ImageProcessing._currentFilters.ErosionAdvanced = int.Parse(ErosionAdvancedText.Text ?? "0");
 
         // Dither Filters
         // **Yet to be implemented**
 
-        return _currentFilters;
+        return ImageProcessing._currentFilters;
     }
 
     // External Window Opening/Closing Handles
@@ -297,6 +296,32 @@ public partial class MainWindow : Window
         }
         if (Drawing.IsDrawing) return;
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
+        
+        // PURELY TESTING PURPOSES.
+        var _drawStack = new List<SKBitmap>();
+        var _actionStack = new List<InputAction>
+        {
+            new(InputAction.ActionType.MoveTo,new Vector2(1670,820)),
+            new(InputAction.ActionType.LeftClick),
+            new(InputAction.ActionType.MoveTo,new Vector2(1670,824)),
+            new(InputAction.ActionType.LeftClick),
+            new(InputAction.ActionType.LeftClick),
+            new(InputAction.ActionType.LeftClick),
+            new(InputAction.ActionType.KeyDown,"VcLeftControl"),
+            new(InputAction.ActionType.KeyDown,"VcA"),
+            new(InputAction.ActionType.KeyUp,"VcLeftControl"),
+            new(InputAction.ActionType.KeyUp,"VcA"),
+            new(InputAction.ActionType.WriteString,"{colorHex}")
+        };
+        
+        foreach (var file in
+                 Directory.GetFiles(@"C:\Users\Siydge\Pictures\AutodrawImages\interstellar\wormhole\color_layers"))
+        {
+            SKBitmap bitmap = SKBitmap.Decode(file);
+            _drawStack.Add(bitmap);
+        }
+
+        //new Preview().ReadyStackDraw(_preFxBitmap, _drawStack, _actionStack);
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
