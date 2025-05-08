@@ -643,6 +643,8 @@ public static class Drawing
         int ActionsComplete = 0;
         foreach (List<Vector2> Action in Actions)
         {
+            DateTime TimeStarted = DateTime.Now;
+            
             ActionsComplete++;
             bool isDown = false;
             int ActionComplete = 0;
@@ -652,7 +654,7 @@ public static class Drawing
                 if (!IsDrawing) break;
                 short x = (short)(p.X + startPos.X);
                 short y = (short)(p.Y + startPos.Y);
-                Dispatcher.UIThread.Invoke(() =>
+                Dispatcher.UIThread.Invoke(() => // Note, this may be slowing down the top-speed, need further testing.
                 {
                     _dataDisplay.DataDisplayText.Text =
                         $"ActionSet Completed: {ActionComplete}/{Action.Count}\n" +
@@ -683,7 +685,16 @@ public static class Drawing
                         Input.MoveTo(x, y);
                     }
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
-                } // Just initializes the Mouse Down
+                }
+                else
+                {
+                    if (FreeDraw2 && ActionComplete % 10000 == 0)
+                    { // Free Draw Mass Draw Protection
+                        Utils.Log("Free Draw Click");
+                        Input.SendClickUp(Input.MouseTypes.MouseLeft);
+                        Input.SendClickDown(Input.MouseTypes.MouseLeft);
+                    }
+                }
                 if (IsPaused)
                 {
                     Input.SendClickUp(Input.MouseTypes.MouseLeft);
@@ -697,6 +708,22 @@ public static class Drawing
                 await NOP(Interval);
             }
             Input.SendClickUp(Input.MouseTypes.MouseLeft);
+
+            var timeComp = (DateTime.Now - TimeStarted);
+            
+            Utils.Log($"Time per Action: {timeComp.TotalMilliseconds/Action.Count}");
+            Utils.Log($"Action Count: {Action.Count}");
+            
+            if (FreeDraw2)
+            {
+                var timeLim = 1000 - timeComp.TotalMilliseconds;
+                if (timeLim > 0)
+                {
+                    Console.WriteLine(timeLim);
+                    await NOP((long)timeLim * 10_000);
+                }
+            }
+
             await NOP(ClickDelay * 2500);
             if (!IsDrawing) break;
         }

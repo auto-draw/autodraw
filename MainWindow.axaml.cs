@@ -32,13 +32,12 @@ public partial class MainWindow : Window
     private Bitmap? _displayedBitmap;
     private bool _inChange;
 
+    private List<InputAction> _actionStack = new();
+
     private long _lastMem;
     private long _lastTime = DateTime.Now.ToFileTime();
     private int _maxBlackThreshold = 127;
 
-    // You are wrong!
-    // ReSharper disable once NotAccessedField.Local
-    private long _memoryPressure;
     private int _minBlackThreshold;
     private SKBitmap? _preFxBitmap = new(318, 318, true);
     private SKBitmap? _processedBitmap;
@@ -46,7 +45,6 @@ public partial class MainWindow : Window
     private SKBitmap? _rawBitmap = new(318, 318, true);
 
     private Settings? _settings;
-    public long sessionTime = DateTime.Now.ToFileTime();
 
     public int widthLock = 0;
     public int heightLock = 0;
@@ -296,32 +294,7 @@ public partial class MainWindow : Window
         }
         if (Drawing.IsDrawing) return;
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
-        
-        // PURELY TESTING PURPOSES.
-        var _drawStack = new List<SKBitmap>();
-        var _actionStack = new List<InputAction>
-        {
-            new(InputAction.ActionType.MoveTo,new Vector2(1670,820)),
-            new(InputAction.ActionType.LeftClick),
-            new(InputAction.ActionType.MoveTo,new Vector2(1670,824)),
-            new(InputAction.ActionType.LeftClick),
-            new(InputAction.ActionType.LeftClick),
-            new(InputAction.ActionType.LeftClick),
-            new(InputAction.ActionType.KeyDown,"VcLeftControl"),
-            new(InputAction.ActionType.KeyDown,"VcA"),
-            new(InputAction.ActionType.KeyUp,"VcLeftControl"),
-            new(InputAction.ActionType.KeyUp,"VcA"),
-            new(InputAction.ActionType.WriteString,"{colorHex}")
-        };
-        
-        foreach (var file in
-                 Directory.GetFiles(@"C:\Users\Siydge\Pictures\AutodrawImages\interstellar\wormhole\color_layers"))
-        {
-            SKBitmap bitmap = SKBitmap.Decode(file);
-            _drawStack.Add(bitmap);
-        }
 
-        //new Preview().ReadyStackDraw(_preFxBitmap, _drawStack, _actionStack);
         new Preview().ReadyDraw(_processedBitmap);
         WindowState = WindowState.Minimized;
     }
@@ -384,7 +357,6 @@ public partial class MainWindow : Window
             _displayedBitmap = resizedBitmap.ConvertToAvaloniaBitmap();
             ImagePreview.Image = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
-            _memoryPressure += resizedBitmap.ByteCount;
         }
         else if (_processedBitmap != null)
         {
@@ -398,7 +370,6 @@ public partial class MainWindow : Window
             _displayedBitmap = postProcessBitmap.ConvertToAvaloniaBitmap();
             ImagePreview.Image = _displayedBitmap;
             GC.AddMemoryPressure(resizedBitmap.ByteCount);
-            _memoryPressure += resizedBitmap.ByteCount;
         }
     }
 

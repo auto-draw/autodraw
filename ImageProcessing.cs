@@ -195,6 +195,7 @@ public static class ImageProcessing
     
     public static unsafe SKBitmap Process(SKBitmap sourceBitmap, Filters filterSettings)
     {
+        if(Process_MemPressure>0) GC.RemoveMemoryPressure(Process_MemPressure);
         Process_MemPressure = sourceBitmap.BytesPerPixel * sourceBitmap.Width * sourceBitmap.Height;
         var height = sourceBitmap.Height;
         var width = sourceBitmap.Width;
@@ -202,6 +203,8 @@ public static class ImageProcessing
         SKBitmap outputBitmap = new(width, height);
         var basePtr = (uint*)sourceBitmap.GetPixels().ToPointer();
         var returnPtr = (uint*)outputBitmap.GetPixels().ToPointer();
+        var isPatSet = filterSettings.IsAnyPatternSet();
+        var outline = filterSettings.Outline;
 
         for (var y = 0; y < height; y++)
         for (var x = 0; x < width; x++)
@@ -218,16 +221,16 @@ public static class ImageProcessing
             }
         
             byte returnByte = 255;
-            if (filterSettings.Outline)
+            if (outline)
             {
                 returnByte = GetOutlineAlpha(y, x, basePtr, width, height, threshByte, filterSettings);
             }
         
-            if (filterSettings.IsAnyPatternSet())
+            if (isPatSet)
             {
                 returnByte = GetPatternAlpha(y, x, returnByte, filterSettings);
             }
-            else if (!filterSettings.Outline)
+            else if (!outline)
             {
                 returnByte = threshByte;
             }

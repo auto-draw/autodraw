@@ -270,6 +270,15 @@
                         </Grid>
                     </Panel>
                 </TabItem>
+                
+                <TabItem Header="Layers">
+                    
+                </TabItem>
+                
+                <TabItem Header="">
+                    
+                </TabItem>
+                
             </TabControl>
             
             <Grid Grid.Row="2" Grid.Column="2">
