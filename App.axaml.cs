@@ -4,10 +4,14 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using static Avalonia.Application;
 
 namespace Autodraw;
 
@@ -154,6 +158,10 @@ public class App : Application
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AvaloniaXamlLoader.Load(this);
         LoadTheme(CurrentTheme, SavedIsDark);
+        
+        
+        
+        RegisterGlobalExceptionHandlers();
     }
 
     private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
@@ -169,4 +177,69 @@ public class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+    
+    private void RegisterGlobalExceptionHandlers()
+    {
+        // Handle UI thread exceptions
+        Dispatcher.UIThread.UnhandledException += (sender, e) =>
+        {
+            e.Handled = true;
+            HandleException(e.Exception);
+        };
+
+        // Handle non-UI thread unhandled exceptions
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                HandleException(ex);
+            }
+        };
+
+        // Handle unobserved task exceptions
+        TaskScheduler.UnobservedTaskException += (sender, e) =>
+        {
+            e.SetObserved();
+            HandleException(e.Exception);
+        };
+    }
+
+    private async void HandleException(Exception exception)
+    {
+        await ShowExceptionDialog(exception);
+    }
+
+    private async Task ShowExceptionDialog(Exception exception)
+    {
+        // Extremely barebones UI, no theming, no functions, for exceptions.
+        
+        Window messageBox = null;
+        messageBox = new Window
+        {
+            Title = "An Error Occurred",
+            Width = 400,
+            Height = 200,
+            Content = new StackPanel
+            {
+                Children =
+                {
+                    new TextBlock { Text = "An unexpected error has occurred:", Margin = new Thickness(10) },
+                    new TextBlock { Text = exception.Message, Margin = new Thickness(10), TextWrapping = TextWrapping.Wrap },
+                    new Button
+                    {
+                        Content = "OK",
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                        Margin = new Thickness(10),
+                        Command = ReactiveUI.ReactiveCommand.Create(() => messageBox.Close())
+                    }
+                }
+            }
+        };
+
+        var mainWindow = (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+            ?.MainWindow;
+        if (mainWindow != null)
+            await messageBox.ShowDialog(mainWindow);
+    }
+
 }
