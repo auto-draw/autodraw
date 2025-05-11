@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -21,22 +23,36 @@ using SkiaSharp;
 
 namespace Autodraw;
 
+public class ActionDisp
+{
+    public string Text { get; set; }
+    public InputAction boundAction { get; set; }
+}
+
 public partial class MainWindow : Window
 {
     public static MainWindow? CurrentMainWindow;
-
-    private readonly Regex _numberRegex = new(@"[^0-9]");
     private OpenAIPrompt? _aiPrompt;
-    private int _alphaThresh = 200;
     private DevTest? _devwindow;
     private Bitmap? _displayedBitmap;
     private bool _inChange;
 
+    private readonly Regex _numberRegex = new(@"[^0-9]");
+
+    // Automation
+    public ObservableCollection<ActionDisp> ActionsContext { get; set; } = new()
+    {
+        new ActionDisp {Text = "Click" },
+        new ActionDisp {Text = "Move" },
+        new ActionDisp {Text = "Press" },
+    };
     private List<InputAction> _actionStack = new();
+    List<SKBitmap> _layersStack = new();
 
     private long _lastMem;
     private long _lastTime = DateTime.Now.ToFileTime();
     private int _maxBlackThreshold = 127;
+    private int _alphaThresh = 200;
 
     private int _minBlackThreshold;
     private SKBitmap? _preFxBitmap = new(318, 318, true);
@@ -53,7 +69,10 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        DataContext = this; // This stupid piece of shit is required, unlike normal Xaml, fuck it.
+        
         InitializeComponent();
+        ActionsContext.Add(new ActionDisp {Text = "Click", Speed = 1, Delay = 0});
 
         if (Design.IsDesignMode) return;
 
@@ -70,6 +89,8 @@ public partial class MainWindow : Window
         //if (!File.Exists(Config.ConfigPath)) 
         //new Onboarding(CurrentMainWindow);
         Config.init();
+
+        UpdateActionsContext();
 
         // Taskbar
         CloseAppButton.Click += (_, _) => Close();
@@ -296,6 +317,7 @@ public partial class MainWindow : Window
         Drawing.ChosenAlgorithm = (byte)AlgorithmSelection.SelectedIndex;
 
         new Preview().ReadyDraw(_processedBitmap);
+        new Preview().ReadyStackDraw(_preFxBitmap, _layersStack, _actionStack);
         WindowState = WindowState.Minimized;
     }
 
@@ -673,5 +695,31 @@ public partial class MainWindow : Window
         var selectedItem = ConfigsListBox.SelectedItem.ToString();
         if (selectedItem == null) return;
         LoadConfig($"{Path.Combine(Config.GetEntry("ConfigFolder"), selectedItem)}.drawcfg");
+    }
+    
+    // Actions
+    public void ClickActionObject(InputAction Action)
+    {
+        // TODO: add action prompt stuff lol
+    }
+
+    private void UpdateActionsContext()
+    {
+        Debug.Assert(ActionsContext is null);
+        
+        // Clear the existing items in ActionsContext
+        ActionsContext.Clear();
+
+        // Populate ActionsContext with relevant data from _actionStack
+        foreach (var action in _actionStack)
+        {
+            var actionDisp = new ActionDisp
+            {
+                Text = action.Action.ToString(),
+                boundAction = action,
+            };
+
+            ActionsContext.Add(actionDisp);
+        }
     }
 }

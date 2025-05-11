@@ -1,14 +1,15 @@
-<Window x:Class="Autodraw.MainWindow"
-        xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:assets="clr-namespace:Autodraw.Properties"
-        
+        xmlns:local="clr-namespace:Autodraw"
         xmlns:avaloniaControls="clr-namespace:UVtools.AvaloniaControls;assembly=UVtools.AvaloniaControls"
 
         mc:Ignorable="d" d:DesignWidth="728" d:DesignHeight="450"
         x:Name="AutoDraw"
+        x:Class="Autodraw.MainWindow"
+        x:DataType="local:MainWindow"
 
         Icon="/Assets/autodraw.ico"
         
@@ -118,7 +119,7 @@
             </Grid>
             
             <Border BorderBrush="#5000" BorderThickness="1" Grid.Row="0" Grid.Column="2" CornerRadius="2"/>
-            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="0">
+            <TabControl Margin="5" Grid.Row="0" Grid.Column="2"  Padding="0" SelectedIndex="3">
                 <TabItem Header="{x:Static assets:Resources.MainTab1}">
                     <Grid>
                         <Border Background="#4000" CornerRadius="4"/>
@@ -271,12 +272,69 @@
                     </Panel>
                 </TabItem>
                 
-                <TabItem Header="Layers">
-                    
-                </TabItem>
-                
-                <TabItem Header="">
-                    
+                <TabItem Header="Automation">
+                    <TabControl BorderBrush="#5000" BorderThickness="0 1 0 0" Padding="0">
+                        
+                        <TabItem Header="Actions">
+                            <ScrollViewer>
+                                <StackPanel Spacing="4">
+                                    
+                                    <ItemsControl x:Name="LayersList" ItemsSource="{Binding  ActionsContext}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="4">
+                                                    
+                                                </StackPanel>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Panel HorizontalAlignment="Stretch" Height="40">
+                                                    <Border Background="#3000" CornerRadius="4" Padding="8 4">
+                                                        <Label VerticalAlignment="Center" Content="{Binding Text}"/>
+                                                    </Border>
+                                                    <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                            Command="{Binding $parent[local:MainWindow].ClickActionObject}"/>
+                                                </Panel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        <!-- EXAMPLES
+                                        <Panel HorizontalAlignment="Stretch" Height="40">
+                                            <Border Background="#3000" CornerRadius="4" Padding="4">
+                                                <Label VerticalAlignment="Center">Mouse to: x:400 y:200</Label>
+                                            </Border>
+                                            <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </Panel>
+                                        <Panel HorizontalAlignment="Stretch" Height="40">
+                                            <Border Background="#3000" CornerRadius="4" Padding="4">
+                                                <Label VerticalAlignment="Center">Mouse Left Click</Label>
+                                            </Border>
+                                            <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </Panel>
+                                        <Panel HorizontalAlignment="Stretch" Height="40">
+                                            <Border Background="#3000" CornerRadius="4" Padding="4">
+                                                <Label VerticalAlignment="Center">Enter String: "{HEX}\r"</Label>
+                                            </Border>
+                                            <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </Panel>
+                                        -->
+                                    </ItemsControl>
+                                    
+                                    <Panel HorizontalAlignment="Stretch" Height="40">
+                                        <Border Background="#3000" CornerRadius="4">
+                                            <Label HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                Add New Action
+                                            </Label>
+                                        </Border>
+                                        <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </Panel>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Layers">
+                            
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
                 
             </TabControl>

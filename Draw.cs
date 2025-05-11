@@ -31,6 +31,11 @@ public class InputAction
 
     public ActionType Action { get; set; }
     public Vector2? Position { get; set; }
+    
+    public int Delay { get; set; }
+    
+    public int? Speed { get; set; }
+    
     public string? Data { get; set; }
 
     public InputAction(ActionType action, object? data = null)

@@ -18,6 +18,15 @@
         <Setter Property="Padding" Value="0" />
     </Style>
     
+    <Style Selector="Button.Invisible">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.Invisible:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.Invisible:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
     
     <Style Selector="CheckBox.FilterItem">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
