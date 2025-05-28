@@ -43,6 +43,8 @@ public class InputAction
         Action = action;
         switch (action)
         {
+            case ActionType.LeftClick:
+            case ActionType.RightClick:
             case ActionType.MoveTo:
                 if (data is Vector2 pos)
                 {
@@ -62,15 +64,18 @@ public class InputAction
     {
         switch (Action)
         {
+            //TODO LATER: Add Speed and Delay functions to actions
             case ActionType.MoveTo:
                 Input.MoveTo((short)Position.Value.X, (short)Position.Value.Y);
                 break;
 
             case ActionType.LeftClick:
+                Input.MoveTo((short)Position.Value.X, (short)Position.Value.Y);
                 Input.SendClick(Input.MouseTypes.MouseLeft);
                 break;
 
             case ActionType.RightClick:
+                Input.MoveTo((short)Position.Value.X, (short)Position.Value.Y);
                 Input.SendClick(Input.MouseTypes.MouseRight);
                 break;
 

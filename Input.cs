@@ -55,6 +55,7 @@ public class Input
 
     public static void Stop()
     {
+        // Never really need to call this UNLESS, we are closing the software.
         taskHook.Dispose();
     }
 
