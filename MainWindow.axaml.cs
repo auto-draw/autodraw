@@ -27,6 +27,8 @@ public class ActionDisp
 {
     public string Text { get; set; }
     public InputAction boundAction { get; set; }
+    public int Speed { get; set; }
+    public int Delay { get; set; }
 }
 
 public partial class MainWindow : Window
@@ -40,12 +42,7 @@ public partial class MainWindow : Window
     private readonly Regex _numberRegex = new(@"[^0-9]");
 
     // Automation
-    public ObservableCollection<ActionDisp> ActionsContext { get; set; } = new()
-    {
-        new ActionDisp {Text = "Click" },
-        new ActionDisp {Text = "Move" },
-        new ActionDisp {Text = "Press" },
-    };
+    public ObservableCollection<ActionDisp> ActionsContext { get; set; } = new();
     private List<InputAction> _actionStack = new();
     List<SKBitmap> _layersStack = new();
 
@@ -72,7 +69,6 @@ public partial class MainWindow : Window
         DataContext = this; // This stupid piece of shit is required, unlike normal Xaml, fuck it.
         
         InitializeComponent();
-        ActionsContext.Add(new ActionDisp {Text = "Click", Speed = 1, Delay = 0});
 
         if (Design.IsDesignMode) return;
 
@@ -698,24 +694,59 @@ public partial class MainWindow : Window
     }
     
     // Actions
+    ActionPrompt _actionPrompt = new();
+    
     public void ClickActionObject(InputAction Action)
     {
         // TODO: add action prompt stuff lol
+        Console.WriteLine("Yellow");
+    }
+
+    public void AddAction()
+    {
+        if (!_actionPrompt.IsActive) _actionPrompt = new();
+        _actionPrompt.Show();
+        _actionPrompt.Callback = _addActionCallback;
+        Console.WriteLine("Black");
+    }
+
+    public void _addActionCallback()
+    {
+        Console.WriteLine("Recv Message!");
+        if (_actionPrompt.Action is not null) // Empty the compartments of your pantaloons.
+        {
+            Console.WriteLine("+1 Crime Level");
+            Console.WriteLine(_actionPrompt.Action);
+            _actionStack.Add(_actionPrompt.Action);
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(UpdateActionsContext);
+        }
+        // Mothership: "Fuck you." *obliterates your ass*
+        _actionPrompt.Close();
     }
 
     private void UpdateActionsContext()
     {
-        Debug.Assert(ActionsContext is null);
-        
+        if (ActionsContext is null) return;
+
         // Clear the existing items in ActionsContext
         ActionsContext.Clear();
 
         // Populate ActionsContext with relevant data from _actionStack
         foreach (var action in _actionStack)
         {
+            var _ActionType = "";
+            if (action.Action == InputAction.ActionType.KeyDown) _ActionType = "Key Down";
+            else if (action.Action == InputAction.ActionType.KeyUp) _ActionType = "Key Up";
+            else if (action.Action == InputAction.ActionType.LeftClick) _ActionType = "Left Click";
+            else if (action.Action == InputAction.ActionType.RightClick) _ActionType = "Right Click";
+            else if (action.Action == InputAction.ActionType.WriteString) _ActionType = "Write String";
+            else if (action.Action == InputAction.ActionType.MoveTo) _ActionType = "Move to";
+            
+            var _ActionData = action.Data is null ? $" @ x={action.Position.Value.X}, y={action.Position.Value.Y}" : $" - {action.Data}";
+            
             var actionDisp = new ActionDisp
-            {
-                Text = action.Action.ToString(),
+            { 
+                Text = $"{_ActionType}{_ActionData}",
                 boundAction = action,
             };
 

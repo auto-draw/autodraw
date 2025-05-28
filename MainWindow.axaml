@@ -294,7 +294,7 @@
                                                         <Label VerticalAlignment="Center" Content="{Binding Text}"/>
                                                     </Border>
                                                     <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                                            Command="{Binding $parent[local:MainWindow].ClickActionObject}"/>
+                                                            Command="{Binding $parent[local:MainWindow].ClickActionObject}" CommandParameter="{Binding boundAction}"/>
                                                 </Panel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -326,7 +326,8 @@
                                                 Add New Action
                                             </Label>
                                         </Border>
-                                        <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <Button Cursor="Hand" Classes="Invisible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                Command="{Binding AddAction}"/>
                                     </Panel>
                                 </StackPanel>
                             </ScrollViewer>
