@@ -1,11 +1,11 @@
-﻿# Default ignored files
+# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
-/projectSettingsUpdater.xml
-/.idea.Autodraw.iml
 /modules.xml
+/projectSettingsUpdater.xml
 /contentModel.xml
+/.idea.Autodraw.iml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files

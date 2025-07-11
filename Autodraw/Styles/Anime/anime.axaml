@@ -1,0 +1,48 @@
+<!-- Anime Theme - By Siydge -->
+<!--
+This is a pre-installed theme made for users to be
+used both as a reference, or as a default preference
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia">
+    <Style Selector="Window">
+        <Setter Property="Background" Value="#90142f5e" />
+        <Setter Property="TransparencyLevelHint" Value="AcrylicBlur" />
+    </Style>
+
+    <Style Selector="ListBoxItem">
+        <Setter Property="Background" Value="#ee22324d" />
+    </Style>
+
+    <Style Selector="ListBox">
+        <Setter Property="Background" Value="#ee22324d" />
+    </Style>
+
+    <Style Selector="Image.MainBody">
+        <Setter Property="asyncImageLoader:ImageLoader.Source" Value="style:./character.png" />
+        <Setter Property="Effect" Value="blur(8)" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="Foreground" Value="#fff" />
+    </Style>
+
+    <Style Selector="Label">
+        <Setter Property="Foreground" Value="#fff" />
+    </Style>
+
+    <Style Selector="Canvas.Toolbar">
+        <Setter Property="Background" Value="#cc2d446b" />
+    </Style>
+
+    <Style Selector="Canvas.ImagePreview">
+        <Setter Property="Background" Value="#8000" />
+    </Style>
+
+    <Style Selector="Border.ImagePreview">
+        <Setter Property="BoxShadow" Value="0 0 8 -1 #000" />
+    </Style>
+</Styles>

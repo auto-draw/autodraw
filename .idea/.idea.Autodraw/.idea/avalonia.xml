@@ -3,19 +3,12 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
-        <entry key="ActionPrompt.axaml" value="Autodraw.csproj" />
-        <entry key="App.axaml" value="Autodraw.csproj" />
-        <entry key="DevTest.axaml" value="Autodraw.csproj" />
-        <entry key="DrawDataDisplay.axaml" value="Autodraw.csproj" />
-        <entry key="MainWindow.axaml" value="Autodraw.csproj" />
-        <entry key="MessageBox.axaml" value="Autodraw.csproj" />
-        <entry key="OpenAIPrompt.axaml" value="Autodraw.csproj" />
-        <entry key="Preview.axaml" value="Autodraw.csproj" />
-        <entry key="Settings.axaml" value="Autodraw.csproj" />
-        <entry key="Styles/blue.axaml" value="Autodraw.csproj" />
-        <entry key="Styles/dark.axaml" value="Autodraw.csproj" />
-        <entry key="Styles/light.axaml" value="Autodraw.csproj" />
-        <entry key="Styles/universal.axaml" value="Autodraw.csproj" />
+        <entry key="Autodraw/App.axaml" value="Autodraw/Autodraw.csproj" />
+        <entry key="Autodraw/Styles/Anime/anime.axaml" value="Autodraw/Autodraw.csproj" />
+        <entry key="Autodraw/Views/MainWindow.axaml" value="Autodraw/Autodraw.csproj" />
+        <entry key="Autodraw/Views/MessageBox.axaml" value="Autodraw/Autodraw.csproj" />
+        <entry key="Autodraw/Views/Preview.axaml" value="Autodraw/Autodraw.csproj" />
+        <entry key="Autodraw/Views/Settings.axaml" value="Autodraw/Autodraw.csproj" />
       </map>
     </option>
   </component>

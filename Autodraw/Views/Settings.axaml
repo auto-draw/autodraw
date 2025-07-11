@@ -1,0 +1,386 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:assets="clr-namespace:Autodraw.Properties"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia.Tight"
+        xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+        xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+        xmlns:autodraw="clr-namespace:Autodraw"
+
+        mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="450"
+        x:Class="Autodraw.Settings"
+        x:DataType="autodraw:Settings"
+        Title="Settings"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+        SystemDecorations="BorderOnly"
+        PointerPressed="OnPointerPressed"
+        MinWidth="750"
+        MinHeight="450"
+        Width="750"
+        Height="450">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <!--Toolbar-->
+        <Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+            <!--Background-->
+            <Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20" />
+
+            <Image Classes="SettingsToolbar" />
+            <Image Classes="SettingsToolbarSecond" />
+            <Image Classes="SettingsToolbarThird" />
+
+            <Image Classes="Toolbar" HorizontalAlignment="Stretch" Height="20" />
+
+            <!--Decorations-->
+            <StackPanel Classes="Toolbar" Orientation="Horizontal">
+                <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20"
+                       VerticalContentAlignment="Center">
+                    Settings
+                </Label>
+            </StackPanel>
+
+            <!--Buttons-->
+            <Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20"
+                        FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+                    <Image Classes="CloseApp ToolbarButton" />
+                </Button>
+            </Grid>
+        </Canvas>
+        <Image Classes="SettingsBody" Grid.Row="1" />
+        <Image Classes="SettingsBodySecond" Grid.Row="1" />
+        <Image Classes="SettingsBodyThird" Grid.Row="1" />
+        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="192" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="4" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Name="SettingsListings" Grid.Column="0" Grid.Row="2">
+                <Border Background="#3000" CornerRadius="4"/>
+                <TreeView Name="SettingsTabs">
+                    <TreeViewItem Classes="Round" Header="General">
+                        <TreeViewItem Classes="Round" Header="Drawing" Name="DrawingSelector"/>
+                        <TreeViewItem Classes="Round" Header="Debugging" Name="DebuggingSelector"/>
+                    </TreeViewItem>
+                    <TreeViewItem Classes="Round" Header="Themes and Configs">
+                        <TreeViewItem Classes="Round" Header="Marketplace" Name="MarketplaceSelector"/>
+                        <TreeViewItem Classes="Round" Header="Theme Editor" Name="ThemeEditorSelector"/>
+                        <TreeViewItem Classes="Round" Header="Settings" Name="ThemeConfigSettingsSelector"/>
+                    </TreeViewItem>
+                    <TreeViewItem Classes="Round" Header="AI Generation" Name="AIGenerationSelector"/>
+                    <TreeViewItem Classes="Round" Header="Info" Name="InfoSelector">
+                        <TreeViewItem Classes="Round" Header="About" Name="AboutSelector"/>
+                        <TreeViewItem Classes="Round" Header="Licenses" Name="LicensesSelector"/>
+                    </TreeViewItem>
+                </TreeView>
+            </Grid>
+            
+            <Grid Name="InfoTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <StackPanel>
+                    <Label Content="{x:Static assets:Resources.AutoDrawVersionDetailed}"/>
+                    <Label Content="{x:Static assets:Resources.AutoDrawLanguageVersion}"/>
+                    <Label Content="{x:Static assets:Resources.AutoDrawNetFramework}"/>
+                </StackPanel>
+            </Grid>
+            
+            <Grid Name="DrawingTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label HorizontalAlignment="Center" Grid.Row="0">More settings are to come, please suggest some settings you want in the Discord!</Label>
+                <StackPanel Grid.Row="1">
+                    <Label Padding="0" FontWeight="Bold">Generic:</Label>
+                    <CheckBox Name="ShowPopup">Show Popup Upon Completion of Drawing</CheckBox>
+                    <CheckBox Name="NoRescan">No Backtracking (Sets off Auto-clicker Detections)</CheckBox>
+                    <Separator></Separator>
+                    <Label Padding="0" FontWeight="Bold">Keybinds:</Label>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Begin Drawing:</Label>
+                        <Button Grid.Row="0" Grid.Column="1" Name="ChangeKeybind_StartDrawing">VcLeftShift</Button>
+                        
+                        <Label Grid.Row="2" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Stop Drawing:</Label>
+                        <Button Grid.Row="2" Grid.Column="1" Name="ChangeKeybind_StopDrawing">Left Alt</Button>
+                        
+                        <Label Grid.Row="4" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Lock Preview:</Label>
+                        <Button Grid.Row="4" Grid.Column="1" Name="ChangeKeybind_LockPreview">Left Ctrl</Button>
+                        
+                        <Label Grid.Row="6" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Lock Preview:</Label>
+                        <Button Grid.Row="6" Grid.Column="1" Name="ChangeKeybind_PauseDrawing">Backspace</Button>
+                        
+                        <Label Grid.Row="8" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Skip Backtrace:</Label>
+                        <Button Grid.Row="8" Grid.Column="1" Name="ChangeKeybind_SkipBacktrace">Backslash</Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+            
+            <Grid Name="DebuggingTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <StackPanel>
+                    <CheckBox Name="AltMouseControl">Force Alternative Mouse Movement (Only use if necessary)</CheckBox>
+                    <CheckBox Name="LogFile">Enable Logging (Logs to files only)</CheckBox>
+                </StackPanel>
+            </Grid>
+            
+            <Grid Name="MarketplaceTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <TabControl Name="MarketplaceTabs">
+                    <TabItem Header="Installed Themes">
+                        <Panel>
+                            <Border Background="#4000" CornerRadius="2"/>
+                            <ListBox x:Name="InstalledThemes" Margin="8">
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0 0 0 4"/>
+                                    </Style>
+                                </ListBox.Styles>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="autodraw:ListedTheme">
+                                        <Panel Height="80" Background="#1fff">
+                                            <Grid Margin="4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="115"/>
+                                                    <ColumnDefinition Width="4"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#2fff" />
+                                                <Image Grid.Column="0" Stretch="Uniform" asyncImageLoader:ImageLoader.Source="{Binding Image}"/>
+                                                
+                                                <Grid Grid.Column="2">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="2"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="4"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Row="0" Padding="0" Content="{Binding Title}" FontWeight="Bold" />
+                                                    <Label Grid.Row="2" Padding="0" Content="{Binding Author}"/>
+                                                    <TextBlock Grid.Row="4" Text="{Binding Description}" TextWrapping="Wrap"/>
+                                                    <Button Grid.Row="4" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="LoadLocalTheme" CommandParameter="{Binding ButtonParameter}">Load</Button>
+                                                </Grid>
+                                            </Grid>
+                                        </Panel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Panel>
+                    </TabItem>
+                    
+                    <TabItem Header="Marketplace Themes">
+                        <Panel>
+                            <Border Background="#4000" CornerRadius="2"/>
+                            <ListBox x:Name="OnlineThemes" Margin="8">
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0 0 0 4"/>
+                                    </Style>
+                                </ListBox.Styles>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="autodraw:ListedTheme">
+                                        <Panel Height="80" Background="#1fff">
+                                            <Grid Margin="4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="115"/>
+                                                    <ColumnDefinition Width="4"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#2fff" />
+                                                <Image Grid.Column="0" Stretch="Uniform" asyncImageLoader:ImageLoader.Source="{Binding Image}"/>
+                                                
+                                                <Grid Grid.Column="2">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="2"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="4"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Row="0" Padding="0" Content="{Binding Title}" FontWeight="Bold" />
+                                                    <Label Grid.Row="2" Padding="0" Content="{Binding Author}"/>
+                                                    <TextBlock Grid.Row="4" Text="{Binding Description}" TextWrapping="Wrap"/>
+                                                    <Button Grid.Row="4" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="LoadOnlineTheme" CommandParameter="{Binding ButtonParameter}">Install</Button>
+                                                </Grid>
+                                            </Grid>
+                                        </Panel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Panel>
+                    </TabItem>
+                </TabControl>
+                <Label Name="MarketplacePleaseWait" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0">Please Wait...</Label>
+            </Grid>
+
+            <Grid Name="ThemeEditorTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="80" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Button Classes="NoOutline" CornerRadius="2" Grid.Column="0" Name="DarkLightThemeToggle">Dark/Light</Button>
+                    <Button Classes="NoOutline" CornerRadius="2" Grid.Column="4" Name="NewTheme">New</Button>
+                    <Button Classes="NoOutline" CornerRadius="2" Grid.Column="6" Name="OpenTheme">Open</Button>
+                    <Button Classes="NoOutline" CornerRadius="2" Grid.Column="8" Name="SaveTheme">Save</Button>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Border Background="#222" CornerRadius="4"/>
+                    <AvaloniaEdit:TextEditor
+                        Padding="4"
+                        Name="ThemeInput"
+                        Foreground="#DDD"
+                        Text="Welcome to the theme editor! Press new to create a new theme!"
+                        FontSize="11"
+                        FontFamily="Lucida Console, Consolas, Cascadia Code, Menlo, Monospace"
+                        ShowLineNumbers="True" />
+                </Grid>
+                <Grid Grid.Row="4">
+                    <Border Background="#2a2a2a" CornerRadius="4"/>
+                    <AvaloniaEdit:TextEditor
+                        Padding="4"
+                        Name="ThemeOutput"
+                        IsReadOnly="True"
+                        Foreground="#DDD"
+                        Text="# This is the error handler. Any errors will appear here!"
+                        ShowLineNumbers="True"
+                        WordWrap="True"
+                        FontSize="11"
+                        FontFamily="Cascadia Code,Consolas,Menlo,Monospace" />
+                </Grid>
+                <Button Classes="NoOutline" CornerRadius="2" Grid.Row="6" Name="LoadTheme">Load Theme</Button>
+            </Grid>
+            
+            <Grid Name="ThemeConfigSettingsTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="32"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" Grid.Column="0">Themes Save Location:</Label>
+                
+                <TextBox Name="ThemesLocationTextBox" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center"/>
+                <Button Name="ThemesLocationFolderButton" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="2">
+                    <Image Source="avares://Autodraw/Assets/open-folder.png"/>
+                </Button>
+                <Button Name="ThemesLocationSaveButton" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Save
+                </Button>
+                
+                <Label Grid.Row="4" Grid.Column="0">Image Directory Cache Location:</Label>
+                
+                <TextBox Name="ImageCacheLocationTextBox" Grid.Row="6" Grid.Column="0" VerticalContentAlignment="Center"/>
+                <Button Name="ImageCacheLocationFolderButton" Grid.Row="6" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="2">
+                    <Image Source="avares://Autodraw/Assets/open-folder.png"/>
+                </Button>
+                <Button Name="ImageCacheLocationSaveButton" Grid.Row="6" Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Save
+                </Button>
+                <Button Name="ImageCacheLocationClearButton" Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                    Clear
+                </Button>
+            </Grid>
+            
+            <Grid Name="AIGenerationTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!-- Working with Markdown is so much nicer -->
+                <md:MarkdownScrollViewer
+                    Grid.Row="0" Grid.ColumnSpan="3" Source="avares://Autodraw/Assets/AIGenerationTab.md"/>
+                <TextBox Grid.Row="2" Grid.Column="0" Name="OpenAiKey" PasswordChar="x" CornerRadius="2"/>
+                <Button Grid.Row="2" Grid.Column="2" Name="RevealAiKey" CornerRadius="2" Classes="NoOutline">Reveal</Button>
+                <Button Grid.Row="4" Grid.Column="0" Name="SaveOpenAiKey" CornerRadius="2" Classes="NoOutline">Save OpenAI Key</Button>
+            </Grid>
+
+            <Grid Name="AboutTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <md:MarkdownScrollViewer
+                    Source="avares://Autodraw/Assets/autodraw.md"/>
+            </Grid>
+            
+            <Grid Name="LicensesTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4">
+                <md:MarkdownScrollViewer
+                    Source="avares://Autodraw/Assets/LICENSES.txt"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

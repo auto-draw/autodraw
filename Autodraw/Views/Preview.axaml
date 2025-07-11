@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="420"
+        x:Class="Autodraw.Preview"
+        Title="Preview"
+        Background="#0fff"
+        
+        SystemDecorations="None"
+        
+        TransparencyLevelHint="None"
+        Topmost="True"
+        
+        WindowStartupLocation="Manual"
+        
+        PointerMoved="InputElement_OnPointerMoved"
+        
+        Loaded="Control_OnLoaded">
+    
+    <Window.Styles>
+        <SimpleTheme/> <!--I do NOT fw fluent theme tbh. too hard to customize. such as removing their stupid forced 32px height on checkbox... STUPID!-->
+    </Window.Styles>
+    
+    
+    <Panel>
+        <Image Opacity="90" Name="PreviewImage" Source="" Cursor="SizeAll" PointerPressed="PreviewImage_OnPointerPressed" PointerReleased="PreviewImage_OnPointerReleased"/>
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>Auto,*</Grid.ColumnDefinitions>
+            <Button Click="Button_OnClick" Background="{DynamicResource ThemeBackgroundColor}" VerticalAlignment="Top" Classes="Proggy" Width="15" Height="16" Padding="0" BorderBrush="DarkSlateGray" BorderThickness="0 1 1 1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Grid.Column="1">
+                >
+            </Button>
+                
+            <Panel Name="EditPanel" IsVisible="False" Grid.Column="0">
+                <Border Background="{DynamicResource ThemeBackgroundColor}" BorderBrush="DarkSlateGray" BorderThickness="1"/>
+                <StackPanel IsVisible="True" Margin="4" Spacing="4">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">X:</Label>
+                        <TextBox Classes="Proggy" Name="XPos" VerticalContentAlignment="Center" Width="48" TextChanged="XPos_OnTextChanged">480</TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">Y:</Label>
+                        <TextBox Classes="Proggy" Name="YPos" VerticalContentAlignment="Center" Width="48" TextChanged="YPos_OnTextChanged">360</TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">X Lock:</Label>
+                        <CheckBox Classes="Proggy" Name="XLock" VerticalContentAlignment="Center" CornerRadius="0" IsCheckedChanged="XLock_OnIsCheckedChanged"></CheckBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Classes="Proggy" VerticalContentAlignment="Center">Y Lock:</Label>
+                        <CheckBox Classes="Proggy" Name="YLock" VerticalContentAlignment="Center" CornerRadius="0" IsCheckedChanged="YLock_OnIsCheckedChanged"></CheckBox>
+                    </StackPanel>
+                </StackPanel>
+            </Panel>
+        </Grid>
+    </Panel>
+</Window>

@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="100"
+        Height="100"
+        Width="180"
+        x:Class="Autodraw.DrawDataDisplay"
+        Title="DrawDataDisplay"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        IsHitTestVisible="False"
+        ExtendClientAreaToDecorationsHint="False"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="0"
+        RequestedThemeVariant="Light"
+        SystemDecorations="None"
+        Topmost="True">
+    <TextBox Name="DataDisplayText" FontFamily="Calibre" Background="Transparent" Foreground="White"
+             BorderThickness="0" Padding="0" FontSize="12" Effect="drop-shadow(1 1)" />
+</Window>

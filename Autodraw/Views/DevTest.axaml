@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
+        Width="600"
+        Height="350"
+        x:Class="Autodraw.DevTest"
+        Title="Developer Tools"
+        RequestedThemeVariant="Light">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <TextBox Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Background="#ccc" IsReadOnly="True" CornerRadius="0"
+                 Cursor="None">
+            This is for testing features upon implimentation, don't be surprised by the lack of stuff.
+        </TextBox>
+        <Button Grid.Row="1" Name="TestPopup" VerticalAlignment="Center" HorizontalAlignment="Center">Test Popup!</Button>
+        <Button Grid.Row="2" Name="TestBenchmarking" VerticalAlignment="Center" HorizontalAlignment="Center">Benchmark</Button>
+        <TextBlock Grid.Row="3" Height="300" TextWrapping="Wrap" Name="BenchmarkResults" VerticalAlignment="Top"
+                   HorizontalAlignment="Left">
+            Results:
+        </TextBlock>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Center" FontSize="16">DALL-E Image Generation</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" TextAlignment="Center">Prompt</TextBlock>
+        <TextBox Name="AIPrompt" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" TextAlignment="Center">A painting of a beautiful starlit sky, with mountains cascading across the landscape.</TextBox>
+        <TextBlock Grid.Row="5" Grid.Column="1" TextAlignment="Center">Image size and model</TextBlock>
+        <TextBox Name="AISize" Grid.Row="6" Grid.Column="1" TextAlignment="Center">256x256</TextBox>
+        <TextBox Name="AIModel" Grid.Row="7" Grid.Column="1" TextAlignment="Center">dall-e-2</TextBox>
+        <Button Grid.Row="10" Grid.Column="1" Name="GenerateImage" VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            Generate Image
+        </Button>
+        <TextBlock Grid.Row="11" Grid.Column="1" TextAlignment="Center" TextWrapping="Wrap">(Note: Make sure to set your OpenAI Developer Key in Settings > Dev. Settings!)</TextBlock>
+    </Grid>
+</Window>

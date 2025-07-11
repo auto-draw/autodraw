@@ -1,0 +1,118 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Style Selector="TreeViewItem.Round">
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    
+    <Style Selector="Button.NoOutline">
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="Button.GeneralButton">
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    
+    <Style Selector="Button.Invisible">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.Invisible:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.Invisible:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="CheckBox.FilterItem">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="12 0" />
+    </Style>
+
+
+    <Style Selector="Border.GridBorder">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#3000" />
+        <Setter Property="CornerRadius" Value="2" />
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="FontFamily" Value="Arial" />
+    </Style>
+
+    <Style Selector="CheckBox /template/ Border#NormalRectangle">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+    </Style>
+
+
+    <Style Selector="Image.CloseApp">
+        <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/close.png" />
+    </Style>
+    <Style Selector="Image.LockedIcon">
+        <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/lock.png" />
+    </Style>
+    <Style Selector="Image.UnlockedIcon">
+        <Setter Property="Source" Value="avares://Autodraw/Assets/Dark/unlock.png" />
+    </Style>
+
+
+    <Style Selector="Label">
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style Selector="Label.Bold">
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    
+    
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="8 0"/>
+        <Setter Property="Height" Value="35"/>
+    </Style>
+    
+    <Style Selector="TabItem /template/ Border#PART_LayoutRoot">
+        <Setter Property="Height" Value="35"/>
+    </Style>
+    
+    <Style Selector="TabItem /template/ Border#PART_LayoutRoot Panel">
+        <Setter Property="Height" Value="35"/>
+    </Style>
+
+
+    <Style Selector="ListBoxItem">
+        <Setter Property="FontFamily" Value="Arial" />
+    </Style>
+
+
+    <Style Selector="TextBox">
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="MinWidth" Value="24" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- Click-thrus, very important! -->
+
+    <Style Selector="Canvas.ClickThru">
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+    <Style Selector="Label.ClickThru">
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+    
+    <!-- Proggy Stuff, for Preview, but can be used elsewhere if need be -->
+    <Style Selector="TextBox.Proggy, Button.Proggy, Label.Proggy, TreeViewItem.Proggy, CheckBox.Proggy, ComboBox.Proggy, TabItem.Proggy">
+        <Setter Property="FontFamily" Value="{StaticResource ProggyTiny}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+
+
+</Styles>

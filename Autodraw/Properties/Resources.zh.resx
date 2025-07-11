@@ -1,0 +1,212 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="AutoDrawTitle" xml:space="preserve"> 
+        <value>自动画画  (测试版)</value> 
+    </data>
+    <data name="MainTab1" xml:space="preserve"> 
+<value>常规</value> 
+</data>
+    <data name="MainTab2" xml:space="preserve"> 
+<value>过滤器</value> 
+</data>
+    <data name="MainTab3" xml:space="preserve"> 
+<value>配置</value> 
+</data>
+    <data name="MainTab4" xml:space="preserve"> 
+<value>图像</value> 
+</data>
+    <data name="GeneralInterval" xml:space="preserve"> 
+<value>速度间隔</value> 
+</data>
+    <data name="GeneralClickDelay" xml:space="preserve"> 
+<value>点击延迟 </value> 
+</data>
+    <data name="GeneralLuminanceThreshold" xml:space="preserve"> 
+<value>亮度阈值</value> 
+</data>
+    <data name="Minimum" xml:space="preserve"> 
+<value>最小值</value> 
+</data>
+    <data name="Maximum" xml:space="preserve"> 
+<value>最大值</value> 
+</data>
+    <data name="GeneralAlphaThreshold" xml:space="preserve"> 
+<value>阿尔法阈值</value> 
+</data>
+    <data name="GeneralDrawAlgorithm" xml:space="preserve"> 
+        <value>绘画算法</value> 
+    </data>
+    <data name="FDBypass" xml:space="preserve"> 
+<value>FREE DRAW™ 绕过</value> 
+</data>
+    <data name="FiltersGeneral" xml:space="preserve"> 
+<value>常规过滤器</value> 
+</data>
+    <data name="FiltersPattern" xml:space="preserve"> 
+<value>图案过滤器</value> 
+</data>
+    <data name="FiltersExperimental" xml:space="preserve"> 
+<value>过滤器</value> 
+</data>
+    <data name="Invert" xml:space="preserve"> 
+<value>倒置</value> 
+</data>
+    <data name="Outline" xml:space="preserve"> 
+<value>轮廓</value> 
+</data>
+    <data name="Crosshatch" xml:space="preserve"> 
+<value>交叉影线</value> 
+</data>
+    <data name="Dcrosshatch" xml:space="preserve"> 
+<value>对角交叉影线</value> 
+</data>
+    <data name="StripesHorizontal" xml:space="preserve"> 
+<value>水平条纹</value> 
+</data>
+    <data name="StripesVertical" xml:space="preserve"> 
+<value>垂直条纹</value> 
+</data>
+    <data name="BSS" xml:space="preserve"> 
+<value>边框 (半着色器)</value> 
+</data>
+    <data name="OutlineShader" xml:space="preserve"> 
+<value>轮廓 (着色器)</value> 
+</data>
+    <data name="InlineShader" xml:space="preserve"> 
+<value>内联 (着色器)</value> 
+</data>
+    <data name="InlineBorderShader" xml:space="preserve"> 
+<value>内联边框 (半着色器)</value> 
+</data>
+    <data name="ES" xml:space="preserve"> 
+<value>腐蚀 (着色器)</value> 
+</data>
+    <data name="ConfigSelected" xml:space="preserve"> 
+<value>选择的配置</value> 
+</data>
+    <data name="ConfigLoad" xml:space="preserve"> 
+<value>加载配置</value> 
+</data>
+    <data name="ProcessIMG" xml:space="preserve"> 
+<value>处理图像</value> 
+</data>
+    <data name="BeginDraw" xml:space="preserve"> 
+<value>开始画</value> 
+</data>
+    <data name="Height" xml:space="preserve"> 
+<value>高</value> 
+</data>
+    <data name="Width" xml:space="preserve"> 
+<value>宽</value> 
+</data>
+    <data name="ToolTipSpeed" xml:space="preserve"> 
+<value>这是绘制图像的速度。一个速度间隔等于100纳秒</value> 
+</data>
+    <data name="ToolTipDelay" xml:space="preserve"> 
+<value>这是自动画画在每个图像部分之间等待的延迟 (在毫秒里)</value> 
+</data>
+    <data name="ToolTipThreshold" xml:space="preserve"> 
+<value>照片部分在阈值里的话，这会选择把哪个照片部分画。阈值在0-255里</value> 
+</data>
+    <data name="SettingsTitle" xml:space="preserve"> 
+<value>设置</value> 
+</data>
+    <data name="SettingsTab1" xml:space="preserve"> 
+<value>常规</value> 
+</data>
+    <data name="SettingsTab2" xml:space="preserve"> 
+<value>主题</value> 
+</data>
+    <data name="SettingsTab3" xml:space="preserve"> 
+<value>许可</value> 
+</data>
+    <data name="SettingsTab4" xml:space="preserve"> 
+<value>市场</value> 
+</data>
+    <data name="SettingsTab5" xml:space="preserve"> 
+<value>开发人员选项 </value> 
+</data>
+    <data name="GeneralInfo1" xml:space="preserve"> 
+<value>这不完整的，几个功能就可能不行</value> 
+</data>
+    <data name="GeneralSwitch1" xml:space="preserve"> 
+<value>替代鼠标控制 (坏了)</value> 
+</data>
+    <data name="GeneralSwitch2" xml:space="preserve"> 
+<value>给看最近图画的弹出窗口</value> 
+</data>
+    <data name="GeneralSwitch3" xml:space="preserve"> 
+<value>启用文件日志</value> 
+</data>
+    <data name="GeneralSwitch4" xml:space="preserve"> 
+<value>自动跳过再扫描</value> 
+</data>
+    <data name="ThemeToggle" xml:space="preserve"> 
+<value>暗/亮</value> 
+</data>
+    <data name="FileNew" xml:space="preserve"> 
+<value>新</value> 
+</data>
+    <data name="FileOpen" xml:space="preserve"> 
+<value>打开</value> 
+</data>
+    <data name="FileSave" xml:space="preserve"> 
+<value>保存</value> 
+</data>
+    <data name="ThemeLoad" xml:space="preserve"> 
+<value>加载主题</value> 
+</data>
+    <data name="ThemeDark" xml:space="preserve"> 
+<value>暗主题</value> 
+</data>
+    <data name="OpenAPIKey" xml:space="preserve"> 
+        <value>OpenAI开源人工智能API匙</value> 
+    </data>
+    <data name="ReportDev" xml:space="preserve"> 
+<value>你可能想要向开发汇报</value> 
+</data>
+    <data name="Language" xml:space="preserve">
+        <value>普通话</value>
+    </data>
+    <data name="SelectLanguage" xml:space="preserve">
+        <value>选择语言</value>
+    </data>
+    <data name="WordLanguage" xml:space="preserve">
+        <value>语言</value>
+    </data>
+    <data name="Scale" xml:space="preserve">
+        <value>比例尺</value>
+    </data>
+    <data name="AutoDrawVersionDetailed" xml:space="preserve">
+        <value>当前软件版本：v2.2b</value>
+    </data>
+    <data name="AutoDrawLanguageVersion" xml:space="preserve">
+        <value>语言版本： C# 10.0</value>
+    </data>
+    <data name="AutoDrawNetFramework" xml:space="preserve">
+        <value>.NET Framework 版本：net6.0</value>
+    </data>
+    <data name="UnlockAspectRatio" xml:space="preserve">
+        <value>解锁宽高比</value>
+    </data>
+    <data name="AutoDrawVersion" xml:space="preserve">
+        <value>2.2b版</value>
+    </data>
+    <data name="AlgorithmEdgeTraversal" xml:space="preserve">
+        <value>边缘跟踪</value>
+    </data>
+    <data name="AlgorithmDFS" xml:space="preserve">
+        <value>DFS</value>
+    </data>
+</root>

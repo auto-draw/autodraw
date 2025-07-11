@@ -1,0 +1,27 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Window">
+        <Setter Property="Background" Value="#9555" />
+        <Setter Property="TransparencyLevelHint" Value="AcrylicBlur" />
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="Foreground" Value="#fff" />
+    </Style>
+
+    <Style Selector="Label">
+        <Setter Property="Foreground" Value="#fff" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style Selector="Canvas.Toolbar">
+        <Setter Property="Background" Value="#222" />
+    </Style>
+    <Style Selector="Canvas.ImagePreview">
+        <Setter Property="Background" Value="#8000" />
+    </Style>
+
+    <Style Selector="Border.ImagePreview">
+        <Setter Property="BoxShadow" Value="0 0 8 -1 #000" />
+    </Style>
+</Styles>
