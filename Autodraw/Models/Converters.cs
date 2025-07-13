@@ -87,3 +87,47 @@ public class PercentageValueConverter : IValueConverter
     }
 }
 
+public class FloatConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is float floatValue)
+        {
+            return floatValue.ToString(culture);
+        }
+        return string.Empty;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is string input && !string.IsNullOrWhiteSpace(input))
+        {
+            if (float.TryParse(input.Replace(',', '.'), NumberStyles.Float, culture, out float floatValue))
+            {
+                return floatValue;
+            }
+        }
+        return Avalonia.Data.BindingOperations.DoNothing;
+    }
+}
+
+public class InvertConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool b)
+        {
+            return !b;
+        }
+        return value;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool b)
+        {
+            return !b;
+        }
+        return value;
+    }
+}

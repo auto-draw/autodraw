@@ -209,4 +209,7 @@
     <data name="AlgorithmDFS" xml:space="preserve">
         <value>DFS</value>
     </data>
+    <data name="GeneralSpeed" xml:space="preserve">
+        <value>速度</value>
+    </data>
 </root>

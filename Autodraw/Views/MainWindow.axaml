@@ -139,18 +139,39 @@
                         <ScrollViewer Padding="4 8 4 8">
                             <StackPanel Orientation="Vertical">
                                 <Grid RowDefinitions="*,*,*,32" ColumnDefinitions="*,8,*">
-                                    <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Margin="0 8 0 0">
-                                        <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
-                                        <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralInterval}"/>
-                                        <TextBox Name="DrawIntervalElement" Margin="4 4" CornerRadius="2">
-                                            7500
-                                        </TextBox>
-                                    </StackPanel>
+                                    <Panel Grid.Row="0" Grid.Column="0">
+                                        <StackPanel Name="IntervalPanel" IsVisible="{Binding ShowInterval}" Orientation="Vertical" VerticalAlignment="Center" Margin="0 8 0 0">
+                                            <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
+                                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralInterval}"/>
+                                            <Interaction.Behaviors>
+                                                <ExecuteCommandOnPointerPressedBehavior Command="{Binding ToggleIntervalCommand}"/>
+                                            </Interaction.Behaviors>
+                                            <TextBox Name="DrawIntervalElement" Margin="4 4" CornerRadius="2"
+                                                     Text="{Binding Interval, Converter={StaticResource NumericValueConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                                <Interaction.Behaviors>
+                                                    <local:NumericBoxFilterBehavior/>
+                                                </Interaction.Behaviors>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Name="SpeedPanel" IsVisible="{Binding ShowInterval, Converter={StaticResource InvertConverter}}" Orientation="Vertical" VerticalAlignment="Center" Margin="0 8 0 0">
+                                            <ToolTip.Tip>This is the speed at which the image will be drawn. One interval equates to 100 nanoseconds</ToolTip.Tip>
+                                            <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralSpeed}"/>
+                                            <TextBox Name="DrawSpeedElement" Margin="4 4" CornerRadius="2"
+                                                     Text="{Binding Speed, Converter={StaticResource FloatConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                                <Interaction.Behaviors>
+                                                    <local:NumericFloatFilterBehavior/>
+                                                </Interaction.Behaviors>
+                                            </TextBox>
+                                        </StackPanel>
+                                    </Panel>
                                     <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Margin="0 8 0 0">
                                         <ToolTip.Tip>This is the delay (in ms) which AutoDraw will wait in-between each image chunk.</ToolTip.Tip>
                                         <Label FontSize="16" HorizontalAlignment="Center" Content="{x:Static assets:Resources.GeneralClickDelay}"/>
-                                        <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2">
-                                            600
+                                        <TextBox Name="ClickDelayElement" Margin="4 4" CornerRadius="2"
+                                                 Text="{Binding ClickDelay, Converter={StaticResource NumericValueConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                            <Interaction.Behaviors>
+                                                <local:NumericBoxFilterBehavior/>
+                                            </Interaction.Behaviors>
                                         </TextBox>
                                     </StackPanel>
                                     <Grid Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" VerticalAlignment="Center"
@@ -194,7 +215,7 @@
                                     <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="0 8 0 0">
                                         <ToolTip.Tip>This is the algorithm used for drawing, we suggest DFS for most things.</ToolTip.Tip>
                                         <Label FontSize="16" Content="{x:Static assets:Resources.GeneralDrawAlgorithm}"/>
-                                        <ComboBox Name="AlgorithmSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch">
+                                        <ComboBox Name="AlgorithmSelection" SelectedIndex="0" FontSize="12" Padding="4 " Margin="4" MinHeight="25" HorizontalAlignment="Stretch" SelectedValue="{Binding DrawAlgorithm}">
                                             <ComboBoxItem Content="{x:Static assets:Resources.AlgorithmDFS}"/>
                                             <ComboBoxItem Content="{x:Static assets:Resources.AlgorithmEdgeTraversal}"/>
                                         </ComboBox>
@@ -377,7 +398,7 @@
                     <Image Source="avares://Autodraw/Assets/add-image.png"/>
                 </Button>
                 <Button Name="ProcessButton" Command="{Binding ProcessCommand}" Grid.Column="2" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" FontSize="13" Content="{x:Static assets:Resources.ProcessIMG}"/>
-                <Button Name="RunButton" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" FontSize="13" Content="{x:Static assets:Resources.BeginDraw}"/>
+                <Button Name="RunButton" Command="{Binding DrawCommand}" Grid.Column="4" Classes="NoOutline" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" VerticalContentAlignment="Center" CornerRadius="4" FontSize="13" Content="{x:Static assets:Resources.BeginDraw}"/>
             </Grid>
         </Grid>
     </Grid>

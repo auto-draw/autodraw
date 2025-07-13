@@ -25,7 +25,7 @@ public abstract class Config
     public static string ThemesPath = Path.Combine(FolderPath, "Themes");
     public static string CachePath = Path.Combine(FolderPath, "Cache");
 
-    public static void init()
+    public static void Initialize()
     {
         Directory.CreateDirectory(FolderPath);
         if (!File.Exists(ConfigPath))

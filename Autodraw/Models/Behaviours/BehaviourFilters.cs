@@ -204,3 +204,96 @@ public class PercentageBoxFilterBehavior : Behavior<TextBox> // Could cut this d
         }
     }
 }
+
+public class NumericFloatFilterBehavior : Behavior<TextBox>
+{
+    protected override void OnAttached()
+    {
+        base.OnAttached();
+        if (AssociatedObject != null)
+        {
+            AssociatedObject.TextInput += OnTextInput;
+            AssociatedObject.KeyDown += OnKeyDown;
+        }
+    }
+
+    protected override void OnDetaching()
+    {
+        base.OnDetaching();
+        if (AssociatedObject != null)
+        {
+            AssociatedObject.TextInput -= OnTextInput;
+            AssociatedObject.KeyDown -= OnKeyDown;
+        }
+    }
+
+    private void OnTextInput(object? sender, TextInputEventArgs e)
+    {
+        // Allow digits, a single dot, and commas
+        if (string.IsNullOrEmpty(e.Text))
+        {
+            return;
+        }
+
+        var currentText = (AssociatedObject as TextBox)?.Text ?? string.Empty;
+        var newText = e.Text;
+
+        foreach (char c in newText)
+        {
+            if (char.IsDigit(c))
+            {
+                continue;
+            }
+
+            if (c == '.')
+            {
+                // Allow only one dot in the entire text
+                if (currentText.Contains('.') || (currentText.Length == 0 && newText.Length > 1 && newText.IndexOf('.') != 0))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+            else if (c == ',')
+            {
+                // Allow commas
+                continue;
+            }
+            else
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+    }
+
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Allow navigation and editing keys
+        if (e.Key is Key.Back or Key.Delete or Key.Left or Key.Right or Key.Tab)
+        {
+            return;
+        }
+
+        // Allow digits from main keyboard and numpad
+        var keyIsDigit = (e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9);
+        // Allow decimal point and comma
+        var keyIsDecimalPoint = (e.Key == Key.OemPeriod || e.Key == Key.Decimal);
+        var keyIsComma = (e.Key == Key.OemComma);
+
+        if (!keyIsDigit && !keyIsDecimalPoint && !keyIsComma)
+        {
+            e.Handled = true;
+        }
+
+        // Handle single decimal point logic for KeyDown as well
+        if (keyIsDecimalPoint)
+        {
+            var currentText = (AssociatedObject as TextBox)?.Text ?? string.Empty;
+            if (currentText.Contains('.'))
+            {
+                e.Handled = true;
+            }
+        }
+    }
+}

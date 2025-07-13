@@ -17,6 +17,8 @@
 		</ResourceDictionary>
 		<local:NumericValueConverter x:Key="NumericValueConverter"/>
 		<local:PercentageValueConverter x:Key="PercentageValueConverter"/>
+		<local:FloatConverter x:Key="FloatConverter"/>
+		<local:InvertConverter x:Key="InvertConverter"/>
 		<FontFamily x:Key="ProggyTiny">avares://Autodraw/Assets#ProggyTiny</FontFamily>
 	</Application.Resources>
 	

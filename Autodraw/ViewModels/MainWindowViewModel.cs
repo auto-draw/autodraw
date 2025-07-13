@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Autodraw.Models.Utils;
@@ -7,6 +8,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.VisualBasic.CompilerServices;
+using SharpHook;
 using SkiaSharp;
 
 namespace Autodraw.ViewModels;
@@ -22,12 +25,15 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private int heightProperty = 100;
     [ObservableProperty] private int scaleProperty = 100;
     
-    [ObservableProperty] private int interval = 10000;
-    [ObservableProperty] private int clickDelay = 1000; // Milliseconds, please multiply by 10,000
+    [ObservableProperty] private int interval = 10_000;
+    [ObservableProperty] private double speed = 10;     // Calculation is speed=100,000/interval
+    [ObservableProperty] private int clickDelay = 100;  // Milliseconds, please multiply by 10,000 when using in Operations
+    
+    [ObservableProperty] private bool showInterval = false;
     
     // Black and White Properties
     [ObservableProperty] private byte minLight = 0;
-    [ObservableProperty] private byte maxLight = 127;
+    [ObservableProperty] private byte maxLight = 200;
     // Color Properties
     [ObservableProperty] private byte colors = 12;
     
@@ -59,9 +65,13 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(Window main)
     {
         _main = main;
+        Config.Initialize();
+        
         Console.WriteLine(@"Welcome to MVVM!");
         ScaledBitmap = RawBitmap.NormalizeColor().Copy();
         RenderBitmap = ScaledBitmap.ConvertToAvaloniaBitmap();
+        
+        Input.Start();
     }
 
     private void LoadImage(string path)
@@ -73,30 +83,19 @@ public partial class MainWindowViewModel : ViewModelBase
         ProcessBitmap = null;
         Console.WriteLine(@"Image Loaded!");
         // Reset Parameters
-        
-        WidthProperty = ScaledBitmap.Width;
-        HeightProperty = ScaledBitmap.Height;
-        ScaleProperty = 100;
-    }
 
-    [RelayCommand]
-    private async Task OpenImage()
-    {
-        Console.WriteLine(@"Open Image received!");
-        var file = await _main.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Open Image",
-            FileTypeFilter = [FilePickerFileTypes.ImageAll],
-            AllowMultiple = false
-        });
+        _isUpdating = true;
         
-        LoadImage(file[0].Path.LocalPath);
+        (WidthProperty, HeightProperty) = ClampDimensionsWithAspectRatio(ScaledBitmap.Width, ScaledBitmap.Height);
+        ScaleProperty = ClampScale((int)((ScaledBitmap.Width * 100.0) / ScaledBitmap.Width));
+        
+        _isUpdating = false;
+        
+        DoResizeImageFull();
     }
-
     
-    private DateTime? lastUpdate;
-    private bool awaitingUpdate = false;
     private CancellationTokenSource? _resizeDelayTokenSource;
+
     private async void DoResizeImageFast()
     {
         try
@@ -104,7 +103,6 @@ public partial class MainWindowViewModel : ViewModelBase
             SKBitmap anyBitmap = ProcessBitmap is null ? RawBitmap : ProcessBitmap;
             Console.WriteLine(anyBitmap is null);
             if (anyBitmap is null) return;
-            Console.WriteLine(@"Do Fast Resize Image");
             RenderBitmap = anyBitmap.Resize(new SKSizeI(WidthProperty,HeightProperty), SKFilterQuality.Low)
                 .NormalizeColor()
                 .ConvertToAvaloniaBitmap();
@@ -131,9 +129,24 @@ public partial class MainWindowViewModel : ViewModelBase
     private void DoResizeImageFull()
     {
         if (RawBitmap is null) return;
-        Console.WriteLine(@"Do Full Resize Image");
         ScaledBitmap = RawBitmap.NormalizeColor().Resize(new SKSizeI(WidthProperty,HeightProperty), SKFilterQuality.High);
         Process();
+    }
+    
+    
+
+    [RelayCommand]
+    private async void OpenImage()
+    {
+        Console.WriteLine(@"Open Image received!");
+        var file = await _main.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Image",
+            FileTypeFilter = [FilePickerFileTypes.ImageAll],
+            AllowMultiple = false
+        });
+        
+        if(file.Count == 1) LoadImage(file[0].Path.LocalPath);
     }
     
     [RelayCommand]
@@ -148,7 +161,45 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task Paste()
+    private void Draw()
+    {
+        if (ProcessBitmap == null) // Yes, this can still happen despite auto-processing, due to the Clear function.
+        {
+            var msg = new MessageBox();
+            msg.ShowMessageBox("Error!", "Please load and process an image first!");
+            return;
+        };
+        
+        // We send a control request, particularly to non-windows platforms like macOS and Linux on Wayland
+        // This ensures the user receives a popup to permit mouse control.
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            // I haven't been able to test if just Input.MoveBy(0,5) would be easier, but this code is already proven functional.
+            var hook = new TaskPoolGlobalHook();
+            void foo (object? _, MouseHookEventArgs __) { };
+            hook.MouseMoved += foo; // Start listening for input
+            hook.RunAsync();
+            hook.MouseMoved -= foo;
+            hook.Dispose();
+        }
+        
+        if(Drawing.IsDrawing) return;
+        Drawing.ChosenAlgorithm = DrawAlgorithm;
+        Drawing.Interval = Interval;
+        Drawing.ClickDelay = ClickDelay;
+        
+        new Preview().ReadyDraw(ProcessBitmap);
+        _main.WindowState = WindowState.Minimized;
+    }
+
+    [RelayCommand]
+    private void ToggleInterval()
+    {
+        ShowInterval = !ShowInterval;
+    }
+
+    [RelayCommand]
+    private void Paste()
     {
         Console.WriteLine(WidthProperty);
         Console.WriteLine(HeightProperty);
@@ -220,7 +271,7 @@ public partial class MainWindowViewModel : ViewModelBase
             _isUpdating = false;
         }
     }
-
+    
     partial void OnWidthPropertyChanged(int value)
     {
         if (_isUpdating || RawBitmap == null) return;
@@ -282,8 +333,8 @@ public partial class MainWindowViewModel : ViewModelBase
             _isUpdating = false;
         }
     }
-    
-    public ImageProcessing.Filters GetFilters()
+
+    private ImageProcessing.Filters GetFilters()
     {
         return new ImageProcessing.Filters(
             minThreshold: MinLight,

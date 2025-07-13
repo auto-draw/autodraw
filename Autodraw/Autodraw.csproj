@@ -6,7 +6,13 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <!--Windows Conditional-->
+    <PropertyGroup Condition="'$(IsWindows)'=='true'">
+        <DefineConstants>WINDOWS</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,9 +37,11 @@
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
+        <PackageReference Include="Microsoft.Win32.SystemEvents" Version="9.0.7" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="RestSharp" Version="112.1.0" />
         <PackageReference Include="SharpHook" Version="6.1.2" />
+        <PackageReference Include="SimWinMouse" Version="1.0.3" />
         <PackageReference Include="TextMateSharp.Grammars" Version="1.0.70" />
         <PackageReference Include="UVtools.AvaloniaControls" Version="4.1.0" />
         <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.2" />
@@ -43,6 +51,14 @@
       <EmbeddedResource Update="Properties\Resources.resx">
         <Generator>PublicResXFileCodeGenerator</Generator>
       </EmbeddedResource>
+      <AvaloniaXaml Remove="Styles\Landscape\landscape.axaml" />
+      <EmbeddedResource Include="Styles\Landscape\landscape.axaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <AvaloniaXaml Remove="Styles\Anime\anime.axaml" />
+      <EmbeddedResource Include="Styles\Anime\anime.axaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -50,5 +66,10 @@
         <DependentUpon>Settings.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Styles\DefaultTheme.txt" />
+      <AvaloniaResource Include="Styles\DefaultTheme.txt" />
     </ItemGroup>
 </Project>

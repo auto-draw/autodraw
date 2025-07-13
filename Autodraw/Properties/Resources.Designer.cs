@@ -303,6 +303,15 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speed.
+        /// </summary>
+        public static string GeneralSpeed {
+            get {
+                return ResourceManager.GetString("GeneralSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alternate Mouse Control (Buggy).
         /// </summary>
         public static string GeneralSwitch1 {

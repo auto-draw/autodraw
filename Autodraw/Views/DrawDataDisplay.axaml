@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="100"
         Height="100"
-        Width="180"
+        Width="280"
         x:Class="Autodraw.DrawDataDisplay"
         Title="DrawDataDisplay"
         Background="Transparent"

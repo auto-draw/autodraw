@@ -74,7 +74,7 @@ public class Input
 
     public static void MoveBy(short xOffset, short yOffset)
     {
-#if WINDOWS
+#if Windows
         SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
         mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
 #else
