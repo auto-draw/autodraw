@@ -420,3 +420,6 @@ Autodraw/**/Release/
 Autodraw/.vs/
 Autodraw/Builds/
 .idea/.idea.Autodraw/.idea/avalonia.xml
+Autodraw/bin/Debug/net9.0/Autodraw.dll
+/Autodraw/.idea
+/.idea
