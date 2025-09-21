@@ -55,12 +55,14 @@ Join [the Discord](https://discord.gg/rwvUFraDnb) for help, as we are active on 
 <h1> Operating Systems </h1>
 </a>
 
-| Operating System | Version 2          | Version 1          |
-|------------------|--------------------|--------------------|
-| Windows          | :white_check_mark: | :white_check_mark: |
-| Linux            | :white_check_mark: | :x:                |
-| Mac              | :x:                | :x:                |
-
+| Operating System | Version 2            | Version 1          |
+|------------------|----------------------|--------------------|
+| Windows          | :white_check_mark:   | :white_check_mark: |
+| Linux            | :x:*                 | :x:                |
+| Mac              | :x:**                | :x:                |
+* Internally we have had success with Linux on X11, however latest builds crash. Do not try to build for Linux, it won't work.
+  We intend on moving to our own input service to support both Wayland and X11.
+** MacOS is likely in a similar state ^, had previously worked, additionally requires signatures for proper release.
 <a name="Documentation"/>
 <a name="FAQ"/>
 <h1> Documentation and FAQ</h1>
