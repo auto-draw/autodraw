@@ -125,6 +125,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="4"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Begin Drawing:</Label>
                         <Button Grid.Row="0" Grid.Column="1" Name="ChangeKeybind_StartDrawing">VcLeftShift</Button>
@@ -135,11 +137,13 @@
                         <Label Grid.Row="4" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Lock Preview:</Label>
                         <Button Grid.Row="4" Grid.Column="1" Name="ChangeKeybind_LockPreview">Left Ctrl</Button>
                         
-                        <Label Grid.Row="6" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Lock Preview:</Label>
+                        <Label Grid.Row="6" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Pause Drawing:</Label>
                         <Button Grid.Row="6" Grid.Column="1" Name="ChangeKeybind_PauseDrawing">Backspace</Button>
                         
                         <Label Grid.Row="8" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Skip Backtrace:</Label>
                         <Button Grid.Row="8" Grid.Column="1" Name="ChangeKeybind_SkipBacktrace">Backslash</Button>
+                        
+                        <Button Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Name="ResetKeybindsButton" HorizontalAlignment="Left" Margin="0,10,0,0">Restore default keybinds</Button>
                     </Grid>
                 </StackPanel>
             </Grid>

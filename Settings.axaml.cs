@@ -57,60 +57,94 @@ public partial class Settings : Window
         LogFile.IsChecked = Config.GetEntry("logsEnabled") == "True";
         
         //  Keybinds
-        ChangeKeybind_StartDrawing.Content = Config.Keybind_StartDrawing;
+        UpdateKeybindButtons();
+
         ChangeKeybind_StartDrawing.Click += async (sender, args) =>
         {
             if (_currentlyAwaitingKeypress) return;
+            var originalKey = Config.Keybind_StartDrawing;
             ChangeKeybind_StartDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
+            if (IsKeyAlreadyAssigned(keybind, originalKey))
+            {
+                new MessageBox().ShowMessageBox("Duplicate keybind", $"{GetFriendlyKeyName(keybind)} is already in use. Choose a different key.", "error");
+                ChangeKeybind_StartDrawing.Content = GetFriendlyKeyName(originalKey);
+                return;
+            }
             Config.Keybind_StartDrawing = keybind;
             Config.SetEntry("Keybind_StartDrawing", keybind.ToString());
-            ChangeKeybind_StartDrawing.Content = Config.Keybind_StartDrawing;
+            UpdateKeybindButtons();
         };
         
-        ChangeKeybind_StopDrawing.Content = Config.Keybind_StopDrawing;
         ChangeKeybind_StopDrawing.Click += async (sender, args) =>
         {
             if (_currentlyAwaitingKeypress) return;
+            var originalKey = Config.Keybind_StopDrawing;
             ChangeKeybind_StopDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
+            if (IsKeyAlreadyAssigned(keybind, originalKey))
+            {
+                new MessageBox().ShowMessageBox("Duplicate keybind", $"{GetFriendlyKeyName(keybind)} is already in use. Choose a different key.", "error");
+                ChangeKeybind_StopDrawing.Content = GetFriendlyKeyName(originalKey);
+                return;
+            }
             Config.Keybind_StopDrawing = keybind;
             Config.SetEntry("Keybind_StopDrawing", keybind.ToString());
-            ChangeKeybind_StopDrawing.Content = Config.Keybind_StopDrawing;
+            UpdateKeybindButtons();
         };
         
-        ChangeKeybind_PauseDrawing.Content = Config.Keybind_PauseDrawing;
         ChangeKeybind_PauseDrawing.Click += async (sender, args) =>
         {
             if (_currentlyAwaitingKeypress) return;
+            var originalKey = Config.Keybind_PauseDrawing;
             ChangeKeybind_PauseDrawing.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
+            if (IsKeyAlreadyAssigned(keybind, originalKey))
+            {
+                new MessageBox().ShowMessageBox("Duplicate keybind", $"{GetFriendlyKeyName(keybind)} is already in use. Choose a different key.", "error");
+                ChangeKeybind_PauseDrawing.Content = GetFriendlyKeyName(originalKey);
+                return;
+            }
             Config.Keybind_PauseDrawing = keybind;
             Config.SetEntry("Keybind_PauseDrawing", keybind.ToString());
-            ChangeKeybind_PauseDrawing.Content = Config.Keybind_PauseDrawing;
+            UpdateKeybindButtons();
         };
         
-        ChangeKeybind_LockPreview.Content = Config.Keybind_LockPreview;
         ChangeKeybind_LockPreview.Click += async (sender, args) =>
         {
             if (_currentlyAwaitingKeypress) return;
+            var originalKey = Config.Keybind_LockPreview;
             ChangeKeybind_LockPreview.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
+            if (IsKeyAlreadyAssigned(keybind, originalKey))
+            {
+                new MessageBox().ShowMessageBox("Duplicate keybind", $"{GetFriendlyKeyName(keybind)} is already in use. Choose a different key.", "error");
+                ChangeKeybind_LockPreview.Content = GetFriendlyKeyName(originalKey);
+                return;
+            }
             Config.Keybind_LockPreview = keybind;
             Config.SetEntry("Keybind_LockPreview", keybind.ToString());
-            ChangeKeybind_LockPreview.Content = Config.Keybind_LockPreview;
+            UpdateKeybindButtons();
         };
         
-        ChangeKeybind_SkipBacktrace.Content = Config.Keybind_SkipRescan;
         ChangeKeybind_SkipBacktrace.Click += async (sender, args) =>
         {
             if (_currentlyAwaitingKeypress) return;
+            var originalKey = Config.Keybind_SkipRescan;
             ChangeKeybind_SkipBacktrace.Content = "Waiting...";
             var keybind = await ChangeKeybind_OnClick();
+            if (IsKeyAlreadyAssigned(keybind, originalKey))
+            {
+                new MessageBox().ShowMessageBox("Duplicate keybind", $"{GetFriendlyKeyName(keybind)} is already in use. Choose a different key.", "error");
+                ChangeKeybind_SkipBacktrace.Content = GetFriendlyKeyName(originalKey);
+                return;
+            }
             Config.Keybind_SkipRescan = keybind;
             Config.SetEntry("Keybind_SkipRescan", keybind.ToString());
-            ChangeKeybind_SkipBacktrace.Content = Config.Keybind_SkipRescan;
+            UpdateKeybindButtons();
         };
+
+        ResetKeybindsButton.Click += ResetKeybindsButton_Click;
         
         // Marketplace
         MarketplaceTabs.PropertyChanged += MarketplaceTabsOnPropertyChanged;
@@ -230,6 +264,58 @@ public partial class Settings : Window
         Input.taskHook.KeyPressed += handler;
 
         return tcs.Task;
+    }
+
+    private void UpdateKeybindButtons()
+    {
+        ChangeKeybind_StartDrawing.Content = GetFriendlyKeyName(Config.Keybind_StartDrawing);
+        ChangeKeybind_StopDrawing.Content = GetFriendlyKeyName(Config.Keybind_StopDrawing);
+        ChangeKeybind_PauseDrawing.Content = GetFriendlyKeyName(Config.Keybind_PauseDrawing);
+        ChangeKeybind_LockPreview.Content = GetFriendlyKeyName(Config.Keybind_LockPreview);
+        ChangeKeybind_SkipBacktrace.Content = GetFriendlyKeyName(Config.Keybind_SkipRescan);
+    }
+
+    private static string GetFriendlyKeyName(KeyCode key)
+    {
+        var name = key.ToString();
+        if (name.StartsWith("Vc"))
+        {
+            name = name.Substring(2);
+        }
+
+        return Regex.Replace(name, "([a-z])([A-Z])", "$1 $2");
+    }
+
+    private static bool IsKeyAlreadyAssigned(KeyCode keybind, KeyCode currentKey)
+    {
+        var assigned = new[]
+        {
+            Config.Keybind_StartDrawing,
+            Config.Keybind_StopDrawing,
+            Config.Keybind_PauseDrawing,
+            Config.Keybind_LockPreview,
+            Config.Keybind_SkipRescan
+        };
+
+        return assigned.Any(key => key == keybind && key != currentKey);
+    }
+
+    private void ResetKeybindsButton_Click(object? sender, RoutedEventArgs e)
+    {
+        Config.Keybind_StartDrawing = KeyCode.VcLeftShift;
+        Config.Keybind_StopDrawing = KeyCode.VcLeftAlt;
+        Config.Keybind_PauseDrawing = KeyCode.VcBackslash;
+        Config.Keybind_LockPreview = KeyCode.VcLeftControl;
+        Config.Keybind_SkipRescan = KeyCode.VcBackspace;
+
+        Config.SetEntry("Keybind_StartDrawing", Config.Keybind_StartDrawing.ToString());
+        Config.SetEntry("Keybind_StopDrawing", Config.Keybind_StopDrawing.ToString());
+        Config.SetEntry("Keybind_PauseDrawing", Config.Keybind_PauseDrawing.ToString());
+        Config.SetEntry("Keybind_LockPreview", Config.Keybind_LockPreview.ToString());
+        Config.SetEntry("Keybind_SkipRescan", Config.Keybind_SkipRescan.ToString());
+
+        UpdateKeybindButtons();
+        new MessageBox().ShowMessageBox("Defaults restored", "All keybinds have been restored to defaults.");
     }
 
     // Image Cache
