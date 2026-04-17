@@ -171,130 +171,7 @@ public static class Drawing
         IsDrawing = false;
     }
 
-    private static List<Dictionary<Vector2, int>> GetChunks(SKBitmap srcBitmap)
-    {
-        List<List<byte>> data = new List<List<byte>>();
-        for (int x = 0; x < srcBitmap.Width; x++)
-        {
-            List<byte> column = new List<byte>();
-            for (int y = 0; y < srcBitmap.Height; y++)
-            {
-                var Color = srcBitmap.GetPixel(x, y);
-                Color.ToHsv(out _, out _, out float v);
-                bool B = v < 50;
-                column.Add(B ? (byte)1 : (byte)0);
-            }
-            data.Add(column);
-        }
-        
-        List<Dictionary<Vector2, int>> chunks = new(); // ah yes, list dictionary tuple-array vector2.
-        void Search(int x, int y)
-        {
-            var stack = new Stack<(int, int)>(); 
-            stack.Push((x, y));
-            data[x][y] = 2; // Mark as visited
-
-            var chunk = new Dictionary<Vector2, int>();
-
-            // This is practically the same as the AutoDraw code lol.
-            while (stack.Count > 0)
-            {
-                (x, y) = stack.Pop(); 
-
-                // Explore neighbors (sides and corners)
-
-                // Left
-                if (x > 0 && data[x - 1][y] == 1) 
-                {
-                    data[x - 1][y] = 2;
-                    stack.Push((x - 1, y));
-                    chunk[new Vector2(x - 1, y)] = 1;
-                }
-                else if(x > 0 && data[x - 1][y] == 0) chunk[new Vector2(x , y)] = 2;
-
-                // Right
-                if (x < srcBitmap.Width - 1 && data[x + 1][y] == 1) 
-                {
-                    data[x + 1][y] = 2;
-                    stack.Push((x + 1, y));
-                    chunk[new Vector2(x + 1, y)] = 1;
-                }
-                else if(x < srcBitmap.Width - 1 && data[x + 1][y] == 0) chunk[new Vector2(x , y)] = 2;
-
-                // Up
-                if (y > 0 && data[x][y - 1] == 1) 
-                {
-                    data[x][y - 1] = 2;
-                    stack.Push((x, y - 1));
-                    chunk[new Vector2(x, y - 1)] = 1;
-                }
-                else if(y > 0 && data[x][y - 1] == 0) chunk[new Vector2(x , y)] = 2;
-
-                // Down
-                if (y < srcBitmap.Height - 1 && data[x][y + 1] == 1) 
-                {
-                    data[x][y + 1] = 2;
-                    stack.Push((x, y + 1));
-                    chunk[new Vector2(x, y + 1)] = 1;
-                }
-                else if(y < srcBitmap.Height - 1 && data[x][y + 1] == 0) chunk[new Vector2(x , y)] = 2;
-
-                // Top-Left
-                if (x > 0 && y > 0 && data[x - 1][y - 1] == 1)
-                {
-                    data[x - 1][y - 1] = 2;
-                    stack.Push((x - 1, y - 1));
-                    chunk[new Vector2(x - 1, y - 1)] = 1;
-                }
-                else if (x > 0 && y > 0 && data[x - 1][y - 1] == 0) chunk[new Vector2(x, y)] = 2;
-
-                // Top-Right
-                if (x < srcBitmap.Width - 1 && y > 0 && data[x + 1][y - 1] == 1)
-                {
-                    data[x + 1][y - 1] = 2;
-                    stack.Push((x + 1, y - 1));
-                    chunk[new Vector2(x + 1, y - 1)] = 1;
-                }
-                else if (x < srcBitmap.Width - 1 && y > 0 && data[x + 1][y - 1] == 0) chunk[new Vector2(x, y)] = 2;
-
-                // Bottom-Left
-                if (x > 0 && y < srcBitmap.Height - 1 && data[x - 1][y + 1] == 1)
-                {
-                    data[x - 1][y + 1] = 2;
-                    stack.Push((x - 1, y + 1));
-                    chunk[new Vector2(x - 1, y + 1)] = 1;
-                }
-                else if (x > 0 && y < srcBitmap.Height - 1 && data[x - 1][y + 1] == 0) chunk[new Vector2(x, y)] = 2;
-
-                // Bottom-Right
-                if (x < srcBitmap.Width - 1 && y < srcBitmap.Height - 1 && data[x + 1][y + 1] == 1)
-                {
-                    data[x + 1][y + 1] = 2;
-                    stack.Push((x + 1, y + 1));
-                    chunk[new Vector2(x + 1, y + 1)] = 1;
-                }
-                else if (x < srcBitmap.Width - 1 && y < srcBitmap.Height - 1 && data[x + 1][y + 1] == 0) chunk[new Vector2(x, y)] = 2;
-            }
-            chunks.Add(chunk);
-        }
-        for (int y = 0; y < srcBitmap.Height; y++)
-            for (int x = 0; x < srcBitmap.Width; x++)
-            {
-                if (data[x][y] == 1)
-                {
-                    Search(x,y);
-                }
-            }
-        
-        chunks.Sort(delegate(Dictionary<Vector2, int> x, Dictionary<Vector2, int> y)
-        {
-            return y.Count.CompareTo(x.Count);
-        });
-        
-        return chunks;
-    }
-
-    private static List<List<Vector2>> GenerateActions(List<Dictionary<Vector2, int>> chunks, byte[,] data)
+    private static List<List<Vector2>> BuildPaths(byte[,] data)
     {
         Vector2[] relativeDirections =
         {
@@ -308,24 +185,24 @@ public static class Drawing
             new(-1, 1)     // Bottom-Left (Diagonal)
         };
 
-        List<List<Vector2>> actions = new();
+        var actions = new List<List<Vector2>>();
+        int width = data.GetLength(0);
+        int height = data.GetLength(1);
 
-        // Traverse each chunk
-        foreach (Dictionary<Vector2, int> chunk in chunks)
+        for (int y = 0; y < height; y++)
         {
-            foreach (KeyValuePair<Vector2, int> startPoint in chunk)
+            for (int x = 0; x < width; x++)
             {
-                if (data[(int)startPoint.Key.X, (int)startPoint.Key.Y] != 1) continue;
-
-                // Perform DFS to find connected components
-                actions.Add(ChosenFunction(startPoint.Key, data, relativeDirections,chunk));
+                if (data[x, y] != 1) continue;
+                actions.Add(ChosenFunction(new Vector2(x, y), data, relativeDirections));
             }
         }
 
+        actions.Sort((x, y) => y.Count.CompareTo(x.Count));
         return actions;
     }
 
-    private static List<Vector2> ChosenFunction(Vector2 start, byte[,] data, Vector2[] relativeDirections, Dictionary<Vector2, int> chunk)
+    private static List<Vector2> ChosenFunction(Vector2 start, byte[,] data, Vector2[] relativeDirections)
     {
         if (ChosenAlgorithm == 0)
         {
@@ -640,15 +517,9 @@ public static class Drawing
         Dispatcher.UIThread.Invoke(() =>
         {
             _dataDisplay.DataDisplayText.Text =
-                $"Getting Chunks...";
-        });
-        List<Dictionary<Vector2, int>> Chunks = GetChunks(bitmap);
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            _dataDisplay.DataDisplayText.Text =
                 $"Generating Action Path...";
         });
-        List<List<Vector2>> Actions = GenerateActions(Chunks,dataArray);
+        List<List<Vector2>> Actions = BuildPaths(dataArray);
 
         int ActionsComplete = 0;
         foreach (List<Vector2> Action in Actions)
@@ -664,12 +535,15 @@ public static class Drawing
                 if (!IsDrawing) break;
                 short x = (short)(p.X + startPos.X);
                 short y = (short)(p.Y + startPos.Y);
-                Dispatcher.UIThread.Invoke(() => // Note, this may be slowing down the top-speed, need further testing.
+                if (ActionComplete % 50 == 0 || ActionComplete == Action.Count)
                 {
-                    _dataDisplay.DataDisplayText.Text =
-                        $"ActionSet Completed: {ActionComplete}/{Action.Count}\n" +
-                        $"ActionSet's Remaining: {ActionsComplete}/{Actions.Count}";
-                });
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        _dataDisplay.DataDisplayText.Text =
+                            $"ActionSet Completed: {ActionComplete}/{Action.Count}\n" +
+                            $"ActionSet's Remaining: {ActionsComplete}/{Actions.Count}";
+                    });
+                }
                 if (!isDown)
                 {
                     isDown = true;
