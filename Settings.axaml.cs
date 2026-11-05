@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using SharpHook;
 using SharpHook.Native;
 using TextMateSharp.Grammars;
+using Autodraw.Configuration;
 
 namespace Autodraw;
 
@@ -33,6 +34,7 @@ public partial class Settings : Window
     private string _savedLocation = "";
     private bool _textmateLoaded;
     private bool _currentlyAwaitingKeypress;
+    private readonly SettingsViewModel _ddConfig = new();
 
     public Settings()
     {
@@ -42,8 +44,13 @@ public partial class Settings : Window
         
         // Main Handle
         CloseAppButton.Click += CloseAppButton_Click;
+        ColorPickerHelpButton.Click += ShowColorPickerHelp;
         // Sidebar
         SettingsTabs.PropertyChanged += SettingsTabsOnPropertyChanged;
+        DdConfigEditor.Text = _ddConfig.Json;
+        ApplyDdConfig.Click += ApplyDdConfigOnClick;
+        ImportDdConfig.Click += ImportDdConfigOnClick;
+        ExportDdConfig.Click += ExportDdConfigOnClick;
 
         // General
         AltMouseControl.IsCheckedChanged += AltMouseControl_IsCheckedChanged;
@@ -139,6 +146,37 @@ public partial class Settings : Window
         ImageCacheLocationFolderButton.Click += ImageCacheLocationFolderButtonOnClick;
         ImageCacheLocationSaveButton.Click += ImageCacheLocationSaveButtonOnClick;
         ImageCacheLocationClearButton.Click += ImageCacheLocationClearButtonOnClick;
+    }
+
+    private void ShowColorPickerHelp(object? sender, RoutedEventArgs e)
+    {
+        new MessageBox().ShowMessageBox("Color Picker Setup", ColorPicker.GetUsageInstructions());
+    }
+
+    private void ApplyDdConfigOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (!_ddConfig.TryReplaceJson(DdConfigEditor.Text ?? string.Empty, out var error) || !_ddConfig.Apply(out error))
+        {
+            new MessageBox().ShowMessageBox("Invalid dd.json", error, "error"); return;
+        }
+        _ddConfig.RefreshJson(); DdConfigEditor.Text = _ddConfig.Json;
+    }
+
+    private async void ImportDdConfigOnClick(object? sender, RoutedEventArgs e)
+    {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { AllowMultiple = false, FileTypeFilter = new[] { new FilePickerFileType("dd.json") { Patterns = new[] { "*.json" } } } });
+        if (files.Count != 1) return;
+        var path = files[0].TryGetLocalPath();
+        if (!DdConfigService.TryLoad(path, out var config, out var error)) { new MessageBox().ShowMessageBox("Invalid dd.json", error, "error"); return; }
+        _ddConfig.TryReplaceJson(JsonConvert.SerializeObject(config, Formatting.Indented), out _); DdConfigEditor.Text = _ddConfig.Json;
+    }
+
+    private async void ExportDdConfigOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (!_ddConfig.TryReplaceJson(DdConfigEditor.Text ?? string.Empty, out var error)) { new MessageBox().ShowMessageBox("Invalid dd.json", error, "error"); return; }
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions { Title = "Export dd.json", SuggestedFileName = "dd.json", FileTypeChoices = new[] { new FilePickerFileType("JSON") { Patterns = new[] { "*.json" } } } });
+        if (file is null) return;
+        await using var stream = await file.OpenWriteAsync(); await using var writer = new StreamWriter(stream); await writer.WriteAsync(_ddConfig.Json);
     }
 
     private void MarketplaceTabsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -531,11 +569,6 @@ public partial class Settings : Window
         if (LogFile.IsChecked == null) return;
         Config.SetEntry("logsEnabled", LogFile.IsChecked.ToString() ?? "True");
         Utils.LoggingEnabled = (bool)LogFile.IsChecked;
-    }
-
-    private void LocalThemeOnClick(object? sender, RoutedEventArgs e)
-    {
-        throw new NotImplementedException();
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)

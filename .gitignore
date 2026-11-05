@@ -420,3 +420,17 @@ Release/
 .vs/
 Builds/
 .idea/.idea.Autodraw/.idea/avalonia.xml
+.aider*
+
+# HexedDrawer Real-ESRGAN binaries/models and the source archive stay local-only.
+HexedDraw/
+HexedDraw.rar
+
+# Third-party reference build, not part of this project (~385 MB).
+LxPainter V1.8/
+
+# Local agent tooling and scratch files.
+.agents/
+tasks/
+skills-lock.json
+patch_config.py

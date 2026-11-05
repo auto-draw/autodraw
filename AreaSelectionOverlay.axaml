@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Autodraw.AreaSelectionOverlay"
+        Title=""
+        CanResize="False"
+        ShowInTaskbar="False"
+        Topmost="True"
+        SystemDecorations="None"
+        WindowStartupLocation="Manual"
+        TransparencyLevelHint="Transparent"
+        Background="#66000000"
+        Cursor="Cross"
+        KeyDown="OnKeyDown">
+    <Canvas x:Name="Surface" Background="#01000000"
+            PointerPressed="OnPointerPressed"
+            PointerMoved="OnPointerMoved"
+            PointerReleased="OnPointerReleased">
+        <Border x:Name="SelectionBorder" BorderBrush="#FF35A7FF" BorderThickness="2" Background="#22FFFFFF" IsVisible="False"/>
+        <Border Background="#CC101418" CornerRadius="4" Padding="10 6" Canvas.Left="12" Canvas.Top="12">
+            <TextBlock x:Name="Instructions" Foreground="White" FontSize="14"/>
+        </Border>
+        <TextBlock x:Name="SizeText" Foreground="#DDE9F5" FontSize="13" Canvas.Left="12" Canvas.Top="54"/>
+    </Canvas>
+</Window>

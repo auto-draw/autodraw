@@ -76,6 +76,7 @@
                         <ComboBoxItem>Left Click</ComboBoxItem>
                         <ComboBoxItem>Right Click</ComboBoxItem>
                         <ComboBoxItem>Move To</ComboBoxItem>
+                        <ComboBoxItem>Set Color Hex</ComboBoxItem>
                         
                         <ComboBoxItem>Write Text</ComboBoxItem>
                         

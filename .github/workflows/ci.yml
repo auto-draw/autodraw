@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, "dev*" ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  build-test:
+    # The app targets net8.0-windows and P/Invokes Win32 APIs, so build and test on Windows.
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # global.json pins 8.0.0 with rollForward: latestMajor, so the 8.0 band satisfies it.
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore Autodraw.sln
+
+      # Pre-existing NU1701/CS86xx warnings are expected; do not promote warnings to errors.
+      - name: Build
+        run: dotnet build Autodraw.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test tests\Autodraw.Tests\Autodraw.Tests.csproj --no-build --configuration Release --logger "console;verbosity=normal"

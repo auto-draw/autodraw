@@ -78,6 +78,15 @@ namespace Autodraw.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Concentric.
+        /// </summary>
+        public static string AlgorithmConcentric {
+            get {
+                return ResourceManager.GetString("AlgorithmConcentric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Version: C# 10.0.
         /// </summary>
         public static string AutoDrawLanguageVersion {

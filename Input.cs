@@ -137,8 +137,106 @@ public class Input
     }
     public static void SendText(string text)
     {
+#if WINDOWS
+        SendUnicodeText(text);
+#else
         eventSim.SimulateTextEntry(text);
+#endif
     }
+
+    /// <summary>Replaces the contents of the currently focused native text control.</summary>
+    public static void ReplaceFocusedText(string text)
+    {
+#if WINDOWS
+        SendVirtualKey(0x11, false); // Ctrl
+        SendVirtualKey(0x41, false); // A
+        SendVirtualKey(0x41, true);
+        SendVirtualKey(0x11, true);
+        SendUnicodeText(text);
+        SendVirtualKey(0x0D, false); // Enter
+        SendVirtualKey(0x0D, true);
+#else
+        eventSim.SimulateKeyPress(KeyCode.VcLeftControl);
+        eventSim.SimulateKeyPress(KeyCode.VcA);
+        eventSim.SimulateKeyRelease(KeyCode.VcA);
+        eventSim.SimulateKeyRelease(KeyCode.VcLeftControl);
+        eventSim.SimulateTextEntry(text);
+        eventSim.SimulateKeyPress(KeyCode.VcEnter);
+        eventSim.SimulateKeyRelease(KeyCode.VcEnter);
+#endif
+    }
+
+#if WINDOWS
+    private const uint InputKeyboard = 1;
+    private const uint KeyEventKeyUp = 0x0002;
+    private const uint KeyEventUnicode = 0x0004;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeInput
+    {
+        public uint Type;
+        public NativeInputUnion Data;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    private struct NativeInputUnion
+    {
+        [FieldOffset(0)] public NativeKeyboardInput Keyboard;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeKeyboardInput
+    {
+        public ushort VirtualKey;
+        public ushort ScanCode;
+        public uint Flags;
+        public uint Time;
+        public IntPtr ExtraInfo;
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern uint SendInput(uint inputCount, NativeInput[] inputs, int inputSize);
+
+    private static void SendVirtualKey(ushort virtualKey, bool keyUp)
+    {
+        var input = new NativeInput
+        {
+            Type = InputKeyboard,
+            Data = new NativeInputUnion
+            {
+                Keyboard = new NativeKeyboardInput { VirtualKey = virtualKey, Flags = keyUp ? KeyEventKeyUp : 0 }
+            }
+        };
+        SendInput(1, new[] { input }, Marshal.SizeOf<NativeInput>());
+    }
+
+    private static void SendUnicodeText(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+
+        var inputs = new NativeInput[text.Length * 2];
+        for (var i = 0; i < text.Length; i++)
+        {
+            inputs[i * 2] = new NativeInput
+            {
+                Type = InputKeyboard,
+                Data = new NativeInputUnion
+                {
+                    Keyboard = new NativeKeyboardInput { ScanCode = text[i], Flags = KeyEventUnicode }
+                }
+            };
+            inputs[i * 2 + 1] = new NativeInput
+            {
+                Type = InputKeyboard,
+                Data = new NativeInputUnion
+                {
+                    Keyboard = new NativeKeyboardInput { ScanCode = text[i], Flags = KeyEventUnicode | KeyEventKeyUp }
+                }
+            };
+        }
+        SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<NativeInput>());
+    }
+#endif
 
     public static class MouseTypes
     {

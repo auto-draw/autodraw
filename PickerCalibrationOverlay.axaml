@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="160"
+
+        x:Class="Autodraw.PickerCalibrationOverlay"
+
+        Width="360"
+        MinHeight="160"
+        SizeToContent="Height"
+        CanResize="False"
+
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
+        Topmost="True"
+        SystemDecorations="BorderOnly"
+        KeyDown="OnKeyDown"
+        Title="Color Picker Setup">
+
+    <StackPanel Margin="16" Spacing="12">
+        <TextBlock Name="TitleText" FontWeight="Bold" Foreground="#8B98A5">Color Picker Setup</TextBlock>
+        <TextBlock Name="StepCounterText" FontWeight="Bold" FontSize="13" Foreground="#8B98A5">1 / 3</TextBlock>
+        <TextBlock Name="StepText" TextWrapping="Wrap" FontSize="17">Click the R (red) field</TextBlock>
+        <ProgressBar Name="StepProgress" Minimum="0" Maximum="100" Value="0" Height="4"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Name="CancelButton" Padding="12 4">Cancel</Button>
+        </StackPanel>
+    </StackPanel>
+</Window>

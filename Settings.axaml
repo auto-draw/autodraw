@@ -81,6 +81,7 @@
                         <TreeViewItem Classes="Round" Header="Marketplace" Name="MarketplaceSelector"/>
                         <TreeViewItem Classes="Round" Header="Theme Editor" Name="ThemeEditorSelector"/>
                         <TreeViewItem Classes="Round" Header="Settings" Name="ThemeConfigSettingsSelector"/>
+                        <TreeViewItem Classes="Round" Header="dd.json Configuration" Name="DdConfigSelector"/>
                     </TreeViewItem>
                     <TreeViewItem Classes="Round" Header="AI Generation" Name="AIGenerationSelector"/>
                     <TreeViewItem Classes="Round" Header="Info" Name="InfoSelector">
@@ -95,6 +96,16 @@
                     <Label Content="{x:Static assets:Resources.AutoDrawVersionDetailed}"/>
                     <Label Content="{x:Static assets:Resources.AutoDrawLanguageVersion}"/>
                     <Label Content="{x:Static assets:Resources.AutoDrawNetFramework}"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Name="DdConfigTab" Grid.Column="2" Grid.Row="2" Opacity="0" IsHitTestVisible="False" Margin="4" RowDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Row="0" Text="Portable dd.json configuration. Invalid edits are not applied." TextWrapping="Wrap" Margin="0,0,0,6"/>
+                <TextBox Grid.Row="1" Name="DdConfigEditor" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,6,0,0">
+                    <Button Name="ImportDdConfig">Import JSON…</Button>
+                    <Button Name="ExportDdConfig">Export JSON…</Button>
+                    <Button Name="ApplyDdConfig">Apply</Button>
                 </StackPanel>
             </Grid>
             
@@ -141,6 +152,7 @@
                         <Label Grid.Row="8" Grid.Column="0" Padding="0" VerticalContentAlignment="Center">Skip Backtrace:</Label>
                         <Button Grid.Row="8" Grid.Column="1" Name="ChangeKeybind_SkipBacktrace">Backslash</Button>
                     </Grid>
+                    <Button Name="ColorPickerHelpButton" HorizontalAlignment="Left" Margin="0,8,0,0">Color Picker Help</Button>
                 </StackPanel>
             </Grid>
             

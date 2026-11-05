@@ -2,7 +2,6 @@
 using Avalonia;
 
 namespace Autodraw;
-
 internal class Program
 {
     private static bool compatability = false;
@@ -15,6 +14,9 @@ internal class Program
     {
         try
         {
+            // Must happen before Avalonia creates its first window so physical screen coordinates
+            // used by F1 region capture agree with Avalonia's Screen.Bounds on mixed-DPI desktops.
+            ImageInput.ScreenCapture.TryEnablePerMonitorV2Awareness();
             compatability = args?.Length > 0 && args[0].Equals("compat", StringComparison.OrdinalIgnoreCase);
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);

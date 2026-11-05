@@ -321,4 +321,7 @@
     <data name="AlgorithmDFS" xml:space="preserve">
         <value>DFS</value>
     </data>
+    <data name="AlgorithmConcentric" xml:space="preserve">
+        <value>Concentric</value>
+    </data>
 </root>

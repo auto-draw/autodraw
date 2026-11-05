@@ -58,6 +58,24 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Optional Real-ESRGAN enhancement runtime shipped with the ported HexedDrawer feature.
+             Binaries and models are intentionally not committed; they are only copied when they
+             exist locally (keep them in the solution-root HexedDraw\ folder to enable the 2x enhancement). -->
+        <Content Condition="Exists('HexedDraw\realesrgan-ncnn-vulkan.exe')" Include="HexedDraw\realesrgan-ncnn-vulkan.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>HexedDraw\realesrgan-ncnn-vulkan.exe</Link>
+        </Content>
+        <Content Condition="Exists('HexedDraw\vcomp140.dll')" Include="HexedDraw\vcomp140.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>HexedDraw\vcomp140.dll</Link>
+        </Content>
+        <Content Condition="Exists('HexedDraw\models')" Include="HexedDraw\models\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>HexedDraw\models\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <AvaloniaResource Include="Styles\**"/>
     </ItemGroup>
 
@@ -78,6 +96,15 @@
 
     <ItemGroup>
         <Compile Remove="Assets\Window1.axaml.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Keep the separate xunit project out of the app's default compile/resource globs. -->
+        <Compile Remove="tests\**\*.cs"/>
+        <AvaloniaXaml Remove="tests\**\*.axaml"/>
+        <AvaloniaResource Remove="tests\**"/>
+        <EmbeddedResource Remove="tests\**"/>
+        <None Remove="tests\**"/>
     </ItemGroup>
 
     <ItemGroup>

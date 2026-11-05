@@ -81,16 +81,18 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
             case 1:
             // General Position
             case 2:
+            // Color hex input location
+            case 3:
                 Input.taskHook.MouseClicked += OnGlobalMouseClick;
                 ActionData = "Awaiting Mouse Input";
                 break;
             // Key Down
-            case 4:
+            case 5:
                 Input.taskHook.KeyPressed += OnGlobalKeyPress;
                 ActionData = "Awaiting Key Down...";
                 break;
             // Key Up
-            case 5:
+            case 6:
                 Input.taskHook.KeyReleased += OnGlobalKeyPress;
                 ActionData = "Awaiting Key Up...";
                 break;
@@ -121,7 +123,7 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
     // Handle global key press events
     private void OnGlobalKeyPress(object? sender, KeyboardHookEventArgs e)
     {
-        var keyEvent = Selection == 4 ? "Key Down" : "Key Up";
+        var keyEvent = Selection == 5 ? "Key Down" : "Key Up";
 
         Console.WriteLine($"{keyEvent}: {e.Data.KeyCode}");
 
@@ -129,11 +131,11 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
         _rawActionData = e.Data.KeyCode.ToString();
 
         // Stop tracking after the action
-        if (Selection == 4)
+        if (Selection == 5)
         {
             Input.taskHook.KeyPressed -= OnGlobalKeyPress;
         }
-        else if (Selection == 5)
+        else if (Selection == 6)
         {
             Input.taskHook.KeyReleased -= OnGlobalKeyPress;
         }
@@ -145,7 +147,7 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
     {
         _rawActionData = null;
         ActionData = "";
-        if (Selection == 3)
+        if (Selection == 4)
         {
             TrackAction.IsVisible = false;
             InputBox.IsVisible = true;
@@ -159,7 +161,7 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
 
     private void InputBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (Selection != 3) return;
+        if (Selection != 4) return;
         Console.WriteLine(InputData);
         _rawActionData = InputData;
     }
@@ -172,14 +174,18 @@ public partial class ActionPrompt : Window, INotifyPropertyChanged
         {
             1 => InputAction.ActionType.RightClick,
             2 => InputAction.ActionType.MoveTo,
-            3 => InputAction.ActionType.WriteString,
-            4 => InputAction.ActionType.KeyDown,
-            5 => InputAction.ActionType.KeyUp,
+            3 => InputAction.ActionType.SetColorHex,
+            4 => InputAction.ActionType.WriteString,
+            5 => InputAction.ActionType.KeyDown,
+            6 => InputAction.ActionType.KeyUp,
             _ => InputAction.ActionType.LeftClick
         };
         var _ActionData = _rawActionData;
         
-        Action = new InputAction(_ActionType, _ActionData);
+        var delay = int.TryParse(Delay, out var parsedDelay) ? parsedDelay : 0;
+        int? speed = int.TryParse(Speed, out var parsedSpeed) && parsedSpeed > 0 ? parsedSpeed : null;
+
+        Action = new InputAction(_ActionType, _ActionData, delay, speed);
 
         Callback(); // Alien Cat: "Hello? Mothership, can you beam me up?"
     }

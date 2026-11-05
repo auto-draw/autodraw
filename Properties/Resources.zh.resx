@@ -209,4 +209,7 @@
     <data name="AlgorithmDFS" xml:space="preserve">
         <value>DFS</value>
     </data>
+    <data name="AlgorithmConcentric" xml:space="preserve">
+        <value>同心绘制</value>
+    </data>
 </root>

@@ -1,0 +1,290 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="Autodraw.HexedDrawWindow"
+        Title="AutoDraw - HexedDrawer"
+        Width="920"
+        Height="640"
+        MinWidth="780"
+        MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!--Header-->
+        <Border Grid.Row="0" Background="#181C22" Padding="10 8">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Name="AppTitleText" FontSize="16" FontWeight="SemiBold" Foreground="White"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Name="HotkeyHintText" FontSize="12" Foreground="#9AA7B4" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1" Name="MainWindowButton" Padding="10 4"/>
+            </Grid>
+        </Border>
+
+        <TabControl Grid.Row="1" Name="MainTabs" Margin="6" Padding="0">
+            <!--MAIN-->
+            <TabItem Name="TabMain">
+                <Grid ColumnDefinitions="190,8,*" Margin="4">
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Name="ControlHeaderText" FontWeight="Bold" Margin="0 4 0 0"/>
+                        <Button Name="SelectImageButton" HorizontalAlignment="Stretch" Click="SelectImage_OnClick"/>
+                        <Button Name="SelectAreaButton" HorizontalAlignment="Stretch" Click="SelectArea_OnClick"/>
+                        <Button Name="QuantizeButton" HorizontalAlignment="Stretch" Click="Quantize_OnClick"/>
+                        <Button Name="DrawButton" HorizontalAlignment="Stretch" Click="Draw_OnClick"/>
+                        <Button Name="ResetButton" HorizontalAlignment="Stretch" Click="Reset_OnClick"/>
+                        <Button Name="StopButton" HorizontalAlignment="Stretch" Click="Stop_OnClick"/>
+                        <TextBlock Name="ImageInfoText" TextWrapping="Wrap" Foreground="#8B98A5" Margin="0 8 0 0"/>
+                        <TextBlock Name="AreaInfoText" TextWrapping="Wrap" Foreground="#8B98A5"/>
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Column="2">
+                        <StackPanel Spacing="6" Margin="4">
+                            <TextBlock Name="ParametersHeaderText" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,8,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Name="KClustersLabel" TextWrapping="Wrap"/>
+                                    <TextBox Name="KClustersInput" TextChanged="Parameter_OnChanged"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Name="BrushSizeLabel" TextWrapping="Wrap"/>
+                                    <TextBox Name="BrushSizeInput" TextChanged="Parameter_OnChanged"/>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Name="DrawDelayLabel"/>
+                            <TextBox Name="DrawDelayInput" Width="180" HorizontalAlignment="Left" TextChanged="Parameter_OnChanged"/>
+
+                            <TextBlock Name="PreviewHeaderText" FontWeight="Bold" Margin="0 8 0 0"/>
+                            <Border Background="#22000000" BorderBrush="#33FFFFFF" BorderThickness="1"
+                                    CornerRadius="3" MinHeight="220">
+                                <Panel>
+                                    <Image Name="QuantizedPreviewImage" Stretch="Uniform" Margin="4"/>
+                                    <TextBlock Name="PreviewHintText" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" Foreground="#8B98A5" TextWrapping="Wrap"
+                                               TextAlignment="Center" Margin="20"/>
+                                </Panel>
+                            </Border>
+
+                            <ProgressBar Name="DrawProgressBar" Minimum="0" Maximum="100" Height="14"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Name="PercentText" Grid.Column="0"/>
+                                <TextBlock Name="PixelsText" Grid.Column="1" Foreground="#8B98A5"/>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+
+            <!--IMAGE FINDER-->
+            <TabItem Name="TabFinder">
+                <Grid RowDefinitions="Auto,*,Auto" Margin="6">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0 0 0 6">
+                        <TextBox Name="SearchQueryInput" Grid.Column="0" Watermark="Search images..."
+                                 KeyDown="SearchQuery_OnKeyDown"/>
+                        <ComboBox Name="SafeSearchCombo" Grid.Column="1" Width="130" Margin="6 0"
+                                  SelectionChanged="SafeSearch_OnChanged"/>
+                        <Button Name="FindImagesButton" Grid.Column="2" Click="FindImages_OnClick"/>
+                    </Grid>
+
+                    <ListBox Grid.Row="1" Name="SearchResultsList" SelectionMode="Single">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="132,8,*,Auto" Height="104">
+                                    <Border Grid.Column="0" Background="#22000000" CornerRadius="3">
+                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Margin="0 4">
+                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" MaxLines="2"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding ImageUrl}" TextWrapping="Wrap" MaxLines="2"
+                                                   FontSize="11" Foreground="#8B98A5"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="3" Padding="10 4" VerticalAlignment="Center"
+                                            Click="UseSearchResult_OnClick" Content="Use"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0 6 0 0">
+                        <ProgressBar Name="SearchProgressBar" Grid.Column="0" IsIndeterminate="True" IsVisible="False"
+                                     VerticalAlignment="Center"/>
+                        <Button Name="ClearCacheButton" Grid.Column="1" Click="ClearCache_OnClick"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!--SETTINGS-->
+            <TabItem Name="TabSettings">
+                <ScrollViewer Padding="8">
+                    <StackPanel Spacing="10">
+                        <TextBlock Name="ColorPickerHeaderText" FontWeight="Bold"/>
+                        <Grid ColumnDefinitions="Auto,8,*">
+                            <TextBlock Name="PickerTypeLabel1" VerticalAlignment="Center"/>
+                            <ComboBox Name="PickerTypeCombo" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="PickerType_OnChanged"/>
+                        </Grid>
+                        <TextBlock Name="PickerStatusText" TextWrapping="Wrap" FontSize="11" Foreground="#8B98A5"/>
+
+                        <Button Name="CalibrateButton" Click="CalibrateButton_OnClick" Margin="0 6 0 0"
+                                HorizontalAlignment="Left"/>
+                        <StackPanel Name="PaletteRotationPanel" Orientation="Horizontal" Spacing="8">
+                            <TextBlock Name="PaletteRotationLabel" VerticalAlignment="Center"/>
+                            <ComboBox Name="PaletteRotationCombo" Width="120"
+                                      SelectionChanged="PaletteRotation_OnChanged"/>
+                        </StackPanel>
+
+                        <TextBlock Name="ModeHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <RadioButton Name="ColorModeRadio" GroupName="DrawMode" Checked="Mode_OnChanged"/>
+                            <RadioButton Name="BwModeRadio" GroupName="DrawMode" Checked="Mode_OnChanged"/>
+                        </StackPanel>
+
+                        <TextBlock Name="ProcessingHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <CheckBox Name="AutoQuantizeCheck" Checked="AutoQuantize_OnChanged" Unchecked="AutoQuantize_OnChanged"/>
+                        <CheckBox Name="EnhanceImageCheck" Checked="EnhanceImage_OnChanged" Unchecked="EnhanceImage_OnChanged"/>
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="QuantizeStyleLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="QuantizeStyleCombo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="QuantizeStyle_OnChanged"/>
+                            <TextBlock Name="QuantizeMethodLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="QuantizeMethodCombo" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="QuantizeMethod_OnChanged"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="ColorSpaceLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="ColorSpaceCombo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="ColorSpace_OnChanged"/>
+                            <TextBlock Name="AlgorithmLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="AlgorithmCombo" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="Algorithm_OnChanged"/>
+                        </Grid>
+                        <TextBlock Name="PaletteSpaceHintText" FontSize="11" Foreground="#8B98A5"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Name="RecreateHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <CheckBox Name="RecreateModeCheck" Checked="RecreateToggle_OnChanged"
+                                  Unchecked="RecreateToggle_OnChanged"/>
+                        <TextBlock Name="RecreateModeHintText" FontSize="11" Foreground="#8B98A5"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Name="ProfileHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <Grid ColumnDefinitions="Auto,8,*,8,Auto,8,Auto">
+                            <TextBlock Name="ProfileLabel" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="ProfileCombo" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="Profile_OnChanged"/>
+                            <Button Name="ProfileSaveButton" Grid.Column="4" Click="ProfileSave_OnClick"/>
+                            <Button Name="ProfileDeleteButton" Grid.Column="6" Click="ProfileDelete_OnClick"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,8,*">
+                            <TextBlock Name="ProfileNameLabel" Grid.Column="0" VerticalAlignment="Center"/>
+                            <TextBox Name="ProfileNameInput" Grid.Column="2"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="RecreateLayerOrderLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="RecreateLayerOrderCombo" Grid.Row="0" Grid.Column="2"
+                                      HorizontalAlignment="Stretch" SelectionChanged="RecreateCombo_OnChanged"/>
+                            <TextBlock Name="RecreateStrokeOrderLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="RecreateStrokeOrderCombo" Grid.Row="2" Grid.Column="2"
+                                      HorizontalAlignment="Stretch" SelectionChanged="RecreateCombo_OnChanged"/>
+                        </Grid>
+                        <TextBlock Name="RecreateStrokeHintText" FontSize="11" Foreground="#8B98A5" TextWrapping="Wrap"/>
+                        <Grid ColumnDefinitions="Auto,8,*,16,Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="RecreateStrokeDelayLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateStrokeDelayInput" Grid.Row="0" Grid.Column="2"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                            <TextBlock Name="RecreateMoveStepLabel" Grid.Row="0" Grid.Column="4" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateMoveStepInput" Grid.Row="0" Grid.Column="6"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                            <TextBlock Name="RecreateAlphaLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateAlphaInput" Grid.Row="2" Grid.Column="2"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                            <TextBlock Name="RecreateCheckpointLabel" Grid.Row="2" Grid.Column="4" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateCheckpointInput" Grid.Row="2" Grid.Column="6"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                        </Grid>
+                        <CheckBox Name="RecreateVerifyCheck" Checked="RecreateToggle_OnChanged"
+                                  Unchecked="RecreateToggle_OnChanged"/>
+                        <Grid ColumnDefinitions="Auto,8,*,16,Auto,8,*" RowDefinitions="Auto">
+                            <TextBlock Name="RecreateVerifyToleranceLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateVerifyToleranceInput" Grid.Row="0" Grid.Column="2"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                            <TextBlock Name="RecreateVerifyRetriesLabel" Grid.Row="0" Grid.Column="4" VerticalAlignment="Center"/>
+                            <TextBox Name="RecreateVerifyRetriesInput" Grid.Row="0" Grid.Column="6"
+                                     TextChanged="RecreateNumber_OnChanged"/>
+                        </Grid>
+                        <CheckBox Name="RecreateDryRunCheck" Checked="RecreateToggle_OnChanged"
+                                  Unchecked="RecreateToggle_OnChanged"/>
+                        <CheckBox Name="RecreateFocusCheck" Checked="RecreateToggle_OnChanged"
+                                  Unchecked="RecreateToggle_OnChanged"/>
+                        <CheckBox Name="RecreateResumeCheck" Checked="RecreateToggle_OnChanged"
+                                  Unchecked="RecreateToggle_OnChanged"/>
+                        <TextBlock Name="RecreateSafetyHintText" FontSize="11" Foreground="#8B98A5"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Name="RecreateCalibrationHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <Button Name="RecreateCurrentButton" Click="RecreateCalibrate_OnClick" Tag="RecreateCurrent"
+                                HorizontalAlignment="Left"/>
+                        <TextBlock Name="RecreateCalibrationStatusText" FontSize="11" Foreground="#8B98A5"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock Name="DrawingAlgorithmHeaderText" FontWeight="Bold" Margin="0 6 0 0"/>
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="DfsSearchLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Spacing="16">
+                                <RadioButton Name="Dfs8Radio" GroupName="DfsMode" Checked="DfsMode_OnChanged"/>
+                                <RadioButton Name="Dfs4Radio" GroupName="DfsMode" Checked="DfsMode_OnChanged"/>
+                            </StackPanel>
+                            <TextBlock Name="DrawOrderLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="DrawOrderCombo" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="DrawOrder_OnChanged"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,6,Auto">
+                            <TextBlock Name="StrayPixelLabel" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="StrayRemovalCombo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="StrayRemoval_OnChanged"/>
+                            <TextBlock Name="DrawerModuleLabel" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                            <ComboBox Name="DrawerModuleCombo" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch"
+                                      SelectionChanged="DrawerModule_OnChanged"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--CONFIG-->
+            <TabItem Name="TabConfig">
+                <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="8">
+                    <TextBlock Name="ConfigManagementHeaderText" Grid.Row="0" FontWeight="Bold"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0 8">
+                        <Button Name="LoadConfigButton" Click="LoadConfig_OnClick"/>
+                        <Button Name="SaveConfigButton" Click="SaveConfig_OnClick"/>
+                        <Button Name="SaveConfigAsButton" Click="SaveConfigAs_OnClick"/>
+                        <Button Name="ExportHexedConfigButton" Click="ExportHexedConfig_OnClick"/>
+                    </StackPanel>
+                    <ListBox Grid.Row="2" Name="ConfigList" DoubleTapped="ConfigList_OnDoubleTapped"/>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="6" Margin="0 6 0 0">
+                        <TextBlock Name="CurrentConfigLabel" VerticalAlignment="Center"/>
+                        <TextBlock Name="CurrentConfigText" VerticalAlignment="Center" Foreground="#8B98A5"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!--LANGUAGE-->
+            <TabItem Name="TabLanguage">
+                <StackPanel Margin="12" Spacing="10">
+                    <TextBlock Name="LanguageSelectHeaderText" FontWeight="Bold"/>
+                    <TextBlock Name="SelectLanguageLabel"/>
+                    <ComboBox Name="LanguageCombo" Width="240" HorizontalAlignment="Left"/>
+                    <Button Name="ApplyLanguageButton" HorizontalAlignment="Left" Click="ApplyLanguage_OnClick"/>
+                    <TextBlock Name="LanguageNoteText" Foreground="#8B98A5" TextWrapping="Wrap" MaxWidth="600"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="2" Background="#10141A" Padding="10 6">
+            <TextBlock Name="StatusText" Foreground="#D7E2EC" TextWrapping="Wrap"/>
+        </Border>
+    </Grid>
+</Window>

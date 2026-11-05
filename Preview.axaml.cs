@@ -16,6 +16,7 @@ using Avalonia.Threading;
 using SharpHook;
 using SharpHook.Native;
 using SkiaSharp;
+using Autodraw.Configuration;
 
 namespace Autodraw;
 
@@ -31,7 +32,8 @@ public partial class Preview : Window
     
     private bool drawingStack;
     private List<InputAction> actions = new();
-    private List<SKBitmap> stack = new();
+    private List<ColorLayerResult> stack = new();
+    private StencilOverlay? _stencil;
 
     public Preview()
     {
@@ -62,6 +64,7 @@ public partial class Preview : Window
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
+        _stencil?.Close();
         renderedBitmap.Dispose();
         Closing -= OnClosing;
     }
@@ -103,7 +106,7 @@ public partial class Preview : Window
         }
     }
 
-    public void ReadyStackDraw(SKBitmap bitmap, List<SKBitmap> _stack, List<InputAction> _actions)
+    public void ReadyStackDraw(SKBitmap bitmap, List<ColorLayerResult> _stack, List<InputAction> _actions)
     {
         drawingStack = true;
         renderedBitmap?.Dispose();
@@ -114,6 +117,7 @@ public partial class Preview : Window
         Height = (bitmap.Height) / scale;
 
         Show();
+        ShowStencil(bitmap);
         
         actions.Clear();
         actions = _actions;
@@ -134,9 +138,18 @@ public partial class Preview : Window
         Height = (bitmap.Height) / scale;
 
         Show();
+        ShowStencil(bitmap);
 
         inputBitmap = bitmap;
         Input.taskHook.KeyReleased += Keybind;
+    }
+
+    private void ShowStencil(SKBitmap bitmap)
+    {
+        var config = DdConfigService.Current;
+        if (!config.StencilEnabled) return;
+        _stencil = new StencilOverlay();
+        _stencil.ShowStencil(bitmap, config.DrawRegion, config.StencilOpacity);
     }
 
     private bool isMoving = false;

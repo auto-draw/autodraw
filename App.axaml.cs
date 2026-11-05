@@ -204,42 +204,75 @@ public class App : Application
         };
     }
 
-    private async void HandleException(Exception exception)
+    private bool _showingExceptionDialog;
+
+    private void HandleException(Exception exception)
     {
-        await ShowExceptionDialog(exception);
+        // Never let reporting itself escape: an unhandled exception in this handler
+        // terminates the process. Avalonia controls must also only be built on the
+        // UI thread, so marshal before touching any visual.
+        try
+        {
+            Utils.Log("Unhandled exception: " + exception);
+            if (Dispatcher.UIThread.CheckAccess()) _ = ShowExceptionDialog(exception);
+            else Dispatcher.UIThread.Post(() => _ = ShowExceptionDialog(exception));
+        }
+        catch (Exception handlerException)
+        {
+            Utils.Log("Exception handler failed: " + handlerException);
+        }
     }
 
     private async Task ShowExceptionDialog(Exception exception)
     {
+        if (_showingExceptionDialog) return;
+        _showingExceptionDialog = true;
+
         // Extremely barebones UI, no theming, no functions, for exceptions.
-        
         Window messageBox = null;
-        messageBox = new Window
+        try
         {
-            Title = "An Error Occurred",
-            Width = 400,
-            Height = 200,
-            Content = new StackPanel
+            var mainWindow = (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+                ?.MainWindow;
+            if (mainWindow is null)
             {
-                Children =
+                Utils.Log("No main window available; error dialog suppressed.");
+                return;
+            }
+
+            messageBox = new Window
+            {
+                Title = "An Error Occurred",
+                Width = 400,
+                Height = 200,
+                Content = new StackPanel
                 {
-                    new TextBlock { Text = "An unexpected error has occurred:", Margin = new Thickness(10) },
-                    new TextBlock { Text = exception.Message, Margin = new Thickness(10), TextWrapping = TextWrapping.Wrap },
-                    new Button
+                    Children =
                     {
-                        Content = "OK",
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                        Margin = new Thickness(10),
-                        Command = ReactiveUI.ReactiveCommand.Create(() => messageBox.Close())
+                        new TextBlock { Text = "An unexpected error has occurred:", Margin = new Thickness(10) },
+                        new TextBlock { Text = exception.Message, Margin = new Thickness(10), TextWrapping = TextWrapping.Wrap },
+                        new Button
+                        {
+                            Content = "OK",
+                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                            Margin = new Thickness(10),
+                            Command = ReactiveUI.ReactiveCommand.Create(() => messageBox.Close())
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        var mainWindow = (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
-            ?.MainWindow;
-        if (mainWindow != null)
             await messageBox.ShowDialog(mainWindow);
+        }
+        catch (Exception dialogException)
+        {
+            Utils.Log("Failed to show error dialog: " + dialogException);
+            try { messageBox?.Close(); } catch { /* shutting down */ }
+        }
+        finally
+        {
+            _showingExceptionDialog = false;
+        }
     }
 
 }
